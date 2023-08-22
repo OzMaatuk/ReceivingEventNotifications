@@ -1,5 +1,5 @@
 // EventSink.cpp
-#include "eventsink.h"
+#include "EventSink.h"
 
 void print(std::list<EventDetails> &list)
 {

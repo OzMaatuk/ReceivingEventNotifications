@@ -1,8 +1,11 @@
 #include <future>
-#include "ReadCSV.cpp"
-#include "WriteCSV.cpp"
-#include "EventSink.h"
-#include <fstream>
+#include "../include/ReadCSV.h"
+#include "../include/WriteCSV.h"
+#include "../include/EventSink.h"
+
+#define SPATH "data\\outputs\\Events\\events.csv"
+#define OPATH "data\\outputs\\Histogram\\histogram.json"
+#define IPATH "data\\outputs\\Insights\\Insights.json"
 
 int main(int iArgCnt, char ** argv)
 {
@@ -194,7 +197,7 @@ int main(int iArgCnt, char ** argv)
         return 1;
     }
 
-    std::string fpath = "events.csv";
+    std::string fpath = SPATH;
     WriteCSV writer = WriteCSV(fpath, pSink);
     ReadCSV reader = ReadCSV(fpath);
     while (true)
