@@ -11,11 +11,11 @@ STD = c++20
 CFLAGS = -std=$(STD) -Wall -Wextra -Iinclude -g
 
 # The external libraries used
-LDLIBS = -lole32 -loleaut32 -lws2_32 -lwbemuuid -ljsoncpp
+LDLIBS = -lole32 -loleaut32 -lws2_32 -lwbemuuid -ljsoncpp -lglog -lgtest
 
 # The directories to search for source files.
 SRC_DIR = src/
-SRCS = main.cpp EventSink.cpp Map.cpp ReadCSV.cpp WriteCSV.cpp
+SRCS = main.cpp EventSink.cpp Mapper.cpp ReaderCSV.cpp WriterCSV.cpp
 
 # The object files to create.
 OBJ_DIR = obj/

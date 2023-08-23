@@ -30,9 +30,9 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 # Construct build output and dependency filenames
 # SRCS := $(shell find $(SRC) -name *.cpp)
-SRCS :=  src/.main.cpp src/EventSink/EventSink.ccp src/Mapper/Map.cpp src/Reader/ReadCSV.cpp src/Writer/WriteCSV.cpp
+SRCS :=  src/.main.cpp src/EventSink/EventSink.ccp src/Mapper/Mapper.cpp src/Reader/ReadCSV.cpp src/Writer/WriteCSV.cpp
 # OBJS := $(subst $(SRC)/,$(BUILD)/,$(addsuffix .o,$(basename $(SRCS))))
-OBJS := obj/main.o obj/EventSink.o obj/Map.o obj/ReadCSV.o obj/WriteCSV.o
+OBJS := obj/main.o obj/EventSink.o obj/Mapper.o obj/ReadCSV.o obj/WriteCSV.o
 DEPS := $(OBJS:.o=.d)
 
 # Run task

@@ -10,7 +10,7 @@
             // ".\\*.cpp",
             ".\\src\\main.cpp",
             ".\\src\\EventSink\\EventSink.cpp",
-            ".\\src\\Mapper\\Map.cpp",
+            ".\\src\\Mapper\\Mapper.cpp",
             ".\\src\\Reader\\ReadCSV.cpp",
             ".\\src\\Writer\\WriteCSV.cpp",
             "-o",

@@ -1,6 +1,6 @@
 #include <future>
-#include "../include/ReadCSV.h"
-#include "../include/WriteCSV.h"
+#include "../include/Reader.h"
+#include "../include/Writer.h"
 #include "../include/EventSink.h"
 
 #define SPATH "data\\outputs\\Events\\events.csv"
@@ -198,8 +198,8 @@ int main(int iArgCnt, char ** argv)
     }
 
     std::string fpath = SPATH;
-    WriteCSV writer = WriteCSV(fpath, pSink);
-    ReadCSV reader = ReadCSV(fpath);
+    Writer writer = Writer(fpath, pSink);
+    Reader reader = Reader(fpath);
     while (true)
     {
         auto asyncThread = std::async(std::launch::async, [&writer]() { return writer.start(); });

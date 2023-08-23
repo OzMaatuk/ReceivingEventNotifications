@@ -1,26 +1,26 @@
-// ReadCSV.h
-#ifndef READCSV_H
-#define READCSV_H
+// Reader.h
+#ifndef READER_H
+#define READER_H
 
 #include <sstream>
-#include "Map.h"
+#include "Mapper.h"
 
 /**
- * @class ReadCSV
+ * @class Reader
  * @brief A class for reading CSV files and storing the data in a vector of Map objects.
  *
  * This class is responsible for reading CSV files containing map data and storing the data in a vector of Map objects.
  */
-class ReadCSV {
+class Reader {
     private:
         std::fstream sfile;
-        Map map;
+        Mapper map;
     
     public:
-        ReadCSV(std::string fpath);
-        ~ReadCSV();
-        Map* getMap();
+        Reader(std::string fpath);
+        ~Reader();
+        Mapper* getMap();
         void start();
 };
 
-#endif // READCSV_H
+#endif // READER_H

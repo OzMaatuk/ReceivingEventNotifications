@@ -1,19 +1,19 @@
 // ReadCSV.cpp
-#include "ReadCSV.h"
+#include "Reader.h"
 
-ReadCSV::ReadCSV(std::string fpath) {
+Reader::Reader(std::string fpath) {
     sfile.open(fpath, std::ios::in | std::ios::out | std::ios::app); // , std::ios::in
 }
 
-ReadCSV::~ReadCSV() {
+Reader::~Reader() {
     sfile.close();
 }
 
-Map* ReadCSV::getMap() {
+Mapper* Reader::getMap() {
     return &map;
 }
 
-void ReadCSV::start() {
+void Reader::start() {
     // Read the Data from the file
     // as String Vector
     std::vector<std::string> row;
@@ -37,18 +37,3 @@ void ReadCSV::start() {
         map.add(row);
     }
 }
-
-// int main() {
-//     printf("Main started");
-//     std::string sfpath = "data\\outputs\\Events\\events.csv";
-//     std::string ofpath = "map.json";
-//     ReadCSV reader = ReadCSV(sfpath);
-
-//     reader.start();
-//     reader.getMap()->toFile(ofpath);
-
-//     auto asyncThread = std::async(std::launch::async, [&reader]() { return reader.start(); });
-//     asyncThread.wait();
-
-//     getchar();
-// }
