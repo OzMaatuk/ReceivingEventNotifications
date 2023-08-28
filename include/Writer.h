@@ -1,25 +1,25 @@
-// WriteCSV.h
-#ifndef WRITECSV_H
-#define WRITECSV_H
+// Writer.h
+#ifndef WRITEER_H
+#define WRITEER_H
 
 #include <fstream>
 #include "EventSink.h"
 
 /**
- * @class WriteCSV
+ * @class Writer
  * @brief A class for writing event data to a CSV file.
  *
  * This class is responsible for writing event data stored in the EventSink class to a CSV file.
  */
-class WriteCSV {
+class Writer {
     private:
         std::ofstream sfile;
         EventSink* pSink;
     
     public:
-        WriteCSV(std::string fpath, EventSink* sink);
-        ~WriteCSV();
+        Writer(std::string fpath, EventSink* sink);
+        ~Writer();
         void start();
 };
 
-#endif // WRITECSV_H
+#endif // WRITEER_H

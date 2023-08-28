@@ -1,10 +1,8 @@
-// Record.h
+// MapRecord.h
 #ifndef RECORD_H
 #define RECORD_H
 
 #include <string>
-#define START "__InstanceCreationEvent"
-#define END "__InstanceDeletionEvent"
 
 struct Record
 {

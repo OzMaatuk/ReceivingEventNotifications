@@ -1,18 +1,18 @@
 // WriteCSV.cpp
-#include "WriteCSV.h"
+#include "Writer.h"
 
-WriteCSV::WriteCSV(std::string fpath, EventSink* sink) {
+Writer::Writer(std::string fpath, EventSink* sink) {
         sfile = std::ofstream(fpath);
         sfile << "timestamp,class,name\n";
         sfile.flush();
         pSink = sink;
 }
 
-WriteCSV::~WriteCSV() {
+Writer::~Writer() {
     sfile.close();
 }
 
-void WriteCSV::start() {
+void Writer::start() {
     // copy cache and clear
     std::list<EventDetails> tmpCache;
     std::copy(pSink->cache.begin(), pSink->cache.end(), std::back_inserter(tmpCache));
@@ -25,7 +25,7 @@ void WriteCSV::start() {
         wcstombs(strClass, event.type, 512);
         char* strName = new char[512];
         wcstombs(strName, event.name, 512);
-        sfile << event.time.wHour << ":" << event.time.wMinute << ":" << event.time.wSecond << ":" << event.time.wMilliseconds << ", " << strClass << ", " << strName << ", " << event.pid << "\n";
+        sfile << event.time.wHour << ":" << event.time.wMinute << ":" << event.time.wSecond << ":" << event.time.wMilliseconds << "," << strClass << "," << strName << "," << event.pid << "\n";
         sfile.flush();
         delete[] strClass;
         delete[] strName;
