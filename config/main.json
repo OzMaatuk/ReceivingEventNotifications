@@ -1,6 +1,6 @@
 {
-    "os": "Windows",
     "events_file_path": "..\\data\\events.csv",
     "output_file_path": "..\\data\\\\histogram.json",
-    "insights_file_path": "..\\data\\insights.json"
+    "insights_file_path": "..\\data\\insights.json",
+    "sleep_interval": 30000
 }
