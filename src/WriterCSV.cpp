@@ -25,7 +25,7 @@ void Writer::start() {
         wcstombs(strClass, event.type, 512);
         char* strName = new char[512];
         wcstombs(strName, event.name, 512);
-        sfile << event.time.wHour << ":" << event.time.wMinute << ":" << event.time.wSecond << ":" << event.time.wMilliseconds << ", " << strClass << ", " << strName << ", " << event.pid << "\n";
+        sfile << event.time.wHour << ":" << event.time.wMinute << ":" << event.time.wSecond << ":" << event.time.wMilliseconds << "," << strClass << "," << strName << "," << event.pid << "\n";
         sfile.flush();
         delete[] strClass;
         delete[] strName;

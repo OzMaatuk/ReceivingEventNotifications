@@ -1,17 +1,23 @@
 // Mapper.cpp
 #include "Mapper.h"
 
-Mapper::Mapper() {}
+Mapper::Mapper(std::string fpath) {
+    ofp = fpath;
+    // std::ofstream ofile(ofp);
+}
 
 Mapper::~Mapper() {}
 
-void Mapper::printvec(std::vector<std::string> vec) {
-    for(size_t i=0; i<vec.size(); i++) {
-            printf("%s", vec[i].c_str());
-        }
+std::string Mapper::vectorToString(const std::vector<std::string>& vector) {
+  std::string res;
+  for (const std::string& s : vector) res += ", " + s;
+  return res;
 }
 
-void Mapper::printMap() {
+std::string Mapper::getStartLabel() { return "__InstanceCreationEvent"; }
+std::string Mapper::getStopLabel() { return "__InstanceDeletionEvent"; }
+
+void Mapper::print() {
     for (auto it = map.begin(); it != map.end(); ++it) {
         printf("ProcessName: %s\n", it->first.c_str());
         for (auto obj = it->second.begin(); obj != it->second.end(); ++obj) {
@@ -22,42 +28,48 @@ void Mapper::printMap() {
     }
 }
 
+void Mapper::addToKey(std::string key, Record r) {
+    if (!map.contains(key)) map.insert({ key, { r } });
+    else map[key].push_back( r );
+}
+
+void Mapper::setEndTime(std::string key, std::string pid, std::string ts) {
+    if (map.contains(key)) {
+        std::vector<Record>::iterator it = map[key].begin();
+        while ( !(it->pid.compare(pid) == 0) && (it->stop.empty()) ) { it++; }
+        if (it != map[key].end()) {
+            it->stop = ts;
+            return;
+        }
+    }
+    LOG(WARNING) << "No start time for proccess, pid: " << key << pid;
+}
+
 void Mapper::add(std::vector<std::string> row) {
     std::string pName = row.at(2);
     std::string ts = row.at(0);
     std::string pid = row.at(3);
     std::string type = row.at(1);
-    if (type.compare(START)) 
-    {
-        map[pName].push_back(Record{ pid, ts, NULL });
-    } else if (type.compare(END)) {
-        std::vector<Record>::iterator it = map[pName].begin();
-        while ( !(it->pid.compare(pid)) && (it->stop.c_str()) ) {
-            it++;
+    if (!type.empty()) {
+        if (type.compare(getStartLabel()) == 0) {
+            addToKey(pName, { pid, ts, "" } );
+            return;
+        } else if (type.compare(getStopLabel()) == 0) {
+            setEndTime(pName, pid, ts);
+            return;
         }
-        if (it != map[pName].end()) {
-            it->stop = ts;
-        } else {
-            // TODO: throw Exception
-            printf("This event does not have starting point");
-            printvec(row);
-        }
-    } else {
-        // TODO: throw Exception
-        printf("Undefined event type");
-        printvec(row);
     }
+    DLOG(INFO) << vectorToString(row);
+    throw Exception("Undefined event type");
 }
 
-void Mapper::toFile(std::string fpath) {
+void Mapper::toFile() {
     // Create a JSON object to store the map.
     Json::Value root = Json::objectValue;
     for (auto it = map.begin(); it != map.end(); ++it) {
         Json::Value process = Json::arrayValue;
         for (auto obj = it->second.begin(); obj != it->second.end(); ++obj)
         {
-            // Json::Value *Record;
-            // ((*Record)["pid"]) = Json::Value(obj->pid);
             Json::Value Record = Json::objectValue;
             Record["pid"] = Json::Value(obj->pid);
             Record["start"] = Json::Value(obj->start);
@@ -66,9 +78,10 @@ void Mapper::toFile(std::string fpath) {
         }
         root[it->first] = process;
     }
-
     // Write the JSON object to a file.
-    std::ofstream ofile(fpath);
+    DLOG(INFO) << root.toStyledString();
+    std::ofstream ofile(ofp);
     ofile << root.toStyledString();
-    ofile.close();
+    ofile.flush();
+    ofile.close();  
 }

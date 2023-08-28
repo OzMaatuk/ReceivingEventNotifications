@@ -3,8 +3,6 @@
 #define RECORD_H
 
 #include <string>
-#define START "__InstanceCreationEvent"
-#define END "__InstanceDeletionEvent"
 
 struct Record
 {

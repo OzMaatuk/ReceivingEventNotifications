@@ -17,9 +17,9 @@ class Reader {
         Mapper map;
     
     public:
-        Reader(std::string fpath);
+        Reader(std::string sfp, std::string ofp);
         ~Reader();
-        Mapper* getMap();
+        Mapper getMap();
         void start();
 };
 

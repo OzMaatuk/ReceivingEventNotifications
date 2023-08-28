@@ -1,16 +1,16 @@
 // ReadCSV.cpp
 #include "Reader.h"
 
-Reader::Reader(std::string fpath) {
-    sfile.open(fpath, std::ios::in | std::ios::out | std::ios::app); // , std::ios::in
+Reader::Reader(std::string sfp, std::string ofp): map(ofp) {
+    sfile.open(sfp, std::ios::in | std::ios::out | std::ios::app); // , std::ios::in
 }
 
 Reader::~Reader() {
     sfile.close();
 }
 
-Mapper* Reader::getMap() {
-    return &map;
+Mapper Reader::getMap() {
+    return map;
 }
 
 void Reader::start() {
