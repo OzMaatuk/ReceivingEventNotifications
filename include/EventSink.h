@@ -26,7 +26,7 @@ class EventSink : public IWbemObjectSink
 public:
     std::list<EventDetails> cache;
     EventSink() { m_lRef = 0; }
-   ~EventSink() { bDone = true; }
+    virtual ~EventSink() { bDone = true; }
 
     virtual ULONG STDMETHODCALLTYPE AddRef();
     virtual ULONG STDMETHODCALLTYPE Release();        

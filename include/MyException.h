@@ -1,8 +1,11 @@
-// Exception.h
+// MyException.h
+#ifndef MYEXCEPTION_H
+#define MYEXCEPTION_H
+
 #include <iostream>
 #include <exception>
 
-class Exception: public std::exception
+class MyException: public std::exception
 {
 public:
     /** Constructor (C strings).
@@ -11,17 +14,17 @@ public:
      *                 Hence, responsibility for deleting the char* lies
      *                 with the caller. 
      */
-    explicit Exception(const char* message): msg_(message) {};
+    explicit MyException(const char* message): msg_(message) {};
 
     /** Constructor (C++ STL strings).
      *  @param message The error message.
      */
-    explicit Exception(const std::string& message): msg_(message) {};
+    explicit MyException(const std::string& message): msg_(message) {};
 
     /** Destructor.
      * Virtual to allow for subclassing.
      */
-    virtual ~Exception() noexcept {};
+    virtual ~MyException() noexcept {};
 
     /** Returns a pointer to the (constant) error description.
      *  @return A pointer to a const char*. The underlying memory
@@ -35,3 +38,5 @@ protected:
      */
     std::string msg_;
 };
+
+#endif // MYEXCEPTION_H

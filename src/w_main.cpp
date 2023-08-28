@@ -1,10 +1,10 @@
 #include <future>
-#include "../include/Reader.h"
-#include "../include/Writer.h"
-#include "../include/EventSink.h"
-#include "../include/config.h"
+#include "Reader.h"
+#include "Writer.h"
+#include "EventSink.h"
+#include "Config.h"
 
-int w_main(Config c, int iArgCnt, char ** argv)
+int w_main(Config c)
 {
     HRESULT hres;
 
@@ -155,7 +155,7 @@ int w_main(Config c, int iArgCnt, char ** argv)
     if (FAILED(hres))
     {
         printf("ExecNotificationQueryAsync failed "
-            "with = 0x%X\n", hres);
+            "with = 0x%lx\n", hres);
         pSvc->Release();
         pLoc->Release();
         pUnsecApp->Release();
@@ -183,7 +183,7 @@ int w_main(Config c, int iArgCnt, char ** argv)
     if (FAILED(hres))
     {
         printf("ExecNotificationQueryAsync failed "
-            "with = 0x%X\n", hres);
+            "with = 0x%lx\n", hres);
         pSvc->Release();
         pLoc->Release();
         pUnsecApp->Release();
@@ -210,7 +210,7 @@ int w_main(Config c, int iArgCnt, char ** argv)
             // Wait for the event
             Sleep(c.sleep_interval);
         }
-    } catch (Exception ex) {
+    } catch (MyException& ex) {
         std::cout << "My Exception thrown: " << ex.what() << std::endl;
     }
 

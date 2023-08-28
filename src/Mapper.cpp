@@ -63,7 +63,7 @@ void Mapper::add(std::vector<std::string> row) {
         }
     }
     DLOG(INFO) << vectorToString(row);
-    throw Exception("Undefined event type");
+    throw MyException("Undefined event type");
 }
 
 void Mapper::toFile() {
@@ -97,7 +97,7 @@ void Mapper::load() {
         reader.parse(fin, root);
         fin.close();
     } else {
-        LOG(WARNING) << "Could not fild application data file " << ofp;
+        LOG(WARNING) << "Could not load application data file " << ofp;
         return;
     }
     

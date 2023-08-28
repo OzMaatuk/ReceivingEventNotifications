@@ -1,14 +1,14 @@
 // Skelton provided, not woking code.
 
-/*
-
 #include <iostream>
 #include <unistd.h>
-#include <sys/inotify.h>
+// #include <sys/inotify.h>
 #include <string>
 #include <thread>
 #include <queue>
 #include "Config.h"
+
+/*
 
 using namespace std;
 

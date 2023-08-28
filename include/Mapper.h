@@ -7,10 +7,9 @@
 #include <json/writer.h>
 #include <vector>
 #include <map>
-#include <iostream>
 #include <fstream>
 #include "MapRecord.h"
-#include "Exception.h"
+#include "MyException.h"
 
 /*
 Map can be cached object, instead of using file.

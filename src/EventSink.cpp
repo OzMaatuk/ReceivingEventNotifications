@@ -37,11 +37,10 @@ HRESULT EventSink::QueryInterface(REFIID riid, void** ppv)
 HRESULT EventSink::Indicate(long lObjectCount,
     IWbemClassObject **apObjArray)
 {
-    SYSTEMTIME st, lt;
+    SYSTEMTIME lt;
     GetLocalTime(&lt);
     HRESULT hres = S_OK;
     HRESULT hrs;
-    HRESULT hrs2;
     _variant_t vtProp;
     _variant_t vtType;
 
@@ -71,6 +70,8 @@ HRESULT EventSink::Indicate(long lObjectCount,
         if (!FAILED(hres))
         {
             IUnknown* str = vtProp;
+
+            // Getting the Process Name related to the event
             hres = str->QueryInterface( IID_IWbemClassObject, reinterpret_cast< void** >( &apObjArray[i] ) );
             if ( SUCCEEDED( hres ) )
             {
@@ -80,7 +81,6 @@ HRESULT EventSink::Indicate(long lObjectCount,
                 {
                     try 
                     {
-                        // printf("Name : %S\n", cn.bstrVal);
                         tmp.name = _bstr_t(cn.bstrVal).copy();
                     }
                     catch(std::exception &ex)
@@ -91,12 +91,12 @@ HRESULT EventSink::Indicate(long lObjectCount,
                 VariantClear(&cn);
             }
 
-            IUnknown* str2 = vtProp;
-            hrs2 = str->QueryInterface( IID_IWbemClassObject, reinterpret_cast< void** >( &apObjArray[i] ) );
-            if ( SUCCEEDED( hrs2 ) )
+            // Getting the Process ID related to the event
+            hres = str->QueryInterface( IID_IWbemClassObject, reinterpret_cast< void** >( &apObjArray[i] ) );
+            if ( SUCCEEDED( hres ) )
             {
                 _variant_t cpid;
-                hrs2 = apObjArray[i]->Get( L"ProcessId", 0, &cpid, NULL, NULL );
+                hres = apObjArray[i]->Get( L"ProcessId", 0, &cpid, NULL, NULL );
                 if ( SUCCEEDED( hres ) )
                 {
                     try 
@@ -112,7 +112,6 @@ HRESULT EventSink::Indicate(long lObjectCount,
             }
         }
         cache.push_back(EventDetails(tmp));
-        // print(cache);
         VariantClear(&vtProp);
         VariantClear(&vtType);
         printf("\n");
@@ -123,13 +122,13 @@ HRESULT EventSink::Indicate(long lObjectCount,
 HRESULT EventSink::SetStatus(
             /* [in] */ LONG lFlags,
             /* [in] */ HRESULT hResult,
-            /* [in] */ BSTR strParam,
-            /* [in] */ IWbemClassObject __RPC_FAR *pObjParam
+            /* [in] */ __attribute__((unused)) BSTR strParam,
+            /* [in] */ __attribute__((unused)) IWbemClassObject __RPC_FAR *pObjParam
         )
 {
     if(lFlags == WBEM_STATUS_COMPLETE)
     {
-        printf("Call complete. hResult = 0x%X\n", hResult);
+        printf("Call complete. hResult = 0x%lx\n", hResult);
     }
     else if(lFlags == WBEM_STATUS_PROGRESS)
     {
