@@ -57,18 +57,35 @@
         "future": "cpp",
         "mutex": "cpp",
         "map": "cpp",
-        "cstring": "cpp"
+        "cstring": "cpp",
+        "any": "cpp",
+        "charconv": "cpp",
+        "chrono": "cpp",
+        "set": "cpp",
+        "format": "cpp",
+        "iomanip": "cpp",
+        "span": "cpp",
+        "cinttypes": "cpp",
+        "variant": "cpp",
+        "cassert": "cpp",
+        "cerrno": "cpp",
+        "cfloat": "cpp",
+        "climits": "cpp",
+        "ios": "cpp",
+        "locale": "cpp",
+        "queue": "cpp",
+        "stack": "cpp"
     }
     // ,"C_Cpp.default.cppStandard": "c++20"
     ,"editor.tabSize": 4
     ,"makefile.configurations": [
         {
-            "name": "Default",
+            "name": "Build & Run",
             "makeArgs": []
         },
         {
-            "name": "clean",
-            "makeArgs": ["clean"]
+            "name": "Build & Test",
+            "makeArgs": []
         }
     ],
     "makefile.launchConfigurations": [
@@ -76,7 +93,13 @@
             "cwd": "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\bin",
             "binaryPath": "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\bin\\main.exe",
             "binaryArgs": []
+        },
+        {
+            "cwd": "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\bin",
+            "binaryPath": "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\bin\\test.exe",
+            "binaryArgs": []
         }
     ],
-    "makefile.buildLog": ""
+    "makefile.buildLog": "",
+    "makefile.loggingLevel": "Normal"
 }

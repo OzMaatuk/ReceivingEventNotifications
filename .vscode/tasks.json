@@ -2,17 +2,18 @@
     "tasks": [
       {
         "type": "shell",
-        "label": "g++ build & run active file",
+        "label": "g++ build & run project",
         "command": "g++",
         "args": [
             "-fdiagnostics-color=always",
             "-g",
+            "-Iinclude",
             // ".\\*.cpp",
             ".\\src\\main.cpp",
-            ".\\src\\EventSink\\EventSink.cpp",
-            ".\\src\\Mapper\\Mapper.cpp",
-            ".\\src\\Reader\\ReadCSV.cpp",
-            ".\\src\\Writer\\WriteCSV.cpp",
+            ".\\src\\EventSink.cpp",
+            ".\\src\\Mapper.cpp",
+            ".\\src\\ReadCSV.cpp",
+            ".\\src\\WriteCSV.cpp",
             "-o",
             "bin\\main.exe",
             "-lole32",
@@ -29,6 +30,38 @@
           "$gcc"
         ],
         "group": "build"
+      },
+      {
+        "type": "shell",
+        "label": "g++ build & run tests",
+        "command": "g++",
+        "args": [
+            "-fdiagnostics-color=always",
+            "-g",
+            "-Iinclude",
+            ".\\src\\Mapper.cpp",
+            ".\\src\\ReaderCSV.cpp",
+            ".\\test\\TestMapper.cpp",
+            ".\\test\\TestReaderCSV.cpp",
+            ".\\test\\test.cpp",
+            "-o",
+            "bin\\test.exe",
+            "-lole32",
+            "-loleaut32",
+            "-lws2_32",
+            "-lwbemuuid",
+            "-ljsoncpp",
+            "-lglog",
+            "-lgtest",
+            "-std=c++20"
+        ],
+        "options": {
+            "cwd": "${workspaceFolder}"
+        },
+        "problemMatcher": [
+          "$gcc"
+        ],
+        "group": "test"
       }
     ],
     "version":"2.0.0"
