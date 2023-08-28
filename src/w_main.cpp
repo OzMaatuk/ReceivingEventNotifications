@@ -208,7 +208,7 @@ int w_main(Config c, int iArgCnt, char ** argv)
             asyncThread.wait(); // Wait till writing is done, while waiting for events
 
             // Wait for the event
-            Sleep(30000);
+            Sleep(c.sleep_interval);
         }
     } catch (Exception ex) {
         std::cout << "My Exception thrown: " << ex.what() << std::endl;
