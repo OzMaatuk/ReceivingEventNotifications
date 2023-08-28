@@ -9,7 +9,7 @@ Reader::~Reader() {
     sfile.close();
 }
 
-Mapper Reader::getMap() {
+Mapper& Reader::getMap() {
     return map;
 }
 

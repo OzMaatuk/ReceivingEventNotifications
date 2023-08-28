@@ -3,10 +3,13 @@
 
 Mapper::Mapper(std::string fpath) {
     ofp = fpath;
-    // std::ofstream ofile(ofp);
+    load();
+    std::ofstream ofile(ofp);
 }
 
-Mapper::~Mapper() {}
+Mapper::~Mapper() {
+    ofile.close();
+}
 
 std::string Mapper::vectorToString(const std::vector<std::string>& vector) {
   std::string res;
@@ -80,8 +83,52 @@ void Mapper::toFile() {
     }
     // Write the JSON object to a file.
     DLOG(INFO) << root.toStyledString();
-    std::ofstream ofile(ofp);
     ofile << root.toStyledString();
     ofile.flush();
-    ofile.close();  
+}
+
+void Mapper::load() {
+    // Create the JSON object.
+    Json::Value root;
+    // Read the JSON file into the JSON object.
+    std::ifstream fin(ofp);
+    if (fin.is_open()) {
+        Json::Reader reader;
+        reader.parse(fin, root);
+        fin.close();
+    } else {
+        LOG(WARNING) << "Could not fild application data file " << ofp;
+        return;
+    }
+    
+      // Iterate over the objects in the JSON object.
+    for (auto it = root.begin(); it != root.end(); it++) {
+        // Get the pid.
+        std::string process = it.name();
+
+        // Create a vector to store the records for the pid.
+        std::vector<Record> records;
+
+        Json::Value earray = root[process];
+        // Iterate over the elements in the object.
+        for (auto e = earray.begin(); e != earray.end(); e++) {
+        // Create a record.
+        Record record;
+        Json::Value current = earray[e.index()];
+        // Set the pid of the record.
+        record.pid = current["pid"].asString();
+
+        // Set the start time of the record.
+        record.start = current["start"].asString();
+
+        // Set the stop time of the record.
+        record.stop = current["stop"].asString();
+
+        // Add the record to the vector.
+        records.push_back(record);
+        }
+
+        // Add the vector to the map.
+        map[process] = records;
+    }
 }

@@ -20,6 +20,7 @@ Here, application can also load data from previous execution.
 class Mapper {
     private:
         std::string ofp;
+        std::ofstream ofile;
         std::map<std::string, std::vector<Record>> map;
         std::string getStartLabel();
         std::string getStopLabel();
@@ -33,6 +34,7 @@ class Mapper {
         ~Mapper();
         void add(std::vector<std::string> row);
         void toFile();
+        void load();
 };
 
 #endif // MAPPER_H

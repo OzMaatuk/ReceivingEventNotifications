@@ -19,7 +19,7 @@ class Reader {
     public:
         Reader(std::string sfp, std::string ofp);
         ~Reader();
-        Mapper getMap();
+        Mapper& getMap();
         void start();
 };
 
