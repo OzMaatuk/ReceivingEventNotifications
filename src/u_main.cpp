@@ -57,7 +57,8 @@ void process_events(queue<struct inotify_event> *event_queue, int sinterval) {
 
 */
 
-int u_main(Config c, int iArgCnt, char ** argv) {
+int u_main(Config c, int iArgCnt, char **argv)
+{
   /*
   // Create an inotify instance.
   int inotify_fd = inotify_init1(IN_CLOEXEC);

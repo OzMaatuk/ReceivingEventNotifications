@@ -11,16 +11,17 @@
  *
  * This class is responsible for reading CSV files containing map data and storing the data in a vector of Map objects.
  */
-class Reader {
-    private:
-        std::fstream sfile;
-        Mapper map;
-    
-    public:
-        Reader(std::string sfp, std::string ofp);
-        ~Reader();
-        Mapper& getMap();
-        void start();
+class Reader
+{
+private:
+    std::fstream sfile;
+    Mapper map;
+
+public:
+    Reader(std::string sfp, std::string ofp);
+    ~Reader();
+    Mapper &getMap();
+    void start();
 };
 
 #endif // READER_H

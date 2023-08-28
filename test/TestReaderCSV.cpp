@@ -7,34 +7,40 @@
 
 // Compaile with ReadCSV.cpp and Mapper.cpp
 
-class TestReadCSV  : public ::testing::Test {
-    protected:
+class TestReadCSV : public ::testing::Test
+{
+protected:
     // You can remove any or all of the following functions if their bodies would
     // be empty.
 
-        TestReadCSV() {
-            // You can do set-up work for each test here.
-        }
+    TestReadCSV()
+    {
+        // You can do set-up work for each test here.
+    }
 
-        ~TestReadCSV() override {
-            // You can do clean-up work that doesn't throw exceptions here.
-        }
+    ~TestReadCSV() override
+    {
+        // You can do clean-up work that doesn't throw exceptions here.
+    }
 
-        // If the constructor and destructor are not enough for setting up
-        // and cleaning up each test, you can define the following methods:
+    // If the constructor and destructor are not enough for setting up
+    // and cleaning up each test, you can define the following methods:
 
-        void SetUp() override {
-            // Code here will be called immediately after the constructor (right
-            // before each test).
-        }
+    void SetUp() override
+    {
+        // Code here will be called immediately after the constructor (right
+        // before each test).
+    }
 
-        void TearDown() override {
-            // Code here will be called immediately after each test (right
-            // before the destructor).
-        }
+    void TearDown() override
+    {
+        // Code here will be called immediately after each test (right
+        // before the destructor).
+    }
 };
 
-TEST(TestReadCSV, Simple_Test) {
+TEST(TestReadCSV, Simple_Test)
+{
     LOG(INFO) << "TestReadCSV Simple_Test Started";
     Reader reader("..\\data\\events.csv", "..\\data\\test.json");
     LOG(INFO) << "reader.start()";
@@ -45,4 +51,4 @@ TEST(TestReadCSV, Simple_Test) {
     LOG(INFO) << "TestReadCSV Simple_Test Done";
 }
 
-#endif //TEST_READERCSV_C
+#endif // TEST_READERCSV_C

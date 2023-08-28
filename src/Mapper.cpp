@@ -1,46 +1,62 @@
 // Mapper.cpp
 #include "Mapper.h"
 
-Mapper::Mapper(std::string fpath) {
+Mapper::Mapper(std::string fpath)
+{
     ofp = fpath;
     load();
     std::ofstream ofile(ofp);
 }
 
-Mapper::~Mapper() {
+Mapper::~Mapper()
+{
     ofile.close();
 }
 
-std::string Mapper::vectorToString(const std::vector<std::string>& vector) {
-  std::string res;
-  for (const std::string& s : vector) res += ", " + s;
-  return res;
+std::string Mapper::vectorToString(const std::vector<std::string> &vector)
+{
+    std::string res;
+    for (const std::string &s : vector)
+        res += ", " + s;
+    return res;
 }
 
 std::string Mapper::getStartLabel() { return "__InstanceCreationEvent"; }
 std::string Mapper::getStopLabel() { return "__InstanceDeletionEvent"; }
 
-void Mapper::print() {
-    for (auto it = map.begin(); it != map.end(); ++it) {
+void Mapper::print()
+{
+    for (auto it = map.begin(); it != map.end(); ++it)
+    {
         printf("ProcessName: %s\n", it->first.c_str());
-        for (auto obj = it->second.begin(); obj != it->second.end(); ++obj) {
-        printf("  PID: %s\n", obj->pid.c_str());
-        printf("  Start: %s\n", obj->start.c_str());
-        printf("  Stop: %s\n", obj->stop.c_str());
+        for (auto obj = it->second.begin(); obj != it->second.end(); ++obj)
+        {
+            printf("  PID: %s\n", obj->pid.c_str());
+            printf("  Start: %s\n", obj->start.c_str());
+            printf("  Stop: %s\n", obj->stop.c_str());
         }
     }
 }
 
-void Mapper::addToKey(std::string key, Record r) {
-    if (!map.contains(key)) map.insert({ key, { r } });
-    else map[key].push_back( r );
+void Mapper::addToKey(std::string key, Record r)
+{
+    if (!map.contains(key))
+        map.insert({key, {r}});
+    else
+        map[key].push_back(r);
 }
 
-void Mapper::setEndTime(std::string key, std::string pid, std::string ts) {
-    if (map.contains(key)) {
+void Mapper::setEndTime(std::string key, std::string pid, std::string ts)
+{
+    if (map.contains(key))
+    {
         std::vector<Record>::iterator it = map[key].begin();
-        while ( !(it->pid.compare(pid) == 0) && (it->stop.empty()) ) { it++; }
-        if (it != map[key].end()) {
+        while (!(it->pid.compare(pid) == 0) && (it->stop.empty()))
+        {
+            it++;
+        }
+        if (it != map[key].end())
+        {
             it->stop = ts;
             return;
         }
@@ -48,16 +64,21 @@ void Mapper::setEndTime(std::string key, std::string pid, std::string ts) {
     LOG(WARNING) << "No start time for proccess, pid: " << key << pid;
 }
 
-void Mapper::add(std::vector<std::string> row) {
+void Mapper::add(std::vector<std::string> row)
+{
     std::string pName = row.at(2);
     std::string ts = row.at(0);
     std::string pid = row.at(3);
     std::string type = row.at(1);
-    if (!type.empty()) {
-        if (type.compare(getStartLabel()) == 0) {
-            addToKey(pName, { pid, ts, "" } );
+    if (!type.empty())
+    {
+        if (type.compare(getStartLabel()) == 0)
+        {
+            addToKey(pName, {pid, ts, ""});
             return;
-        } else if (type.compare(getStopLabel()) == 0) {
+        }
+        else if (type.compare(getStopLabel()) == 0)
+        {
             setEndTime(pName, pid, ts);
             return;
         }
@@ -66,10 +87,12 @@ void Mapper::add(std::vector<std::string> row) {
     throw MyException("Undefined event type");
 }
 
-void Mapper::toFile() {
+void Mapper::toFile()
+{
     // Create a JSON object to store the map.
     Json::Value root = Json::objectValue;
-    for (auto it = map.begin(); it != map.end(); ++it) {
+    for (auto it = map.begin(); it != map.end(); ++it)
+    {
         Json::Value process = Json::arrayValue;
         for (auto obj = it->second.begin(); obj != it->second.end(); ++obj)
         {
@@ -87,22 +110,27 @@ void Mapper::toFile() {
     ofile.flush();
 }
 
-void Mapper::load() {
+void Mapper::load()
+{
     // Create the JSON object.
     Json::Value root;
     // Read the JSON file into the JSON object.
     std::ifstream fin(ofp);
-    if (fin.is_open()) {
+    if (fin.is_open())
+    {
         Json::Reader reader;
         reader.parse(fin, root);
         fin.close();
-    } else {
+    }
+    else
+    {
         LOG(WARNING) << "Could not load application data file " << ofp;
         return;
     }
-    
-      // Iterate over the objects in the JSON object.
-    for (auto it = root.begin(); it != root.end(); it++) {
+
+    // Iterate over the objects in the JSON object.
+    for (auto it = root.begin(); it != root.end(); it++)
+    {
         // Get the pid.
         std::string process = it.name();
 
@@ -111,21 +139,22 @@ void Mapper::load() {
 
         Json::Value earray = root[process];
         // Iterate over the elements in the object.
-        for (auto e = earray.begin(); e != earray.end(); e++) {
-        // Create a record.
-        Record record;
-        Json::Value current = earray[e.index()];
-        // Set the pid of the record.
-        record.pid = current["pid"].asString();
+        for (auto e = earray.begin(); e != earray.end(); e++)
+        {
+            // Create a record.
+            Record record;
+            Json::Value current = earray[e.index()];
+            // Set the pid of the record.
+            record.pid = current["pid"].asString();
 
-        // Set the start time of the record.
-        record.start = current["start"].asString();
+            // Set the start time of the record.
+            record.start = current["start"].asString();
 
-        // Set the stop time of the record.
-        record.stop = current["stop"].asString();
+            // Set the stop time of the record.
+            record.stop = current["stop"].asString();
 
-        // Add the record to the vector.
-        records.push_back(record);
+            // Add the record to the vector.
+            records.push_back(record);
         }
 
         // Add the vector to the map.
