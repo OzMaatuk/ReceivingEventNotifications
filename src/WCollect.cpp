@@ -1,10 +1,14 @@
-#include <future>
-#include "Reader.h"
-#include "Writer.h"
-#include "EventSink.h"
-#include "Config.h"
+#include "Collect.h"
 
-int w_main(Config c)
+Collect::Collect()
+{
+}
+
+Collect::~Collect()
+{
+}
+
+int Collect::main(Config c)
 {
     HRESULT hres;
 

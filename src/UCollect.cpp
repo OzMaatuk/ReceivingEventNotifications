@@ -2,11 +2,12 @@
 
 #include <iostream>
 #include <unistd.h>
-// #include <sys/inotify.h>
+#include <sys/inotify.h>
 #include <string>
 #include <thread>
 #include <queue>
 #include "Config.h"
+#include "Collect.h"
 
 /*
 
@@ -57,7 +58,7 @@ void process_events(queue<struct inotify_event> *event_queue, int sinterval) {
 
 */
 
-int u_main(Config c, int iArgCnt, char **argv)
+int Collect::main(Config c)
 {
   /*
   // Create an inotify instance.
@@ -83,7 +84,6 @@ int u_main(Config c, int iArgCnt, char **argv)
   close(inotify_fd);
 
   */
-  return 0;
 }
 
 // You are right. There is no `/usr/include` directory on Windows. The inotify library is not available for Windows. You can use the inotify-tools package on Windows, but you will need to compile it from source.

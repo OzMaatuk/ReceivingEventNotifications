@@ -10,15 +10,21 @@ STD = c++23
 # -Werror
 CFLAGS = -std=$(STD) -Wall -Wextra -Wno-unknown-pragmas -Iinclude -g -no-pie -fno-pie -DBOOST_STACKTRACE_USE_BACKTRACE
 
-# The external libraries used
-LDLIBS = -lole32 -loleaut32 -lws2_32 -lwbemuuid -ljsoncpp -lglog -lgtest -lbacktrace
+# The external libraries used.
+W_LDLIBS = -lole32 -loleaut32 -lws2_32 -lwbemuuid -ljsoncpp -lglog -lgtest -lbacktrace
+U_LDLIBS = -llibc -linotify -ljsoncpp -lglog -lgtest
+LDLIBS = 
 
-# Config file path
-CNFG = config/main.json
+# Determine OS type and set libraries properly.
+ifeq ($(OS),Windows_NT)
+	LDLIBS = W_LDLIBS
+else
+	LDLIBS = U_LDLIBS
+endif
 
 # The directories to search for source files.
 SRC_DIR = src/
-SRCS = Config.cpp main.cpp EventSink.cpp Mapper.cpp ReaderCSV.cpp WriterCSV.cpp
+SRCS = Config.cpp WCollect.cpp main.cpp EventSink.cpp Mapper.cpp ReaderCSV.cpp WriterCSV.cpp
 
 # The tests files
 TESTS = src/Mapper.cpp src/ReaderCSV.cpp test/TestMapper.cpp test/TestReaderCSV.cpp test/test.cpp
@@ -44,7 +50,7 @@ $(TEST):
 
 # The rule for linking the object files to create the executable file.
 $(TARGET): $(OOBJ)
-	$(CC) $(CFLAGS) -o $@ $^ $(LDLIBS)
+	$(CC) $(CFLAGS) -o $@ $^ $(W_LDLIBS)
 
 # The rule for creating test executable
 test: clean $(TEST)
