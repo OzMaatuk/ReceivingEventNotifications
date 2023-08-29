@@ -11,15 +11,16 @@
  *
  * This class is responsible for writing event data stored in the EventSink class to a CSV file.
  */
-class Writer {
-    private:
-        std::ofstream sfile;
-        EventSink* pSink;
-    
-    public:
-        Writer(std::string fpath, EventSink* sink);
-        ~Writer();
-        void start();
+class Writer
+{
+private:
+    std::ofstream sfile;
+    EventSink *pSink;
+
+public:
+    Writer(std::string fpath, EventSink *sink);
+    ~Writer();
+    void start();
 };
 
 #endif // WRITEER_H

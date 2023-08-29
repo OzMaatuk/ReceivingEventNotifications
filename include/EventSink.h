@@ -26,24 +26,23 @@ class EventSink : public IWbemObjectSink
 public:
     std::list<EventDetails> cache;
     EventSink() { m_lRef = 0; }
-   ~EventSink() { bDone = true; }
+    virtual ~EventSink() { bDone = true; }
 
     virtual ULONG STDMETHODCALLTYPE AddRef();
-    virtual ULONG STDMETHODCALLTYPE Release();        
-    virtual HRESULT 
-        STDMETHODCALLTYPE QueryInterface(REFIID riid, void** ppv);
+    virtual ULONG STDMETHODCALLTYPE Release();
+    virtual HRESULT
+        STDMETHODCALLTYPE
+        QueryInterface(REFIID riid, void **ppv);
 
-    virtual HRESULT STDMETHODCALLTYPE Indicate( 
-            LONG lObjectCount,
-            IWbemClassObject __RPC_FAR *__RPC_FAR *apObjArray
-            );
-        
-    virtual HRESULT STDMETHODCALLTYPE SetStatus( 
-            /* [in] */ LONG lFlags,
-            /* [in] */ HRESULT hResult,
-            /* [in] */ BSTR strParam,
-            /* [in] */ IWbemClassObject __RPC_FAR *pObjParam
-            );
+    virtual HRESULT STDMETHODCALLTYPE Indicate(
+        LONG lObjectCount,
+        IWbemClassObject __RPC_FAR *__RPC_FAR *apObjArray);
+
+    virtual HRESULT STDMETHODCALLTYPE SetStatus(
+        /* [in] */ LONG lFlags,
+        /* [in] */ HRESULT hResult,
+        /* [in] */ BSTR strParam,
+        /* [in] */ IWbemClassObject __RPC_FAR *pObjParam);
 };
 
-#endif    // end of EventSink.h
+#endif // end of EventSink.h

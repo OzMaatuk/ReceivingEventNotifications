@@ -8,17 +8,17 @@ STD = c++23
 
 # The flags to pass to the compiler.
 # -Werror
-CFLAGS = -std=$(STD) -Wall -Wextra -Iinclude -g
+CFLAGS = -std=$(STD) -Wall -Wextra -Wno-unknown-pragmas -Iinclude -g -no-pie -fno-pie -DBOOST_STACKTRACE_USE_BACKTRACE
 
 # The external libraries used
-LDLIBS = -lole32 -loleaut32 -lws2_32 -lwbemuuid -ljsoncpp -lglog -lgtest
+LDLIBS = -lole32 -loleaut32 -lws2_32 -lwbemuuid -ljsoncpp -lglog -lgtest -lbacktrace
 
 # Config file path
 CNFG = config/main.json
 
 # The directories to search for source files.
 SRC_DIR = src/
-SRCS = main.cpp EventSink.cpp Mapper.cpp ReaderCSV.cpp WriterCSV.cpp
+SRCS = Config.cpp main.cpp EventSink.cpp Mapper.cpp ReaderCSV.cpp WriterCSV.cpp
 
 # The tests files
 TESTS = src/Mapper.cpp src/ReaderCSV.cpp test/TestMapper.cpp test/TestReaderCSV.cpp test/test.cpp
@@ -50,11 +50,11 @@ $(TARGET): $(OOBJ)
 test: clean $(TEST)
 
 # The default target.
-all: clean $(TARGET) $(CNFG)
+all: clean $(TARGET)
 
 # Clean up the object files and the executable file.
 # rm -rf $(OOBJ) $(TARGET) $(TEST) logs\* # For linux
 clean:
 	if exist obj\*.o del obj\*.o
 	if exist bin\*.exe del bin\*.exe
-	if exist logs\*.log del logs\*.log
+	if exist logs\*.log.* del logs\*.log.*
