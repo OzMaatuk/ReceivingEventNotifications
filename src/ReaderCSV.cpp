@@ -42,7 +42,7 @@ void Reader::start()
             // of a row to a vector
             row.push_back(word);
         }
-        for (const std::string& s : row) DLOG(INFO) << s << ", ";
+        // for (const std::string& s : row) DLOG(INFO) << s << ", ";
         map.add(row);
     }
 }
