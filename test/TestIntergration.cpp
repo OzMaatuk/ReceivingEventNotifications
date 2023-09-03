@@ -1,24 +1,23 @@
-#ifndef TEST_READERCSV_C
-#define TEST_READERCSV_C
+#ifndef TEST_INTEGRATION_C
+#define TEST_INTEGRATION_C
 
 #include <glog/logging.h>
 #include <gtest/gtest.h>
+#include "Analyzer.h"
 #include "Reader.h"
 
-// Compaile with ReadCSV.cpp and Mapper.cpp
-
-class TestReadCSV : public ::testing::Test
+class TestIntergration : public ::testing::Test
 {
 protected:
     // You can remove any or all of the following functions if their bodies would
     // be empty.
 
-    TestReadCSV()
+    TestIntergration()
     {
         // You can do set-up work for each test here.
     }
 
-    ~TestReadCSV() override
+    ~TestIntergration() override
     {
         // You can do clean-up work that doesn't throw exceptions here.
     }
@@ -39,16 +38,23 @@ protected:
     }
 };
 
-TEST(TestReadCSV, Simple_Test)
+TEST(TestIntergration, Simple_Test)
 {
-    LOG(INFO) << "TestReadCSV Simple_Test Started";
-    Reader reader("..\\test_data\\test_events.csv", "..\\test_data\\test_map.json");
+    LOG(INFO) << "TestIntergration Simple_Test Started";
+
+    LOG(INFO) << "Settingup Reader";
+    Reader reader("..\\test_data\\intergration_test_events.csv", "..\\test_data\\intergration_test_map.json");
     LOG(INFO) << "reader.start()";
     reader.start();
-    LOG(INFO) << "reader.getMap().toFile()";
-    reader.getMap().toFile();
+
+    LOG(INFO) << "Settingup Analyzer";
+    Analyzer analyzer(reader.getMap().getMap(), "..\\test_data\\intergration_test_insights.json");
+    
+    LOG(INFO) << "analyzer.toFile();";
+    analyzer.toFile();
+
     EXPECT_NO_THROW();
-    LOG(INFO) << "TestReadCSV Simple_Test Done";
+    LOG(INFO) << "TestIntergration Simple_Test Done";
 }
 
-#endif // TEST_READERCSV_C
+#endif // TEST_INTEGRATION_C

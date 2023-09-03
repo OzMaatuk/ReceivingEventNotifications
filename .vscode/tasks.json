@@ -9,6 +9,8 @@
             "-g",
             "-Iinclude",
             // ".\\*.cpp",
+            ".\\src\\Config.cpp",
+            ".\\src\\WCollect.cpp",
             ".\\src\\main.cpp",
             ".\\src\\EventSink.cpp",
             ".\\src\\Mapper.cpp",

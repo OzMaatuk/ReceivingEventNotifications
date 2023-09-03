@@ -3,6 +3,7 @@
 
 Writer::Writer(std::string fpath, EventSink *sink)
 {
+    // TODO: Make it continue with previous file, without overwriting.
     sfile = std::ofstream(fpath);
     sfile << "timestamp,class,name\n";
     sfile.flush();

@@ -1,4 +1,4 @@
-// MapRecord.h
+// Record.h
 #ifndef RECORD_H
 #define RECORD_H
 

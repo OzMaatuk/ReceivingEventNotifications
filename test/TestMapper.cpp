@@ -60,11 +60,23 @@ public:
 TEST(TestMapper, Simple_Test)
 {
     LOG(INFO) << "TestMapper Simple_Test Started";
-    Mapper map("..\\data\\outputs\\Histogram\\test.json");
-    LOG(INFO) << "Adding first element";
+    Mapper map("..\\test_data\\test_map.json");
+    LOG(INFO) << "Adding element 1";
     map.add({"23:35:23:95", "__InstanceCreationEvent", "backgroundTaskHost.exe", "24160"});
-    LOG(INFO) << "Adding second element";
+    LOG(INFO) << "Adding element 2";
     map.add({"23:35:53:95", "__InstanceDeletionEvent", "backgroundTaskHost.exe", "24160"});
+    LOG(INFO) << "Adding element 3";
+    map.add({"23:35:53:95", "__InstanceDeletionEvent", "backgroundTaskHost2.exe", "24190"});
+    LOG(INFO) << "Adding element 4";
+    map.add({"23:35:53:95", "__InstanceDeletionEvent", "backgroundTaskHost.exe", "24160"});
+    LOG(INFO) << "Adding element 5";
+    map.add({"23:35:53:95", "__InstanceCreationEvent", "backgroundTaskHost2.exe", "24190"});
+    // LOG(INFO) << "Adding element 6";
+    // map.add({"23:35:53:95", "__InstanceEvent", "backgroundTaskHost2.exe", "24190"});
+    LOG(INFO) << "Adding element 7";
+    map.add({"23:35:53:95", "__InstanceCreationEvent", "", "54190"});
+    LOG(INFO) << "Adding element 8";
+    map.add({"23:35:53:95", "__InstanceCreationEvent", "process1.exe", "24190"});
     LOG(INFO) << "executing toFile";
     map.toFile();
     EXPECT_NO_THROW();
