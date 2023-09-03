@@ -43,12 +43,12 @@ TEST(TestIntergration, Simple_Test)
     LOG(INFO) << "TestIntergration Simple_Test Started";
 
     LOG(INFO) << "Settingup Reader";
-    Reader reader("..\\data\\M_events.csv", "..\\data\\M_test.json");
+    Reader reader("..\\data\\test_events.csv", "..\\data\\intergration_test_map.json");
     LOG(INFO) << "reader.start()";
     reader.start();
 
     LOG(INFO) << "Settingup Analyzer";
-    Analyzer analyzer(reader.getMap().getMap(), "..\\data\\M_insights.json");
+    Analyzer analyzer(reader.getMap().getMap(), "..\\data\\intergration_test_insights.json");
     
     LOG(INFO) << "analyzer.toFile();";
     analyzer.toFile();

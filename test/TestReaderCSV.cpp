@@ -39,10 +39,10 @@ protected:
     }
 };
 
-TEST(TestReadCSV, DISABLED_Simple_Test)
+TEST(TestReadCSV, Simple_Test)
 {
     LOG(INFO) << "TestReadCSV Simple_Test Started";
-    Reader reader("..\\data\\S_events.csv", "..\\data\\S_test.json");
+    Reader reader("..\\test_data\\test_events.csv", "..\\test_data\\test_map.json");
     LOG(INFO) << "reader.start()";
     reader.start();
     LOG(INFO) << "reader.getMap().toFile()";
