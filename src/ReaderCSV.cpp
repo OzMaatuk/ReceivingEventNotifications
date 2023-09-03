@@ -31,6 +31,8 @@ void Reader::start()
         // used for breaking words
         std::stringstream s(line);
 
+        // TODO: Make data validation
+
         // read every column data of a row and
         // store it in a string variable, 'word'
         while (std::getline(s, word, ','))
@@ -40,6 +42,7 @@ void Reader::start()
             // of a row to a vector
             row.push_back(word);
         }
+        for (const std::string& s : row) DLOG(INFO) << s << ", ";
         map.add(row);
     }
 }

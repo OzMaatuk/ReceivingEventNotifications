@@ -3,14 +3,14 @@
 
 Mapper::Mapper(std::string fpath)
 {
-    ofp = fpath;
+    sfp = fpath;
     load();
-    std::ofstream ofile(ofp);
+    // std::ofstream ofile(sfp);
 }
 
 Mapper::~Mapper()
 {
-    ofile.close();
+    // ofile.close();
 }
 
 std::string Mapper::vectorToString(const std::vector<std::string> &vector)
@@ -26,16 +26,7 @@ std::string Mapper::getStopLabel() { return "__InstanceDeletionEvent"; }
 
 void Mapper::print()
 {
-    for (auto it = map.begin(); it != map.end(); ++it)
-    {
-        printf("ProcessName: %s\n", it->first.c_str());
-        for (auto obj = it->second.begin(); obj != it->second.end(); ++obj)
-        {
-            printf("  PID: %s\n", obj->pid.c_str());
-            printf("  Start: %s\n", obj->start.c_str());
-            printf("  Stop: %s\n", obj->stop.c_str());
-        }
-    }
+    printRecordsMap(map);
 }
 
 void Mapper::addToKey(std::string key, Record r)
@@ -51,7 +42,7 @@ void Mapper::setEndTime(std::string key, std::string pid, std::string ts)
     if (map.contains(key))
     {
         std::vector<Record>::iterator it = map[key].begin();
-        while (!(it->pid.compare(pid) == 0) && (it->stop.empty()))
+        while ((it != map[key].end()) && (it->pid.compare(pid) != 0) && (!it->stop.empty()))
         {
             it++;
         }
@@ -105,59 +96,18 @@ void Mapper::toFile()
         root[it->first] = process;
     }
     // Write the JSON object to a file.
-    DLOG(INFO) << root.toStyledString();
+    std::ofstream ofile(sfp);
     ofile << root.toStyledString();
     ofile.flush();
+    ofile.close();
 }
 
 void Mapper::load()
 {
-    // Create the JSON object.
-    Json::Value root;
-    // Read the JSON file into the JSON object.
-    std::ifstream fin(ofp);
-    if (fin.is_open())
-    {
-        Json::Reader reader;
-        reader.parse(fin, root);
-        fin.close();
-    }
-    else
-    {
-        LOG(WARNING) << "Could not load application data file " << ofp;
-        return;
-    }
+    loadMapFile(sfp, map);
+}
 
-    // Iterate over the objects in the JSON object.
-    for (auto it = root.begin(); it != root.end(); it++)
-    {
-        // Get the pid.
-        std::string process = it.name();
-
-        // Create a vector to store the records for the pid.
-        std::vector<Record> records;
-
-        Json::Value earray = root[process];
-        // Iterate over the elements in the object.
-        for (auto e = earray.begin(); e != earray.end(); e++)
-        {
-            // Create a record.
-            Record record;
-            Json::Value current = earray[e.index()];
-            // Set the pid of the record.
-            record.pid = current["pid"].asString();
-
-            // Set the start time of the record.
-            record.start = current["start"].asString();
-
-            // Set the stop time of the record.
-            record.stop = current["stop"].asString();
-
-            // Add the record to the vector.
-            records.push_back(record);
-        }
-
-        // Add the vector to the map.
-        map[process] = records;
-    }
+std::map<std::string, std::vector<Record>>& Mapper::getMap()
+{
+    return map;
 }
