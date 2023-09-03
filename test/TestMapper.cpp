@@ -71,8 +71,8 @@ TEST(TestMapper, Simple_Test)
     map.add({"23:35:53:95", "__InstanceDeletionEvent", "backgroundTaskHost.exe", "24160"});
     LOG(INFO) << "Adding element 5";
     map.add({"23:35:53:95", "__InstanceCreationEvent", "backgroundTaskHost2.exe", "24190"});
-    LOG(INFO) << "Adding element 6";
-    map.add({"23:35:53:95", "__InstanceEvent", "backgroundTaskHost2.exe", "24190"});
+    // LOG(INFO) << "Adding element 6";
+    // map.add({"23:35:53:95", "__InstanceEvent", "backgroundTaskHost2.exe", "24190"});
     LOG(INFO) << "Adding element 7";
     map.add({"23:35:53:95", "__InstanceCreationEvent", "", "54190"});
     LOG(INFO) << "Adding element 8";

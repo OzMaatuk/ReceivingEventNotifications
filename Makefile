@@ -64,3 +64,5 @@ clean:
 	if exist obj\*.o del obj\*.o
 	if exist bin\*.exe del bin\*.exe
 	if exist logs\*.log.* del logs\*.log.*
+	if exist test_data\*.csv del test_data\*.csv
+	if exist test_data\*.json del test_data\*.json

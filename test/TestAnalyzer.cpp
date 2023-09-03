@@ -41,8 +41,10 @@ TEST(TestAnalyzer, Simple_Test)
 {
     LOG(INFO) << "TestAnalyzer Simple_Test Started";
     Analyzer a("..\\test_data\\test_map.json", "..\\test_data\\test_insights.json");
-    LOG(INFO) << "a.toFile();";
+
+    LOG(INFO) << "a.toFile()";
     a.toFile();
+
     EXPECT_NO_THROW();
     LOG(INFO) << "TestAnalyzer Simple_Test Done";
 }

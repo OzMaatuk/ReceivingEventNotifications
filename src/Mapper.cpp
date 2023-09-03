@@ -52,7 +52,7 @@ void Mapper::setEndTime(std::string key, std::string pid, std::string ts)
             return;
         }
     }
-    LOG(WARNING) << "No start time for proccess, pid: " << key << pid;
+    LOG(WARNING) << "No start time for proccess, pid: " << key << " " << pid;
 }
 
 void Mapper::add(std::vector<std::string> row)
