@@ -37,10 +37,10 @@ protected:
     }
 };
 
-TEST(TestAnalyzer, DISABLED_Simple_Test)
+TEST(TestAnalyzer, Simple_Test)
 {
     LOG(INFO) << "TestAnalyzer Simple_Test Started";
-    Analyzer a("..\\data\\test.json", "..\\data\\insights.json");
+    Analyzer a("..\\test_data\\test_map.json", "..\\test_data\\test_insights.json");
     LOG(INFO) << "a.toFile();";
     a.toFile();
     EXPECT_NO_THROW();

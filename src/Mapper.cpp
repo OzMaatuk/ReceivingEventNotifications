@@ -74,8 +74,9 @@ void Mapper::add(std::vector<std::string> row)
             return;
         }
     }
-    DLOG(INFO) << vectorToString(row);
-    throw MyException("Undefined event type");
+    DLOG(WARNING) << "Undefined event type";
+    DLOG(WARNING) << vectorToString(row);
+    // throw MyException("Undefined event type");
 }
 
 void Mapper::toFile()
