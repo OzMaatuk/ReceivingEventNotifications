@@ -17,17 +17,17 @@ LDLIBS =
 
 # Determine OS type and set libraries properly.
 ifeq ($(OS),Windows_NT)
-	LDLIBS = W_LDLIBS
+	LDLIBS = $(W_LDLIBS)
 else
-	LDLIBS = U_LDLIBS
+	LDLIBS = $(U_LDLIBS)
 endif
 
 # The directories to search for source files.
 SRC_DIR = src/
-SRCS = Config.cpp WCollect.cpp main.cpp EventSink.cpp Mapper.cpp ReaderCSV.cpp WriterCSV.cpp
+SRCS = Config.cpp WCollect.cpp main.cpp EventSink.cpp Mapper.cpp ReaderCSV.cpp WriterCSV.cpp Analyzer.cpp
 
 # The tests files
-TESTS = src/Mapper.cpp src/ReaderCSV.cpp test/TestMapper.cpp test/TestReaderCSV.cpp test/test.cpp
+TESTS = src/Analyzer.cpp src/Mapper.cpp src/ReaderCSV.cpp test/TestMapper.cpp test/TestReaderCSV.cpp test/TestAnalyzer.cpp test/TestIntergration.cpp test/test.cpp
 
 # The object files to create.
 OBJ_DIR = obj/
@@ -50,7 +50,7 @@ $(TEST):
 
 # The rule for linking the object files to create the executable file.
 $(TARGET): $(OOBJ)
-	$(CC) $(CFLAGS) -o $@ $^ $(W_LDLIBS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDLIBS)
 
 # The rule for creating test executable
 test: clean $(TEST)
