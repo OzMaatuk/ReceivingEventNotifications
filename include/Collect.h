@@ -7,6 +7,7 @@
 #include "Writer.h"
 #include "EventSink.h"
 #include "Config.h"
+#include "Analyzer.h"
 
 class Collect
 {

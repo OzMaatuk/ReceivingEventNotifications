@@ -197,29 +197,35 @@ int Collect::main(Config c)
         return 1;
     }
 
-    try
+    std::string sfpath = c.events_file_path;
+    std::string ofpath = c.output_file_path;
+    std::string ifpath = c.insights_file_path;
+    Writer writer = Writer(sfpath, pSink);
+    Reader reader = Reader(sfpath, ofpath);
+    Analyzer analyzer = Analyzer(reader.getMap().getMap(), ifpath);
+    while (true)
     {
-        std::string sfpath = c.events_file_path;
-        std::string ofpath = c.output_file_path;
-        Writer writer = Writer(sfpath, pSink);
-        Reader reader = Reader(sfpath, ofpath);
-        while (true)
+        try
         {
             auto asyncThread = std::async(std::launch::async, [&writer]()
-                                          { return writer.start(); });
+                                            { return writer.start(); });
             asyncThread.wait(); // Wait till writing is done, while waiting for events
 
             asyncThread = std::async(std::launch::async, [&reader]()
-                                     { return reader.start(); });
+                                        { return reader.start(); });
+            asyncThread.wait(); // Wait till writing is done, while waiting for events
+            
+            asyncThread = std::async(std::launch::async, [&analyzer]()
+                                        { return analyzer.toFile(); });
             asyncThread.wait(); // Wait till writing is done, while waiting for events
 
             // Wait for the event
             Sleep(c.sleep_interval);
         }
-    }
-    catch (MyException &ex)
-    {
-        std::cout << "My Exception thrown: " << ex.what() << std::endl;
+        catch (MyException &ex)
+        {
+            std::cout << "My Exception thrown: " << ex.what() << std::endl;
+        }
     }
 
     // hres = pSvc->CancelAsyncCall(pStubSink);
