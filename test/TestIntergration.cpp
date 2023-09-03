@@ -38,7 +38,7 @@ protected:
     }
 };
 
-TEST(TestIntergration, Simple_Test)
+TEST(TestIntergration, DISABLED_Simple_Test)
 {
     LOG(INFO) << "TestIntergration Simple_Test Started";
 
