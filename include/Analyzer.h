@@ -20,10 +20,11 @@ private:
     std::map<std::string, std::vector<std::string>> insights;
     void mapToInsights(std::map<std::string, std::vector<Record>>& smap);
     long getRange(std::string start, std::string stop);
-    std::string MillisecondsToString(long milliseconds);
+    // std::string MillisecondsToString(long milliseconds);
+    long stringToMilliseconds(std::string s);
     bool filter(std::string process);
     bool ValidateTimestamp(std::string timestamp);
-    std::tuple<std::string, long> analyze(std::vector<Record> records);
+    std::tuple<bool, double> analyze(std::vector<Record> records);
 
 public:
     Analyzer(std::string sfpath, std::string ofpath);

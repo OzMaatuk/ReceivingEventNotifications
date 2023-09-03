@@ -49,6 +49,7 @@ TEST(TestIntergration, Simple_Test)
 
     LOG(INFO) << "Settingup Analyzer";
     Analyzer analyzer(reader.getMap().getMap(), "..\\data\\M_insights.json");
+    
     LOG(INFO) << "analyzer.toFile();";
     analyzer.toFile();
 

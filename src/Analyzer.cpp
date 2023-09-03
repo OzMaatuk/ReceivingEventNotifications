@@ -24,55 +24,51 @@ void Analyzer::mapToInsights(std::map<std::string, std::vector<Record>> &smap)
 
 long Analyzer::getRange(std::string start, std::string stop)
 {
+    long startMil = stringToMilliseconds(start);
+    long stopMil = stringToMilliseconds(stop);
+    return stopMil - startMil;
+}
+
+// std::string Analyzer::MillisecondsToString(long milliseconds)
+// {
+//     // Get the hours, minutes, seconds, and milliseconds from the milliseconds.
+//     long hours = milliseconds / (60 * 60 * 1000);
+//     long minutes = (milliseconds % (60 * 60 * 1000)) / (60 * 1000);
+//     long seconds = (milliseconds % (60 * 1000)) / 1000;
+//     long milliseconds_remainder = milliseconds % 1000;
+
+//     // Format the time as a string.
+//     std::string formatted_time = "";
+//     if (hours > 0)
+//     {
+//         formatted_time += std::to_string(hours) + ":";
+//     }
+//     if (minutes > 0)
+//     {
+//         formatted_time += std::to_string(minutes) + ":";
+//     }
+//     formatted_time += std::to_string(seconds) + "." + std::to_string(milliseconds_remainder);
+
+//     return formatted_time;
+// }
+
+long Analyzer::stringToMilliseconds(std::string s)
+{
     // Split the timestamps into their components.
     std::string digits;
-    std::vector<long> start_components;
-    std::stringstream sstart(start);
-    while (std::getline(sstart, digits, ':'))
+    std::vector<long> components;
+    std::stringstream ss(s);
+    while (std::getline(ss, digits, ':'))
     {
-        start_components.push_back(std::stoi(digits));
-    }
-
-    std::vector<long> stop_components;
-    std::stringstream sstop(stop);
-    while (std::getline(sstop, digits, ':'))
-    {
-        start_components.push_back(std::stoi(digits));
+        components.push_back(std::stoi(digits));
     }
 
     // Calculate the difference between the timestamps.
-    long hours = stop_components[0] - start_components[0];
-    long minutes = stop_components[1] - start_components[1];
-    long seconds = stop_components[2] - start_components[2];
-    long milliseconds = stop_components[3] - start_components[3];
-
-    long res = 0;
-    res = HOURS_IN_MILLISECONDS * hours + MINUTES_IN_MILLISECONDS * minutes + SECONDS_IN_MILLISECONDS * seconds + milliseconds;
-
-    return res;
-}
-
-std::string Analyzer::MillisecondsToString(long milliseconds)
-{
-    // Get the hours, minutes, seconds, and milliseconds from the milliseconds.
-    long hours = milliseconds / (60 * 60 * 1000);
-    long minutes = (milliseconds % (60 * 60 * 1000)) / (60 * 1000);
-    long seconds = (milliseconds % (60 * 1000)) / 1000;
-    long milliseconds_remainder = milliseconds % 1000;
-
-    // Format the time as a string.
-    std::string formatted_time = "";
-    if (hours > 0)
-    {
-        formatted_time += std::to_string(hours) + ":";
-    }
-    if (minutes > 0)
-    {
-        formatted_time += std::to_string(minutes) + ":";
-    }
-    formatted_time += std::to_string(seconds) + "." + std::to_string(milliseconds_remainder);
-
-    return formatted_time;
+    long hours = components[0];
+    long minutes = components[1];
+    long seconds = components[2];
+    long milliseconds = components[3];
+    return HOURS_IN_MILLISECONDS * hours + MINUTES_IN_MILLISECONDS * minutes + SECONDS_IN_MILLISECONDS * seconds + milliseconds;
 }
 
 bool Analyzer::filter(std::string process)
@@ -94,7 +90,7 @@ bool Analyzer::ValidateTimestamp(std::string timestamp)
     // Check the characters in the string.
     for (int i = 0; i < len; i++)
     {
-        if (timestamp[i] < '0' || timestamp[i] > '9' || timestamp[i] != ':')
+        if ((timestamp[i] < '0' || timestamp[i] > '9') && timestamp[i] != ':')
         {
             return false;
         }
@@ -104,7 +100,7 @@ bool Analyzer::ValidateTimestamp(std::string timestamp)
     return true;
 }
 
-std::tuple<std::string, long> Analyzer::analyze(std::vector<Record> records)
+std::tuple<bool, double> Analyzer::analyze(std::vector<Record> records)
 {
     std::vector<long> ranges;
     double medApproximation = 0.0;
@@ -116,7 +112,7 @@ std::tuple<std::string, long> Analyzer::analyze(std::vector<Record> records)
         // else throw MyException("Process got no stop time, cannot calculate range");
     }
     if (ranges.empty())
-        return {"REJECT", 0.0};
+        return {false, 0.0};
 
     for (auto &r : ranges)
     {
@@ -129,9 +125,9 @@ std::tuple<std::string, long> Analyzer::analyze(std::vector<Record> records)
     }
     medApproximation = medApproximation / ranges.size();
     if (medApproximation < apx)
-        return {"ADD", medApproximation};
+        return {true, medApproximation};
     else
-        return {"REJECT", medApproximation};
+        return {false, medApproximation};
 }
 
 void Analyzer::setApproximation(double approximation)
@@ -186,9 +182,12 @@ void Analyzer::add(std::string process, std::vector<Record> records)
     if (filter(process))
         return;
     std::tuple res = analyze(records);
-    if (std::get<0>(res).compare("ADD") == 0)
+    if (std::get<bool>(res))
     {
-        insights[process].push_back(std::to_string(std::get<1>(res)));
+        std::string description = "All executions durations are similar with approximation: ";
+        double value = std::get<double>(res) * 100;
+        description += std::to_string(value) + "%";
+        insights[process].push_back(description);
     }
 }
 
