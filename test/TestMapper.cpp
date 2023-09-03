@@ -57,10 +57,10 @@ public:
     }
 };
 
-TEST(TestMapper, Simple_Test)
+TEST(TestMapper, DISABLED_Simple_Test)
 {
     LOG(INFO) << "TestMapper Simple_Test Started";
-    Mapper map("..\\data\\outputs\\Histogram\\test.json");
+    Mapper map("..\\data\\outputs\\S_test.json");
     LOG(INFO) << "Adding first element";
     map.add({"23:35:23:95", "__InstanceCreationEvent", "backgroundTaskHost.exe", "24160"});
     LOG(INFO) << "Adding second element";

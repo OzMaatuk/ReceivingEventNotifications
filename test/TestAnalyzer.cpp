@@ -1,24 +1,22 @@
-#ifndef TEST_READERCSV_C
-#define TEST_READERCSV_C
+#ifndef TEST_ANALYZER_C
+#define TEST_ANALYZER_C
 
 #include <glog/logging.h>
 #include <gtest/gtest.h>
-#include "Reader.h"
+#include "Analyzer.h"
 
-// Compaile with ReadCSV.cpp and Mapper.cpp
-
-class TestReadCSV : public ::testing::Test
+class TestAnalyzer : public ::testing::Test
 {
 protected:
     // You can remove any or all of the following functions if their bodies would
     // be empty.
 
-    TestReadCSV()
+    TestAnalyzer()
     {
         // You can do set-up work for each test here.
     }
 
-    ~TestReadCSV() override
+    ~TestAnalyzer() override
     {
         // You can do clean-up work that doesn't throw exceptions here.
     }
@@ -39,16 +37,14 @@ protected:
     }
 };
 
-TEST(TestReadCSV, DISABLED_Simple_Test)
+TEST(TestAnalyzer, DISABLED_Simple_Test)
 {
-    LOG(INFO) << "TestReadCSV Simple_Test Started";
-    Reader reader("..\\data\\S_events.csv", "..\\data\\S_test.json");
-    LOG(INFO) << "reader.start()";
-    reader.start();
-    LOG(INFO) << "reader.getMap().toFile()";
-    reader.getMap().toFile();
+    LOG(INFO) << "TestAnalyzer Simple_Test Started";
+    Analyzer a("..\\data\\test.json", "..\\data\\insights.json");
+    LOG(INFO) << "a.toFile();";
+    a.toFile();
     EXPECT_NO_THROW();
-    LOG(INFO) << "TestReadCSV Simple_Test Done";
+    LOG(INFO) << "TestAnalyzer Simple_Test Done";
 }
 
-#endif // TEST_READERCSV_C
+#endif // TEST_ANALYZER_C
