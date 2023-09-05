@@ -41,15 +41,13 @@ void Mapper::setEndTime(std::string key, std::string pid, std::string ts)
 {
     if (map.contains(key))
     {
-        std::vector<Record>::iterator it = map[key].begin();
-        while ((it != map[key].end()) && (it->pid.compare(pid) != 0) && (!it->stop.empty()))
+        for (auto it = map[key].begin(); it != map[key].end(); ++it)
         {
-            it++;
-        }
-        if (it != map[key].end())
-        {
-            it->stop = ts;
-            return;
+            if ((it->pid.compare(pid) == 0) && (it->stop.compare("") == 0))
+            {
+                it->stop.assign(ts);
+                return;
+            }
         }
     }
     LOG(WARNING) << "No start time for proccess, pid: " << key << " " << pid;

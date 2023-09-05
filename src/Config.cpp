@@ -9,6 +9,8 @@ Config::Config(std::string fpath)
     output_file_path = get({"output_file_path"});
     insights_file_path = get({"insights_file_path"});
     sleep_interval = settings["sleep_interval"].asInt();
+    approximation = settings["approximation"].asDouble();
+    to_vector(settings["white_list"], white_list);
     f.close();
 }
 
@@ -19,4 +21,11 @@ Config::~Config()
 std::string Config::get(std::string key)
 {
     return settings[key].asString();
+}
+
+std::vector<std::string> Config::to_vector(const Json::Value& json_array, std::vector<std::string>& vector)
+{
+  for (const Json::Value& value : json_array) {
+    vector.push_back(value.asString());
+  }
 }

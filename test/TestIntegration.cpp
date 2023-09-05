@@ -38,12 +38,12 @@ protected:
     }
 };
 
-TEST(TestIntergration, Simple_Test)
+TEST(TestIntegration, Simple_Test)
 {
-    LOG(INFO) << "TestIntergration Simple_Test Started";
+    LOG(INFO) << "TestIntegration Simple_Test Started";
 
     LOG(INFO) << "Settingup Reader";
-    Reader reader("..\\test_data\\intergration_test_events.csv", "..\\test_data\\intergration_test_map.json");
+    Reader reader("..\\data\\S_events.csv", "..\\test_data\\intergration_test_map.json");
     LOG(INFO) << "reader.start()";
     reader.start();
 
@@ -51,10 +51,10 @@ TEST(TestIntergration, Simple_Test)
     Analyzer analyzer(reader.getMap().getMap(), "..\\test_data\\intergration_test_insights.json");
     
     LOG(INFO) << "analyzer.toFile();";
-    analyzer.toFile();
+    analyzer.start();
 
     EXPECT_NO_THROW();
-    LOG(INFO) << "TestIntergration Simple_Test Done";
+    LOG(INFO) << "TestIntegration Simple_Test Done";
 }
 
 #endif // TEST_INTEGRATION_C

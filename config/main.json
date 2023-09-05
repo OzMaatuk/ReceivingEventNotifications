@@ -3,9 +3,9 @@
     "output_file_path": "..\\data\\\\histogram.json",
     "insights_file_path": "..\\data\\insights.json",
     "sleep_interval": 30000,
-    "approximation": 0.0,
+    "approximation": 0.5,
     "white_list": [
-        "process1",
-        "process2"
+        "chrome.exe",
+        "process0"
     ]
 }

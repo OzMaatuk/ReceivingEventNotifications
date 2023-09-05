@@ -35,4 +35,5 @@ void Writer::start()
         delete[] strName;
     }
     // TODO: Can make it more efficient
+    // TODO: Add date
 }

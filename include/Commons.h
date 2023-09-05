@@ -8,8 +8,13 @@
 #include <fstream>
 #include <vector>
 #include <map>
+#include "Config.h"
 #include "Record.h"
 #include "MyException.h"
+
+inline static long HOURS_IN_MILLISECONDS = 3600000;
+inline static long MINUTES_IN_MILLISECONDS = 60000;
+inline static long SECONDS_IN_MILLISECONDS = 1000;
 
 inline static void printRecordsMap(std::map<std::string, std::vector<Record>>& map)
 {
@@ -76,6 +81,54 @@ inline static void loadMapFile(std::string sfp, std::map<std::string, std::vecto
         map[process] = records;
     }
     return;
+}
+
+inline static bool validateTimestamp(std::string timestamp)
+{
+    // Check the length of the string.
+    int len = timestamp.length();
+    if (len < 7 || len > 12)
+    {
+        return false;
+    }
+
+    // Check the characters in the string.
+    for (int i = 0; i < len; i++)
+    {
+        if ((timestamp[i] < '0' || timestamp[i] > '9') && timestamp[i] != ':')
+        {
+            return false;
+        }
+    }
+
+    // The string is valid.
+    return true;
+}
+
+inline static long stringToMilliseconds(std::string s)
+{
+    // Split the timestamps into their components.
+    std::string digits;
+    std::vector<long> components;
+    std::stringstream ss(s);
+    while (std::getline(ss, digits, ':'))
+    {
+        components.push_back(std::stoi(digits));
+    }
+
+    // Calculate the difference between the timestamps.
+    long hours = components[0];
+    long minutes = components[1];
+    long seconds = components[2];
+    long milliseconds = components[3];
+    return HOURS_IN_MILLISECONDS * hours + MINUTES_IN_MILLISECONDS * minutes + SECONDS_IN_MILLISECONDS * seconds + milliseconds;
+}
+
+inline static long getRange(std::string start, std::string stop)
+{
+    long startMil = stringToMilliseconds(start);
+    long stopMil = stringToMilliseconds(stop);
+    return stopMil - startMil;
 }
 
 #endif // COMMONS_H

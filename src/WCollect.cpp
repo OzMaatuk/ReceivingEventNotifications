@@ -216,7 +216,7 @@ int Collect::main(Config c)
             asyncThread.wait(); // Wait till writing is done, while waiting for events
             
             asyncThread = std::async(std::launch::async, [&analyzer]()
-                                        { return analyzer.toFile(); });
+                                        { return analyzer.start(); });
             asyncThread.wait(); // Wait till writing is done, while waiting for events
 
             // Wait for the event

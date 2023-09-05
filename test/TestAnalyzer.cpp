@@ -43,10 +43,24 @@ TEST(TestAnalyzer, Simple_Test)
     Analyzer a("..\\test_data\\test_map.json", "..\\test_data\\test_insights.json");
 
     LOG(INFO) << "a.toFile()";
-    a.toFile();
+    a.start();
 
     EXPECT_NO_THROW();
     LOG(INFO) << "TestAnalyzer Simple_Test Done";
+}
+
+TEST(TestAnalyzer, Config_Test)
+{
+    LOG(INFO) << "TestAnalyzer Config_Test Started";
+    Analyzer a("..\\test_data\\test_map.json", "..\\test_data\\config_test_insights.json");
+    a.setApproximation(0.3);
+    a.setWhitelist({"backgroundTaskHost.exe"});
+
+    LOG(INFO) << "a.start()";
+    a.start();
+
+    EXPECT_NO_THROW();
+    LOG(INFO) << "TestAnalyzer Config_Test Done";
 }
 
 #endif // TEST_ANALYZER_C

@@ -27,7 +27,7 @@ SRC_DIR = src/
 SRCS = Config.cpp WCollect.cpp main.cpp EventSink.cpp Mapper.cpp ReaderCSV.cpp WriterCSV.cpp Analyzer.cpp
 
 # The tests files
-TESTS = src/Analyzer.cpp src/Mapper.cpp src/ReaderCSV.cpp test/TestMapper.cpp test/TestReaderCSV.cpp test/TestAnalyzer.cpp test/TestIntergration.cpp test/test.cpp
+TESTS = src/Analyzer.cpp src/Mapper.cpp src/ReaderCSV.cpp test/TestMapper.cpp test/TestReaderCSV.cpp test/TestAnalyzer.cpp test/TestIntegration.cpp test/test.cpp
 
 # The object files to create.
 OBJ_DIR = obj/
