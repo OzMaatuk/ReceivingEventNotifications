@@ -16,6 +16,7 @@ class Reader
 private:
     std::fstream sfile;
     Mapper map;
+    bool isValidData(std::vector<std::string> row);
 
 public:
     Reader(std::string sfp, std::string ofp);

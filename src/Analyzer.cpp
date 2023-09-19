@@ -38,7 +38,7 @@ std::tuple<bool, double> Analyzer::analyze(std::vector<Record> records)
 
     for (auto &r : records)
     {
-        if (validateTimestamp(r.stop))
+        if (isValidTimestamp(r.stop))
             durations.push_back(getRange(r.start, r.stop));
         else
             DLOG(WARNING) << "No valid stop time, cannot calculate range for process: "  + r.pid;

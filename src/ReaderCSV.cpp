@@ -1,4 +1,4 @@
-// ReadCSV.cpp
+// ReaderCSV.cpp
 #include "Reader.h"
 
 Reader::Reader(std::string sfp, std::string ofp) : map(ofp)
