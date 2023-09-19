@@ -83,7 +83,12 @@ inline static void loadMapFile(std::string sfp, std::map<std::string, std::vecto
     return;
 }
 
-inline static bool validateTimestamp(std::string timestamp)
+inline bool is_digits(const std::string &str)
+{
+    return std::all_of(str.begin(), str.end(), ::isdigit); // C++11
+}
+
+inline static bool isValidTimestamp(std::string timestamp)
 {
     // Check the length of the string.
     int len = timestamp.length();
