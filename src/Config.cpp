@@ -23,7 +23,7 @@ std::string Config::get(std::string key)
     return settings[key].asString();
 }
 
-std::vector<std::string> Config::to_vector(const Json::Value& json_array, std::vector<std::string>& vector)
+void Config::to_vector(const Json::Value& json_array, std::vector<std::string>& vector)
 {
   for (const Json::Value& value : json_array) {
     vector.push_back(value.asString());

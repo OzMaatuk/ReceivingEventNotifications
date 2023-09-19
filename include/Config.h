@@ -12,7 +12,7 @@ class Config
 private:
     Json::Value settings;
     std::string stf;
-    std::vector<std::string> to_vector(const Json::Value& json_array, std::vector<std::string>& vector);
+    void to_vector(const Json::Value& json_array, std::vector<std::string>& vector);
 
 public:
     std::string events_file_path;
