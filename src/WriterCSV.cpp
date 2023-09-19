@@ -1,13 +1,19 @@
-// WriteCSV.cpp
+// WriterCSV.cpp
 #include "Writer.h"
 
 Writer::Writer(std::string fpath, EventSink *sink)
 {
-    // TODO: Make it continue with previous file, without overwriting.
-    sfile = std::ofstream(fpath);
-    sfile << "timestamp,class,name\n";
-    sfile.flush();
     pSink = sink;
+    std::string line;
+    fileReader = std::fstream(fpath);
+    std::getline(fileReader, line);
+    fileReader.close();
+    sfile = std::ofstream(fpath);
+    if (line.compare("timestamp,class,name\n") != 0)
+    {
+        sfile << "timestamp,class,name\n";
+        sfile.flush();
+    }
 }
 
 Writer::~Writer()
@@ -17,7 +23,7 @@ Writer::~Writer()
 
 void Writer::start()
 {
-    // copy cache and clear
+    // Copy cache and clear
     std::list<EventDetails> tmpCache;
     std::copy(pSink->cache.begin(), pSink->cache.end(), std::back_inserter(tmpCache));
     pSink->cache.clear();
@@ -29,11 +35,28 @@ void Writer::start()
         wcstombs(strClass, event.type, 512);
         char *strName = new char[512];
         wcstombs(strName, event.name, 512);
-        sfile << event.time.wHour << ":" << event.time.wMinute << ":" << event.time.wSecond << ":" << event.time.wMilliseconds << "," << strClass << "," << strName << "," << event.pid << "\n";
+        sfile // << event.time.wYear
+            // << ":"
+            // << event.time.wMonth
+            // << ":"
+            // << event.time.wDay
+            // << ":"
+            << event.time.wHour
+            << ":" 
+            << event.time.wMinute
+            << ":"
+            << event.time.wSecond
+            << ":"
+            << event.time.wMilliseconds
+            << ","
+            << strClass
+            << ","
+            << strName
+            << ","
+            << event.pid
+            << "\n";
         sfile.flush();
         delete[] strClass;
         delete[] strName;
     }
-    // TODO: Can make it more efficient
-    // TODO: Add date
 }

@@ -15,6 +15,7 @@ class Writer
 {
 private:
     std::ofstream sfile;
+    std::fstream fileReader;
     EventSink *pSink;
 
 public:
