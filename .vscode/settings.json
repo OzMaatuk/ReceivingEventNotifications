@@ -94,11 +94,18 @@
         {
             "cwd": "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\bin",
             "binaryPath": "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\bin\\main.exe",
-            "binaryArgs": ["d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\config\\main.json"]
+            "binaryArgs": [
+                "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\config\\main.json"
+            ]
         },
         {
             "cwd": "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\bin",
             "binaryPath": "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\bin\\test.exe",
+            "binaryArgs": []
+        },
+        {
+            "cwd": "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\bin",
+            "binaryPath": "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\bin\\main.exe",
             "binaryArgs": []
         }
     ],
