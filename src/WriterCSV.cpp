@@ -3,13 +3,14 @@
 
 Writer::Writer(std::string fpath, EventSink *sink)
 {
+    LOG(INFO) << "Creating Writer object";
     pSink = sink;
     std::string line;
     fileReader = std::fstream(fpath);
     std::getline(fileReader, line);
     fileReader.close();
     sfile = std::ofstream(fpath);
-    if (line.compare("timestamp,class,name\n") != 0)
+    if (line.compare("timestamp,class,name,pid\n") != 0)
     {
         sfile << "timestamp,class,name,pid\n";
         sfile.flush();
@@ -18,11 +19,13 @@ Writer::Writer(std::string fpath, EventSink *sink)
 
 Writer::~Writer()
 {
+    LOG(INFO) << "Destructing Writer object";
     sfile.close();
 }
 
 void Writer::start()
 {
+    LOG(INFO) << "Start Writer";
     // Copy cache and clear
     std::list<EventDetails> tmpCache;
     std::copy(pSink->cache.begin(), pSink->cache.end(), std::back_inserter(tmpCache));

@@ -3,11 +3,15 @@
 
 Reader::Reader(std::string sfp, std::string ofp) : map(ofp)
 {
+    LOG(INFO) << "Creating Reader object";
     sfile.open(sfp, std::ios::in | std::ios::out | std::ios::app); // , std::ios::in
+    std::string line;
+    std::getline(sfile, line);
 }
 
 Reader::~Reader()
 {
+    LOG(INFO) << "Destructing Reader object";
     sfile.close();
 }
 
@@ -18,12 +22,12 @@ Mapper &Reader::getMap()
 
 void Reader::start()
 {
+    LOG(INFO) << "Start Reader";
     // Read the Data from the file
     // as String Vector
     std::vector<std::string> row;
     std::string line, word;
 
-    std::getline(sfile, line);
     while (std::getline(sfile, line))
     {
         row.clear();

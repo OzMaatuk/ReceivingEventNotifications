@@ -3,19 +3,23 @@
 
 Analyzer::Analyzer(std::string sfpath, std::string ofpath) : ofp(ofpath)
 {
+    LOG(INFO) << "Creating Analyzer object from file";
     loadMapFile(sfpath, map);
 }
 
 Analyzer::Analyzer(std::map<std::string, std::vector<Record>> &smap, std::string ofpath) : ofp(ofpath), map(smap)
 {
+    LOG(INFO) << "Creating Analyzer object from map reference";
 }
 
 Analyzer::~Analyzer()
 {
+    LOG(INFO) << "Destructing Analyzer object";
 }
 
 void Analyzer::start()
 {
+    LOG(INFO) << "Start Analyzer";
     for (auto &[process, record_vec] : map)
         add(process, record_vec);
     toFile();
@@ -32,6 +36,7 @@ bool Analyzer::checkWhitelist(std::string process)
 
 std::tuple<bool, double> Analyzer::analyze(std::vector<Record> records)
 {
+    LOG(INFO) << "Analyze records for process";
     std::vector<long> durations;
     double medApproximation = 0.0;
     long medDuration = 0;
@@ -62,6 +67,7 @@ std::tuple<bool, double> Analyzer::analyze(std::vector<Record> records)
 
 void Analyzer::setConfig(Config c)
 {
+    LOG(INFO) << "Set config";
     setApproximation(c.approximation);
     setWhitelist(c.white_list);
 }
@@ -78,6 +84,7 @@ void Analyzer::setWhitelist(std::vector<std::string> white_list)
 
 void Analyzer::load()
 {
+    LOG(INFO) << "Loading process map from file " << ofp;
     // Create the JSON object.
     Json::Value root;
     // Read the JSON file into the JSON object.
@@ -120,6 +127,7 @@ void Analyzer::load()
 
 void Analyzer::add(std::string process, std::vector<Record> records)
 {
+    DLOG(INFO) << "Adding record for process " << process;
     if (checkWhitelist(process))
         return;
     std::tuple res = analyze(records);
@@ -137,6 +145,7 @@ void Analyzer::add(std::string process, std::vector<Record> records)
 
 void Analyzer::toFile()
 {
+    LOG(INFO) << "Creating Insights file";
     std::ofstream ofile(ofp);
     // Create a JSON object to store the map.
     Json::Value root = Json::objectValue;

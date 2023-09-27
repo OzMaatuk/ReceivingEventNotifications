@@ -3,6 +3,7 @@
 
 Mapper::Mapper(std::string fpath)
 {
+    LOG(INFO) << "Creating Mapper object";
     sfp = fpath;
     load();
     // std::ofstream ofile(sfp);
@@ -10,6 +11,7 @@ Mapper::Mapper(std::string fpath)
 
 Mapper::~Mapper()
 {
+    LOG(INFO) << "Desctucring Mapper object";
     // ofile.close();
 }
 
@@ -56,6 +58,7 @@ void Mapper::setEndTime(std::string key, std::string pid, std::string ts)
 void Mapper::add(std::vector<std::string> row)
 {
     std::string pName = row.at(2);
+    DLOG(INFO) << "Adding event for process " << pName;
     std::string ts = row.at(0);
     std::string pid = row.at(3);
     std::string type = row.at(1);
@@ -79,6 +82,7 @@ void Mapper::add(std::vector<std::string> row)
 
 void Mapper::toFile()
 {
+    LOG(INFO) << "Creating process map file " << sfp;
     // Create a JSON object to store the map.
     Json::Value root = Json::objectValue;
     for (auto it = map.begin(); it != map.end(); ++it)

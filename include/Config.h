@@ -2,6 +2,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include <glog/logging.h>
 #include <fstream>
 #include <string>
 #include <json/json.h>

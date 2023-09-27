@@ -4,6 +4,7 @@
 
 #define _WIN32_DCOM
 
+#include <glog/logging.h>
 #include <comdef.h>
 #include <Wbemidl.h>
 #include <iostream>

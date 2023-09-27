@@ -1,7 +1,8 @@
 // Writer.h
-#ifndef WRITEER_H
-#define WRITEER_H
+#ifndef WRITER_H
+#define WRITER_H
 
+#include <glog/logging.h>
 #include <fstream>
 #include "EventSink.h"
 
@@ -24,4 +25,4 @@ public:
     void start();
 };
 
-#endif // WRITEER_H
+#endif // WRITER_H

@@ -1,16 +1,6 @@
 // EventSink.cpp
 #include "EventSink.h"
 
-void print(std::list<EventDetails> &list)
-{
-    for (auto it = list.begin(); it != list.end(); it++)
-    {
-        printf(" The local time is: %02d:%02d:%02d:%02d\n", it->time.wHour, it->time.wMinute, it->time.wSecond, it->time.wMilliseconds);
-        printf("Class = %S\n", it->type);
-        printf("Name = %S\n", it->name);
-    }
-}
-
 ULONG EventSink::AddRef()
 {
     return InterlockedIncrement(&m_lRef);
@@ -46,11 +36,9 @@ HRESULT EventSink::Indicate(long lObjectCount,
     _variant_t vtProp;
     _variant_t vtType;
 
-    printf(" The local time is: %02d:%02d:%02d:%02d\n", lt.wHour, lt.wMinute, lt.wSecond, lt.wMilliseconds);
-
     for (int i = 0; i < lObjectCount; i++)
     {
-        printf("Event occurred\n");
+        LOG(INFO) << "Event occurred.";
         EventDetails tmp;
         tmp.time = lt;
 
