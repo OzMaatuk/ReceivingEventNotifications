@@ -1,31 +1,47 @@
 # Receiving Event Notifications
 
-This project demonstrates how to receive event notifications using WMI (Windows Management Instrumentation) in C++.
+The ReceivingEventNotifications2 project is a C++ application designed to monitor process events on a Windows system. It utilizes Windows Management Instrumentation (WMI) to collect real-time data on process start and stop times. This data is then analyzed to create insights into process duration distribution. 
+
+## Project Structure
+The project is organized into the following main directories:
+
+- `src/`: Contains the source code files (`.cpp`), which include `Config.cpp`, `WCollect.cpp`, `EventSink.cpp`, `Mapper.cpp`, `ReaderCSV.cpp`, `WriterCSV.cpp`, `Analyzer.cpp` and `main.cpp`.
+- `include/`: Contains the header files (`.h`) for the project.
+- `obj/`: Contains the object files (`.o`) generated during the build process.
+- `bin/`: Contains the resulting executable files from the build process.
+- `test/`: Contains the test source code files and test data.
+- `logs/`: Contains log files generated during program execution.
 
 ## Dependencies
+The project uses a variety of external libraries, which need to be installed for successful compilation:
 
-- Windows SDK
+- ole32
+- oleaut32
+- ws2_32
+- wbemuuid
+- jsoncpp
+- glog
+- gtest
+- backtrace
+- inotify (only for Unix-based systems)
+- libc (only for Unix-based systems)
 
-## Building
+## Execution Instructions
+To compile and run the project, follow these steps:
 
-1. Open the project in Visual Studio.
-2. Build the solution (Ctrl+Shift+B).
+1. Open a terminal window.
+2. Navigate to the project directory.
+3. Run the command `make all` to compile the project. This will create the executable files in the `bin/` directory.
+4. To run the main program, execute the command `./bin/main.exe`.
+5. To run the tests, execute the command `make test` followed by `./bin/test.exe`.
 
-## Running
-
-1. Open a command prompt with administrator privileges.
-2. Navigate to the directory containing the compiled executable (./bin/).
-3. Run the executable.
-
-Execution CMD:
-```g++ .\ReceivingEventNotifications.cpp .\eventsink.cpp -o output.exe -lole32 -loleaut32 -lws2_32 -lwbemuuid -std=c++11```
-
-## Output
+## Application Output
 
 The program will output:
 1. CSV file containing the received Events notifications.
-2. JSON file for Mapped histogram for each process.
+2. JSON file for Mapped histogram for each process (optional).
 3. Insight for each process after analyzing the histogram.
+Files paths are specified in the application config.
 
 ## Sources:
 
