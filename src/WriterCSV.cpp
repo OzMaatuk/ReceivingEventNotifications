@@ -11,7 +11,7 @@ Writer::Writer(std::string fpath, EventSink *sink)
     sfile = std::ofstream(fpath);
     if (line.compare("timestamp,class,name\n") != 0)
     {
-        sfile << "timestamp,class,name\n";
+        sfile << "timestamp,class,name,pid\n";
         sfile.flush();
     }
 }
