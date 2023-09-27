@@ -203,7 +203,7 @@ int Collect::main(Config c)
     Writer writer = Writer(sfpath, pSink);
     Reader reader = Reader(sfpath, ofpath);
     Analyzer analyzer = Analyzer(reader.getMap().getMap(), ifpath);
-    while (true)
+    while (!_kbhit())
     {
         try
         {

@@ -3,6 +3,7 @@
 #define COLLECT_H
 
 #include <future>
+#include <conio.h>
 #include "Reader.h"
 #include "Writer.h"
 #include "EventSink.h"

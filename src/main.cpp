@@ -23,5 +23,5 @@ int main(int iArgCnt, char **argv)
         throw e;
     }
     
-    throw MyException("Cannot determine OS type.");
+    // throw MyException("Cannot determine OS type.");
 }
