@@ -14,15 +14,14 @@
 class Reader
 {
 private:
-    std::fstream sfile;
-    Mapper map;
-    bool isValidData(std::vector<std::string> row);
+    std::fstream file;
+    bool isValidRow(std::vector<std::string> row);
 
 public:
-    Reader(std::string sfp, std::string ofp);
+    Reader(std::string sfp);
     ~Reader();
     Mapper &getMap();
-    void start();
+    void start(Mapper& m);
 };
 
 #endif // READER_H

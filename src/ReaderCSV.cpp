@@ -1,52 +1,43 @@
 // ReaderCSV.cpp
 #include "Reader.h"
 
-Reader::Reader(std::string sfp, std::string ofp) : map(ofp)
+Reader::Reader(std::string sfp)
 {
     LOG(INFO) << "Creating Reader object";
-    sfile.open(sfp, std::ios::in | std::ios::out | std::ios::app); // , std::ios::in
-    std::string line;
-    std::getline(sfile, line);
+    file.open(sfp, std::ios::in);
+    if (!file.is_open()) LOG(WARNING) << "Could not open events file for read " << sfp;
 }
 
 Reader::~Reader()
 {
     LOG(INFO) << "Destructing Reader object";
-    sfile.close();
+    if (file.is_open()) file.close();
 }
 
-Mapper &Reader::getMap()
-{
-    return map;
+bool Reader::isValidRow(std::vector<std::string> row)
+{ 
+    if (row.empty()) return false;
+    return true;
 }
 
-void Reader::start()
+// Read the Data from the file as string vector and add it to the Mapper
+void Reader::start(Mapper& m)
 {
+    if (!file.is_open()) return;
     LOG(INFO) << "Start Reader";
-    // Read the Data from the file
-    // as String Vector
     std::vector<std::string> row;
     std::string line, word;
 
-    while (std::getline(sfile, line))
+    while (std::getline(file, line))
     {
+        DLOG(INFO) << "READ_LINE: " << line;
         row.clear();
 
-        // used for breaking words
         std::stringstream s(line);
-
-        // TODO: Make data validation
-
         // read every column data of a row and
         // store it in a string variable, 'word'
-        while (std::getline(s, word, ','))
-        {
-
-            // add all the column data
-            // of a row to a vector
-            row.push_back(word);
-        }
-        // for (const std::string& s : row) DLOG(INFO) << s << ", ";
-        map.add(row);
+        // add it to the row vector.
+        while (std::getline(s, word, ',')) row.push_back(word);
+        if (isValidRow(row)) m.add(row);
     }
 }
