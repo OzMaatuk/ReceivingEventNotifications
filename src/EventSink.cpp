@@ -101,7 +101,7 @@ HRESULT EventSink::Indicate(long lObjectCount,
                 VariantClear(&cpid);
             }
         }
-        cache.push_back(EventDetails(tmp));
+        cache->add(EventDetails(tmp));
         VariantClear(&vtProp);
         VariantClear(&vtType);
         printf("\n");
