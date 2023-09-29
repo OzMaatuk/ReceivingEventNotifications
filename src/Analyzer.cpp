@@ -1,15 +1,15 @@
 // Analyzer.cpp
 #include "Analyzer.h"
 
-Analyzer::Analyzer(std::string sfpath, std::string ofpath) : ofp(ofpath)
+Analyzer::Analyzer(std::string ofp) : outputFilePath(ofp)
 {
     LOG(INFO) << "Creating Analyzer object from file";
-    loadMapFile(sfpath, map);
+    load(outputFilePath);
 }
 
-Analyzer::Analyzer(std::map<std::string, std::vector<Record>> &smap, std::string ofpath) : ofp(ofpath), map(smap)
+Analyzer::Analyzer(std::string ofp, Config c) : Analyzer(ofp)
 {
-    LOG(INFO) << "Creating Analyzer object from map reference";
+    setConfig(c);
 }
 
 Analyzer::~Analyzer()
@@ -17,7 +17,7 @@ Analyzer::~Analyzer()
     LOG(INFO) << "Destructing Analyzer object";
 }
 
-void Analyzer::start()
+void Analyzer::start(std::map<std::string, std::vector<Record>>& map)
 {
     LOG(INFO) << "Start Analyzer";
     for (auto &[process, record_vec] : map)
@@ -82,7 +82,7 @@ void Analyzer::setWhitelist(std::vector<std::string> white_list)
     wl = white_list;
 }
 
-void Analyzer::load()
+void Analyzer::load(std::string ofp)
 {
     LOG(INFO) << "Loading process map from file " << ofp;
     // Create the JSON object.
@@ -146,7 +146,7 @@ void Analyzer::add(std::string process, std::vector<Record> records)
 void Analyzer::toFile()
 {
     LOG(INFO) << "Creating Insights file";
-    std::ofstream ofile(ofp);
+    std::ofstream ofile(outputFilePath);
     // Create a JSON object to store the map.
     Json::Value root = Json::objectValue;
     for (auto it = insights.begin(); it != insights.end(); ++it)

@@ -8,25 +8,24 @@ class Analyzer
 {
 private:
     double apx = 1.0;
-    std::string ofp;
-    std::map<std::string, std::vector<Record>> map;
+    std::string outputFilePath;
     std::map<std::string, std::vector<std::string>> insights;
     std::vector<std::string> wl;
     bool checkWhitelist(std::string process);
     std::tuple<bool, double> analyze(std::vector<Record> records);
-    void setConfig(Config c);
 
 public:
-    Analyzer(std::string sfpath, std::string ofpath);
-    Analyzer(std::map<std::string, std::vector<Record>>& smap, std::string ofpath);
-    Analyzer(std::string sfpath, std::string ofpath, Config c);
-    Analyzer(std::map<std::string, std::vector<Record>>& smap, std::string ofpath, Config c);
+    Analyzer(std::string ofp);
+    Analyzer(std::string ofp, Config c);
     ~Analyzer();
+
+    void setConfig(Config c);
     void setApproximation(double approximation);
     void setWhitelist(std::vector<std::string> white_list);
-    void load();
+
+    void load(std::string ofp);
     void add(std::string process, std::vector<Record> records);
-    void start();
+    void start(std::map<std::string, std::vector<Record>>& map);
     void toFile();
 };
 
