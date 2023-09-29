@@ -9,7 +9,7 @@ class Analyzer
 private:
     double apx = 1.0;
     std::string outputFilePath;
-    std::map<std::string, std::vector<std::string>> insights;
+    std::map<std::string, std::string> insights;
     std::vector<std::string> wl;
     bool checkWhitelist(std::string process);
     std::tuple<bool, double> analyze(std::vector<Record> records);

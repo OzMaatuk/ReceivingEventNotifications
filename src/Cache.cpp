@@ -51,7 +51,7 @@ std::vector<std::string> Cache::pop()
 std::vector<std::vector<std::string>> Cache::getAndClear()
 {
     LOG(INFO) << "getAndClear Cache object";
-    std::vector<std::vector<std::string>> tmp;
+    std::vector<std::vector<std::string>> tmp = std::vector<std::vector<std::string>>();
     size_t len = cache.size();
     while (!(--len)) tmp.push_back(pop());
     return tmp;

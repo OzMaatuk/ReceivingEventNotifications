@@ -111,5 +111,5 @@ void Mapper::start(std::vector<std::vector<std::string>>& cache)
 
 std::map<std::string, std::vector<Record>>& Mapper::getMap()
 {
-    return *map;
+    return map;
 }

@@ -108,20 +108,20 @@ void Analyzer::load(std::string ofp)
         std::string process = it.name();
 
         // Create a vector to store the records for the pid.
-        std::vector<std::string> pinisights;
+        // std::vector<std::string> pinisights;
 
-        Json::Value earray = root[process];
-        // Iterate over the elements in the object.
-        for (auto e = earray.begin(); e != earray.end(); e++)
-        {
-            // Get current value from array
-            Json::Value current = earray[e.index()];
-            // Add the record to the vector.
-            pinisights.push_back(current.asString());
-        }
+        // Json::Value earray = root[process];
+        // // Iterate over the elements in the object.
+        // for (auto e = earray.begin(); e != earray.end(); e++)
+        // {
+        //     // Get current value from array
+        //     Json::Value current = earray[e.index()];
+        //     // Add the record to the vector.
+        //     pinisights.push_back(current.asString());
+        // }
 
         // Add the vector to the map.
-        insights[process] = pinisights;
+        insights[process] = root[process].asCString();
     }
 }
 
@@ -139,7 +139,7 @@ void Analyzer::add(std::string process, std::vector<Record> records)
         std::string description = "All executions durations are similar with approximation: ";
         value *= 100;
         description += std::to_string(value) + "%";
-        insights[process].push_back(description);
+        insights[process] = description;
     }
 }
 
@@ -151,12 +151,12 @@ void Analyzer::toFile()
     Json::Value root = Json::objectValue;
     for (auto it = insights.begin(); it != insights.end(); ++it)
     {
-        Json::Value process = Json::arrayValue;
-        for (auto obj = it->second.begin(); obj != it->second.end(); ++obj)
-        {
-            process.append(obj->c_str());
-        }
-        root[it->first] = process;
+        // Json::Value process = Json::arrayValue;
+        // for (auto obj = it->second.begin(); obj != it->second.end(); ++obj)
+        // {
+        //     process.append(obj->c_str());
+        // }
+        root[it->first] = it->second;
     }
     // Write the JSON object to a file.
     ofile << root.toStyledString();

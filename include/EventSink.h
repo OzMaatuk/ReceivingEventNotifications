@@ -23,9 +23,9 @@ class EventSink : public IWbemObjectSink
     bool bDone;
 
 public:
-    Cache* cache;
-    EventSink() { m_lRef = 0; }
-    virtual ~EventSink() { bDone = true; delete cache; }
+    Cache cache;
+    EventSink() : cache() { m_lRef = 0; }
+    virtual ~EventSink() { bDone = true; }
 
     virtual ULONG STDMETHODCALLTYPE AddRef();
     virtual ULONG STDMETHODCALLTYPE Release();
