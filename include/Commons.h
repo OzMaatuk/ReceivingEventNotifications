@@ -136,4 +136,12 @@ inline static long getRange(std::string start, std::string stop)
     return stopMil - startMil;
 }
 
+inline static std::string vectorToString(const std::vector<std::string> &vector)
+{
+    std::string res;
+    for (const std::string &s : vector)
+        res += ", " + s;
+    return res;
+}
+
 #endif // COMMONS_H
