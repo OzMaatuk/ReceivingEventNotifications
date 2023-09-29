@@ -24,7 +24,9 @@ endif
 
 # The directories to search for source files.
 SRC_DIR = src/
-SRCS = Config.cpp WCollect.cpp main.cpp EventSink.cpp Mapper.cpp ReaderCSV.cpp WriterCSV.cpp Analyzer.cpp
+W_SRCS = 
+U_SRCS = 
+SRCS = Config.cpp WriterCSV.cpp Cache.cpp EventSink.cpp Mapper.cpp ReaderCSV.cpp Analyzer.cpp WCollect.cpp main.cpp
 
 # The tests files
 TESTS = src/Analyzer.cpp src/Mapper.cpp src/ReaderCSV.cpp test/TestMapper.cpp test/TestReaderCSV.cpp test/TestAnalyzer.cpp test/TestIntegration.cpp test/test.cpp
