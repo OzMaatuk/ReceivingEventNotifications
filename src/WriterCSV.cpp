@@ -1,65 +1,32 @@
 // WriterCSV.cpp
 #include "Writer.h"
 
-Writer::Writer(std::string fpath, EventSink *sink)
+Writer::Writer(std::string& ofp)
 {
     LOG(INFO) << "Creating Writer object";
-    pSink = sink;
-    std::string line;
-    fileReader = std::fstream(fpath);
-    std::getline(fileReader, line);
-    fileReader.close();
-    sfile = std::ofstream(fpath);
-    if (line.compare("timestamp,class,name,pid\n") != 0)
-    {
-        sfile << "timestamp,class,name,pid\n";
-        sfile.flush();
-    }
+    file.open(ofp, std::ios::out | std::ios::app);
+    if (!file.is_open()) LOG(WARNING) << "Could not open events file for writing " << ofp;
 }
 
 Writer::~Writer()
 {
     LOG(INFO) << "Destructing Writer object";
-    sfile.close();
+    file.close();
 }
 
-void Writer::start()
+void Writer::start(std::vector<std::vector<std::string>>& cache)
 {
+    if (!file.is_open()) return;
     LOG(INFO) << "Start Writer";
-    // Copy cache and clear
-    std::list<EventDetails> tmpCache;
-    std::copy(pSink->cache.begin(), pSink->cache.end(), std::back_inserter(tmpCache));
-    pSink->cache.clear();
-
     // Export the events list to a CSV file.
-    for (auto event : tmpCache)
+    for (auto event : cache)
     {
-        char *strClass = new char[512];
-        wcstombs(strClass, event.type, 512);
-        char *strName = new char[512];
-        wcstombs(strName, event.name, 512);
-        sfile // << event.time.wYear
-            // << ":"
-            // << event.time.wMonth
-            // << ":"
-            // << event.time.wDay
-            // << ":"
-            << event.time.wHour
-            << ":" 
-            << event.time.wMinute
-            << ":"
-            << event.time.wSecond
-            << ":"
-            << event.time.wMilliseconds
-            << ","
-            << strClass
-            << ","
-            << strName
-            << ","
-            << event.pid
-            << "\n";
-        sfile.flush();
-        delete[] strClass;
-        delete[] strName;
+        std::stringstream ss;
+        for (auto e : event)
+        {
+            ss << e;
+        }
+        file << "\n" << ss.str();
+        file.flush();
     }
 }

@@ -2,9 +2,8 @@
 #ifndef WRITER_H
 #define WRITER_H
 
-#include <glog/logging.h>
 #include <fstream>
-#include "EventSink.h"
+#include "Mapper.h"
 
 /**
  * @class Writer
@@ -15,14 +14,13 @@
 class Writer
 {
 private:
-    std::ofstream sfile;
-    std::fstream fileReader;
-    EventSink *pSink;
+    std::fstream file;
 
 public:
-    Writer(std::string fpath, EventSink *sink);
+    Writer(std::string& sfp);
     ~Writer();
-    void start();
+    void start(std::vector<std::vector<std::string>>& cache);
+    Mapper& getMap();
 };
 
 #endif // WRITER_H
