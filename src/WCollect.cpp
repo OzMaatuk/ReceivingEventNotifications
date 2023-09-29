@@ -197,29 +197,22 @@ int Collect::main(Config c)
         return 1;
     }
 
-    std::string sfpath = c.events_file_path;
-    std::string ofpath = c.output_file_path;
-    std::string ifpath = c.insights_file_path;
-    Writer writer = Writer(sfpath, pSink);
-    Reader reader = Reader(sfpath, ofpath);
-    Analyzer analyzer = Analyzer(reader.getMap().getMap(), ifpath);
+    Writer* writer = new Writer(c.events_file_path);
+    Reader* reader = new Reader(c.events_file_path);
+    Mapper* mapper = new Mapper();
+    Analyzer* analyzer = new Analyzer(c.insights_file_path);
+
+    reader->start(*mapper); // load events files
+    // While asyc listening to events in background.
     while (!_kbhit())
     {
         try
         {
-            auto asyncThread = std::async(std::launch::async, [&writer]()
-                                            { return writer.start(); });
-            asyncThread.wait(); // Wait till writing is done, while waiting for events
-
-            asyncThread = std::async(std::launch::async, [&reader]()
-                                        { return reader.start(); });
-            asyncThread.wait(); // Wait till writing is done, while waiting for events
-            
-            asyncThread = std::async(std::launch::async, [&analyzer]()
-                                        { return analyzer.start(); });
-            asyncThread.wait(); // Wait till writing is done, while waiting for events
-
-            // Wait for the event
+            std::vector<std::vector<std::string>> tmp = pSink->cache->getAndClear();
+            auto asyncThread = std::async(std::launch::async, [&mapper, &tmp]() { return mapper->start(tmp); });
+            asyncThread.wait();
+            asyncThread = std::async(std::launch::async, [&analyzer, &mapper]() { return analyzer->start(mapper->getMap()); });
+            asyncThread = std::async(std::launch::async, [&writer, &tmp]() { return writer->start(tmp); });
             Sleep(c.sleep_interval);
         }
         catch (MyException &ex)
@@ -240,6 +233,11 @@ int Collect::main(Config c)
     pSink->Release();
     pStubSink->Release();
     CoUninitialize();
+
+    delete reader;
+    delete mapper;
+    delete analyzer;
+    delete writer;
 
     return 0; // Program successfully completed.
 }
