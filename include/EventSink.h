@@ -4,12 +4,10 @@
 
 #define _WIN32_DCOM
 
-#include <glog/logging.h>
-#include <comdef.h>
+#include "Cache.h"
 #include <Wbemidl.h>
 #include <iostream>
-#include <list>
-#include "EventDetails.h"
+
 
 #pragma comment(lib, "wbemuuid.lib")
 
@@ -25,9 +23,9 @@ class EventSink : public IWbemObjectSink
     bool bDone;
 
 public:
-    std::list<EventDetails> cache;
+    Cache* cache;
     EventSink() { m_lRef = 0; }
-    virtual ~EventSink() { bDone = true; }
+    virtual ~EventSink() { bDone = true; delete cache; }
 
     virtual ULONG STDMETHODCALLTYPE AddRef();
     virtual ULONG STDMETHODCALLTYPE Release();

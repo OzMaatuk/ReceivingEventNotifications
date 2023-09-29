@@ -1,30 +1,24 @@
 // Mapper.cpp
 #include "Mapper.h"
 
-Mapper::Mapper(std::string fpath)
+Mapper::Mapper(): map()
 {
     LOG(INFO) << "Creating Mapper object";
-    sfp = fpath;
-    load();
-    // std::ofstream ofile(sfp);
+     // TODO: make labels OS dependent
+    startLabel = "__InstanceCreationEvent";
+    stopLabel = "__InstanceDeletionEvent";
+}
+
+Mapper::Mapper(std::string sfp) : Mapper()
+{
+    load(sfp);
 }
 
 Mapper::~Mapper()
 {
     LOG(INFO) << "Desctucring Mapper object";
-    // ofile.close();
+    // delete map;
 }
-
-std::string Mapper::vectorToString(const std::vector<std::string> &vector)
-{
-    std::string res;
-    for (const std::string &s : vector)
-        res += ", " + s;
-    return res;
-}
-
-std::string Mapper::getStartLabel() { return "__InstanceCreationEvent"; }
-std::string Mapper::getStopLabel() { return "__InstanceDeletionEvent"; }
 
 void Mapper::print()
 {
@@ -36,14 +30,14 @@ void Mapper::addToKey(std::string key, Record r)
     if (!map.contains(key))
         map.insert({key, {r}});
     else
-        map[key].push_back(r);
+        map.at(key).push_back(r);
 }
 
 void Mapper::setEndTime(std::string key, std::string pid, std::string ts)
 {
     if (map.contains(key))
     {
-        for (auto it = map[key].begin(); it != map[key].end(); ++it)
+        for (auto it = map.at(key).begin(); it != map.at(key).end(); ++it)
         {
             if ((it->pid.compare(pid) == 0) && (it->stop.compare("") == 0))
             {
@@ -64,12 +58,12 @@ void Mapper::add(std::vector<std::string> row)
     std::string type = row.at(1);
     if (!type.empty())
     {
-        if (type.compare(getStartLabel()) == 0)
+        if (type.compare(startLabel) == 0)
         {
             addToKey(pName, {pid, ts, ""});
             return;
         }
-        else if (type.compare(getStopLabel()) == 0)
+        else if (type.compare(stopLabel) == 0)
         {
             setEndTime(pName, pid, ts);
             return;
@@ -80,9 +74,9 @@ void Mapper::add(std::vector<std::string> row)
     // throw MyException("Undefined event type");
 }
 
-void Mapper::toFile()
+void Mapper::toFile(std::string ofp)
 {
-    LOG(INFO) << "Creating process map file " << sfp;
+    LOG(INFO) << "Creating process map file " << ofp;
     // Create a JSON object to store the map.
     Json::Value root = Json::objectValue;
     for (auto it = map.begin(); it != map.end(); ++it)
@@ -99,18 +93,23 @@ void Mapper::toFile()
         root[it->first] = process;
     }
     // Write the JSON object to a file.
-    std::ofstream ofile(sfp);
+    std::ofstream ofile(ofp);
     ofile << root.toStyledString();
     ofile.flush();
     ofile.close();
 }
 
-void Mapper::load()
+void Mapper::load(std::string sfp)
 {
     loadMapFile(sfp, map);
 }
 
+void Mapper::start(std::vector<std::vector<std::string>>& cache)
+{
+    for (auto e : cache) add(e);
+}
+
 std::map<std::string, std::vector<Record>>& Mapper::getMap()
 {
-    return map;
+    return *map;
 }

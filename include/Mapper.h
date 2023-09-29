@@ -12,22 +12,21 @@ Here, application can also load data from previous execution.
 class Mapper
 {
 private:
-    std::string sfp;
-    std::ofstream ofile;
     std::map<std::string, std::vector<Record>> map;
-    std::string getStartLabel();
-    std::string getStopLabel();
-    std::string vectorToString(const std::vector<std::string> &vector);
-    void print();
+    std::string startLabel;
+    std::string stopLabel;
     void addToKey(std::string, Record);
     void setEndTime(std::string key, std::string pid, std::string ts);
+    void load(std::string sfp);
 
 public:
-    Mapper(std::string spath);
+    Mapper();
+    Mapper(std::string sfp);
     ~Mapper();
+    void print();
+    void toFile(std::string ofp);
+    void start(std::vector<std::vector<std::string>>& cache);
     void add(std::vector<std::string> row);
-    void toFile();
-    void load();
     std::map<std::string, std::vector<Record>>& getMap();
 };
 
