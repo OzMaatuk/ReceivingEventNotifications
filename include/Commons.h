@@ -8,15 +8,15 @@
 #include <fstream>
 #include <vector>
 #include <map>
+#include <chrono>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
 #include "Config.h"
 #include "Record.h"
 #include "MyException.h"
 
-inline static long HOURS_IN_MILLISECONDS = 3600000;
-inline static long MINUTES_IN_MILLISECONDS = 60000;
-inline static long SECONDS_IN_MILLISECONDS = 1000;
-
-inline static void printRecordsMap(std::map<std::string, std::vector<Record>>& map)
+inline static void printRecordsMap(std::map<std::string, std::vector<Record>> &map)
 {
     for (auto it = map.begin(); it != map.end(); ++it)
     {
@@ -30,7 +30,7 @@ inline static void printRecordsMap(std::map<std::string, std::vector<Record>>& m
     }
 }
 
-inline static void loadMapFile(std::string sfp, std::map<std::string, std::vector<Record>>& map)
+inline static void loadMapFile(std::string sfp, std::map<std::string, std::vector<Record>> &map)
 {
     // Create the JSON object.
     Json::Value root;
@@ -92,7 +92,7 @@ inline static bool isValidTimestamp(std::string timestamp)
 {
     // Check the length of the string.
     int len = timestamp.length();
-    if (len < 7 || len > 12)
+    if (len < 15 || len > 23)
     {
         return false;
     }
@@ -110,30 +110,54 @@ inline static bool isValidTimestamp(std::string timestamp)
     return true;
 }
 
-inline static long stringToMilliseconds(std::string s)
+// Function to convert a time string to milliseconds
+inline static long long stringToMilliseconds(const std::string &timeFormat)
 {
-    // Split the timestamps into their components.
-    std::string digits;
-    std::vector<long> components;
-    std::stringstream ss(s);
-    while (std::getline(ss, digits, ':'))
+    std::istringstream ss(timeFormat);
+    std::tm tm = {};
+    ss >> std::get_time(&tm, "%Y:%m:%d:%H:%M:%S:");
+
+    if (ss.fail())
     {
-        components.push_back(std::stoi(digits));
+        throw std::invalid_argument("Failed to parse the time format.");
     }
 
-    // Calculate the difference between the timestamps.
-    long hours = components[0];
-    long minutes = components[1];
-    long seconds = components[2];
-    long milliseconds = components[3];
-    return HOURS_IN_MILLISECONDS * hours + MINUTES_IN_MILLISECONDS * minutes + SECONDS_IN_MILLISECONDS * seconds + milliseconds;
+    // Extract milliseconds part from the string
+    std::string millisecondsString;
+    ss >> millisecondsString;
+
+    if (ss.fail())
+    {
+        throw std::invalid_argument("Failed to parse milliseconds.");
+    }
+
+    // Convert the milliseconds part to an integer
+    int milliseconds = std::stoi(millisecondsString);
+
+    // Calculate the time in milliseconds
+    auto timePoint = std::chrono::system_clock::from_time_t(std::mktime(&tm));
+    timePoint += std::chrono::milliseconds(milliseconds);
+
+    auto millisecondsDuration = std::chrono::duration_cast<std::chrono::milliseconds>(timePoint.time_since_epoch());
+
+    return millisecondsDuration.count();
 }
 
-inline static long getRange(std::string start, std::string stop)
+// Function to calculate the time range in milliseconds between two time strings
+inline static long long getRange(const std::string &timeFormat1, const std::string &timeFormat2)
 {
-    long startMil = stringToMilliseconds(start);
-    long stopMil = stringToMilliseconds(stop);
-    return stopMil - startMil;
+    long long ms1 = stringToMilliseconds(timeFormat1);
+    long long ms2 = stringToMilliseconds(timeFormat2);
+
+    if (ms1 == -1 || ms2 == -1)
+    {
+        return -1; // An error occurred during conversion
+    }
+
+    // Calculate the time range in milliseconds
+    long long rangeInMilliseconds = ms2 - ms1;
+
+    return rangeInMilliseconds;
 }
 
 inline static std::string vectorToString(const std::vector<std::string> &vector)

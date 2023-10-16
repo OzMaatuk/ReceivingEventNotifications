@@ -2,7 +2,6 @@
 #ifndef READER_H
 #define READER_H
 
-#include <sstream>
 #include "Mapper.h"
 
 /**
