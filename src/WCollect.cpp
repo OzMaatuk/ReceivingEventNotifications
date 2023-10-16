@@ -202,7 +202,7 @@ int Collect::main(Config c)
     Mapper* mapper = new Mapper();
     Analyzer* analyzer = new Analyzer(c.insights_file_path);
 
-    reader->start(*mapper); // load events files
+    reader->start(*mapper);
     // While asyc listening to events in background.
     while (!_kbhit())
     {
