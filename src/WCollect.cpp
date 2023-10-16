@@ -200,7 +200,7 @@ int Collect::main(Config c)
     Writer* writer = new Writer(c.events_file_path);
     Reader* reader = new Reader(c.events_file_path);
     Mapper* mapper = new Mapper();
-    Analyzer* analyzer = new Analyzer(c.insights_file_path);
+    Analyzer* analyzer = new Analyzer(c);
 
     reader->start(*mapper);
     // While asyc listening to events in background.

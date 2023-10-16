@@ -8,15 +8,15 @@ class Analyzer
 {
 private:
     double apx = 1.0;
-    std::string outputFilePath;
-    std::map<std::string, std::string> insights;
-    std::vector<std::string> wl;
+    std::string* outputFilePath;
+    std::map<std::string, std::string>* insights;
+    std::vector<std::string>* wl;
     bool checkWhitelist(const std::string& process);
     std::tuple<bool, double> analyze(const std::vector<Record>& records);
 
 public:
     Analyzer(const std::string& ofp);
-    Analyzer(const std::string& ofp, const Config& c);
+    Analyzer(const Config& c);
     virtual ~Analyzer();
 
     void setConfig(const Config& c);

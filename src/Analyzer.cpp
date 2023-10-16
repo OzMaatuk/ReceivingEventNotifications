@@ -1,13 +1,14 @@
 // Analyzer.cpp
 #include "Analyzer.h"
 
-Analyzer::Analyzer(const std::string& ofp) : outputFilePath(ofp)
+Analyzer::Analyzer(const std::string& ofp)
+ : outputFilePath(new std::string(ofp)), insights(new std::map<std::string, std::string>)
 {
     LOG(INFO) << "Creating Analyzer object from file";
-    load(outputFilePath);
+    load(*outputFilePath);
 }
 
-Analyzer::Analyzer(const std::string& ofp, const Config& c) : Analyzer(ofp)
+Analyzer::Analyzer(const Config& c) : Analyzer(c.insights_file_path)
 {
     setConfig(c);
 }
@@ -15,11 +16,14 @@ Analyzer::Analyzer(const std::string& ofp, const Config& c) : Analyzer(ofp)
 Analyzer::~Analyzer()
 {
     LOG(INFO) << "Destructing Analyzer object";
+    delete outputFilePath;
+    delete insights;
+    delete wl;
 }
 
 bool Analyzer::checkWhitelist(const std::string& process)
 {
-    if (!process.empty() && (std::find(wl.begin(), wl.end(), process)) != wl.end())
+    if (!process.empty() && (std::find(wl->begin(), wl->end(), process)) != wl->end())
         return true;
     return false;
 }
@@ -30,6 +34,8 @@ std::tuple<bool, double> Analyzer::analyze(const std::vector<Record>& records)
     std::vector<long> durations;
     double medApproximation = 0.0;
     long medDuration = 0;
+
+    // TODO: something wrong, not all process are added.
 
     for (auto &r : records)
     {
@@ -70,7 +76,8 @@ void Analyzer::setApproximation(double approximation)
 
 void Analyzer::setWhitelist(const std::vector<std::string>& white_list)
 {
-    wl = std::vector<std::string>(white_list.begin(), white_list.end()); // Deep copy
+    if (wl) delete wl;
+    wl = new std::vector<std::string>(white_list.begin(), white_list.end()); // Deep copy
 }
 
 void Analyzer::load(const std::string& ofp)
@@ -116,7 +123,7 @@ void Analyzer::load(const std::string& ofp)
         */
 
         // Add the vector to the map.
-        insights[process] = root[process].asCString();
+        (*insights)[process] = root[process].asCString();
     }
 }
 
@@ -134,7 +141,7 @@ void Analyzer::add(const std::string& process, const std::vector<Record>& record
         std::string description = "All executions durations are similar with approximation: ";
         value *= 100;
         description += std::to_string(value) + "%";
-        insights[process] = description;
+        (*insights)[process] = description;
     }
 }
 
@@ -149,10 +156,10 @@ void Analyzer::start(const std::map<std::string, std::vector<Record>>& map)
 void Analyzer::toFile()
 {
     LOG(INFO) << "Creating Insights file";
-    std::ofstream ofile(outputFilePath);
+    std::ofstream ofile(*outputFilePath);
     // Create a JSON object to store the map.
     Json::Value root = Json::objectValue;
-    for (auto it = insights.begin(); it != insights.end(); ++it)
+    for (auto it = insights->begin(); it != insights->end(); ++it)
     {
         /*
         The following code necessary when there are multiple insights per process.
