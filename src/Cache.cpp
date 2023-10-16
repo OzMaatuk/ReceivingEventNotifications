@@ -42,7 +42,7 @@ void Cache::add(EventDetails e)
 
 std::vector<std::string> Cache::pop()
 {
-    if (cache.empty()) return std::vector<std::string>();
+    if (cache.empty()) return std::vector<std::string>(); // TODO: Not good.
     std::vector<std::string> tmp = eventDetailsToStringVector(cache.front());
     cache.pop();
     return tmp;
@@ -53,6 +53,10 @@ std::vector<std::vector<std::string>> Cache::getAndClear()
     LOG(INFO) << "getAndClear Cache object";
     std::vector<std::vector<std::string>> tmp = std::vector<std::vector<std::string>>();
     size_t len = cache.size();
-    while (!(--len)) tmp.push_back(pop());
+    while (len > 0)
+    {
+        tmp.push_back(pop());
+        len--;
+    }
     return tmp;
 }
