@@ -91,7 +91,7 @@ inline bool is_digits(const std::string &str)
 
 inline static bool isValidTimestamp(std::string timestamp) {
     // Define a regular expression pattern for the valid timestamp format.
-    std::regex pattern("^(\\d{4}:\\d{2}:\\d{2}:\\d{2}:\\d{2}:\\d{2}:\\d{3,6})$");
+    std::regex pattern("^(\\d{4}:(\\d{1,2}:){5}\\d{3,6})$");
 
     // Use std::regex_match to check if the timestamp matches the pattern.
     return std::regex_match(timestamp, pattern);
