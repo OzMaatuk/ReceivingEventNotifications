@@ -1,9 +1,8 @@
 {
     "events_file_path": "..\\data\\events.csv",
-    "output_file_path": "..\\data\\\\histogram.json",
     "insights_file_path": "..\\data\\insights.json",
     "sleep_interval": 30000,
-    "approximation": 0.5,
+    "approximation": 1.0,
     "white_list": [
         "chrome.exe",
         "process0"

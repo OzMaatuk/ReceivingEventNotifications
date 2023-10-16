@@ -17,7 +17,6 @@ private:
 
 public:
     std::string events_file_path;
-    std::string output_file_path;
     std::string insights_file_path;
     int sleep_interval;
     double approximation;
