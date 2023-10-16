@@ -25,6 +25,7 @@ void Writer::start(std::vector<std::vector<std::string>>& cache)
         for (auto e : event)
         {
             ss << e;
+            ss << ",";
         }
         file << "\n" << ss.str();
         file.flush();
