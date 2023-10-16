@@ -76,7 +76,9 @@
         "queue": "cpp",
         "stack": "cpp",
         "source_location": "cpp",
-        "stacktrace": "cpp"
+        "stacktrace": "cpp",
+        "bitset": "cpp",
+        "regex": "cpp"
     }
     // ,"C_Cpp.default.cppStandard": "c++20"
     ,"editor.tabSize": 4
