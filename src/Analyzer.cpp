@@ -36,13 +36,14 @@ bool Analyzer::checkWhitelist(std::string process)
 
 std::tuple<bool, double> Analyzer::analyze(std::vector<Record> records)
 {
-    LOG(INFO) << "Analyze records for process";
+    LOG(INFO) << "Analyze records for process:";
     std::vector<long> durations;
     double medApproximation = 0.0;
     long medDuration = 0;
 
     for (auto &r : records)
     {
+        DLOG(INFO) << r.pid;
         if (isValidTimestamp(r.stop))
             durations.push_back(getRange(r.start, r.stop));
         else
@@ -107,18 +108,22 @@ void Analyzer::load(std::string ofp)
         // Get the pid.
         std::string process = it.name();
 
-        // Create a vector to store the records for the pid.
-        // std::vector<std::string> pinisights;
+        /*
+        The following code necessary when there are multiple insights per process.
 
-        // Json::Value earray = root[process];
-        // // Iterate over the elements in the object.
-        // for (auto e = earray.begin(); e != earray.end(); e++)
-        // {
-        //     // Get current value from array
-        //     Json::Value current = earray[e.index()];
-        //     // Add the record to the vector.
-        //     pinisights.push_back(current.asString());
-        // }
+        // Create a vector to store the records for the pid.
+        std::vector<std::string> pinisights;
+
+        Json::Value earray = root[process];
+        // Iterate over the elements in the object.
+        for (auto e = earray.begin(); e != earray.end(); e++)
+        {
+            // Get current value from array
+            Json::Value current = earray[e.index()];
+            // Add the record to the vector.
+            pinisights.push_back(current.asString());
+        }
+        */
 
         // Add the vector to the map.
         insights[process] = root[process].asCString();
@@ -128,7 +133,7 @@ void Analyzer::load(std::string ofp)
 void Analyzer::add(std::string process, std::vector<Record> records)
 {
     DLOG(INFO) << "Adding record for process " << process;
-    if (checkWhitelist(process))
+    if (checkWhitelist(process)) // TODO: Not working.
         return;
     std::tuple res = analyze(records);
     bool key = std::get<bool>(res);
@@ -151,11 +156,16 @@ void Analyzer::toFile()
     Json::Value root = Json::objectValue;
     for (auto it = insights.begin(); it != insights.end(); ++it)
     {
-        // Json::Value process = Json::arrayValue;
-        // for (auto obj = it->second.begin(); obj != it->second.end(); ++obj)
-        // {
-        //     process.append(obj->c_str());
-        // }
+        /*
+        The following code necessary when there are multiple insights per process.
+
+        Json::Value process = Json::arrayValue;
+        for (auto obj = it->second.begin(); obj != it->second.end(); ++obj)
+        {
+            process.append(obj->c_str());
+        }
+        */
+       
         root[it->first] = it->second;
     }
     // Write the JSON object to a file.
