@@ -1,7 +1,7 @@
 // ReaderCSV.cpp
 #include "Reader.h"
 
-Reader::Reader(std::string sfp)
+Reader::Reader(const std::string& sfp)
 {
     LOG(INFO) << "Creating Reader object";
     file.open(sfp, std::ios::in);
@@ -14,7 +14,7 @@ Reader::~Reader()
     if (file.is_open()) file.close();
 }
 
-bool Reader::isValidRow(std::vector<std::string> row)
+bool Reader::isValidRow(const std::vector<std::string>& row)
 { 
     if (row.empty()) return false;
     return true;

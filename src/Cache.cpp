@@ -10,7 +10,7 @@ Cache::~Cache()
     LOG(INFO) << "Destructing Cache object";
 }
 
-std::vector<std::string> Cache::eventDetailsToStringVector(EventDetails event)
+std::vector<std::string> Cache::eventDetailsToStringVector(const EventDetails& event)
 {
     char *strClass = new char[512];
     wcstombs(strClass, event.type, 512);
@@ -34,10 +34,10 @@ std::vector<std::string> Cache::eventDetailsToStringVector(EventDetails event)
     return row;
 }
 
-void Cache::add(EventDetails e)
+void Cache::add(const EventDetails& e)
 {
     LOG(INFO) << "Event added to Cache object";
-    cache.push(e);
+    cache.push(EventDetails(e));
 }
 
 std::vector<std::string> Cache::pop()

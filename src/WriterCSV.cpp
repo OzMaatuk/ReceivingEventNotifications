@@ -1,7 +1,7 @@
 // WriterCSV.cpp
 #include "Writer.h"
 
-Writer::Writer(std::string& ofp)
+Writer::Writer(const std::string& ofp)
 {
     LOG(INFO) << "Creating Writer object";
     file.open(ofp, std::ios::out | std::ios::app);
@@ -14,7 +14,7 @@ Writer::~Writer()
     file.close();
 }
 
-void Writer::start(std::vector<std::vector<std::string>>& cache)
+void Writer::start(const std::vector<std::vector<std::string>>& cache)
 {
     if (!file.is_open()) return;
     LOG(INFO) << "Start Writer";

@@ -1,7 +1,7 @@
 // Config.cpp
 #include "Config.h"
 
-Config::Config(std::string fpath)
+Config::Config(const std::string& fpath)
 {
   LOG(INFO) << "Creating Config object";
   std::ifstream f(fpath);
@@ -19,7 +19,7 @@ Config::~Config()
   LOG(INFO) << "Destructing Config object";
 }
 
-std::string Config::get(std::string key)
+std::string Config::get(const std::string& key)
 {
   return settings[key].asString();
 }

@@ -17,9 +17,9 @@ private:
     std::fstream file;
 
 public:
-    Writer(std::string& sfp);
+    Writer(const std::string& sfp);
     virtual ~Writer();
-    virtual void start(std::vector<std::vector<std::string>>& cache);
+    virtual void start(const std::vector<std::vector<std::string>>& cache);
 };
 
 #endif // WRITER_H

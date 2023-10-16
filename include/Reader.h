@@ -14,10 +14,10 @@ class Reader
 {
 private:
     std::fstream file;
-    bool isValidRow(std::vector<std::string> row);
+    bool isValidRow(const std::vector<std::string>& row);
 
 public:
-    Reader(std::string sfp);
+    Reader(const std::string& sfp);
     virtual ~Reader();
     virtual void start(Mapper& m);
 };

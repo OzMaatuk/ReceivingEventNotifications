@@ -15,18 +15,18 @@ private:
     std::map<std::string, std::vector<Record>> map;
     std::string startLabel;
     std::string stopLabel;
-    void addToKey(std::string, Record);
-    void setEndTime(std::string key, std::string pid, std::string ts);
-    void load(std::string sfp);
+    void addToKey(const std::string& key, const Record& r);
+    void setEndTime(const std::string& key, const std::string& pid, const std::string& ts);
+    void load(const std::string& sfp);
 
 public:
     Mapper();
-    Mapper(std::string sfp);
+    Mapper(const std::string& sfp);
     virtual ~Mapper();
     virtual void print();
-    virtual void toFile(std::string ofp);
-    virtual void start(std::vector<std::vector<std::string>>& cache);
-    virtual void add(std::vector<std::string> row);
+    virtual void add(const std::vector<std::string>& row);
+    virtual void start(const std::vector<std::vector<std::string>>& cache);
+    virtual void toFile(const std::string& ofp);
     std::map<std::string, std::vector<Record>>& getMap();
 };
 

@@ -12,6 +12,7 @@
 #include <ctime>
 #include <iomanip>
 #include <sstream>
+#include <regex>
 #include "Config.h"
 #include "Record.h"
 #include "MyException.h"
@@ -88,26 +89,12 @@ inline bool is_digits(const std::string &str)
     return std::all_of(str.begin(), str.end(), ::isdigit); // C++11
 }
 
-inline static bool isValidTimestamp(std::string timestamp)
-{
-    // Check the length of the string.
-    int len = timestamp.length();
-    if (len < 15 || len > 23)
-    {
-        return false;
-    }
+inline static bool isValidTimestamp(std::string timestamp) {
+    // Define a regular expression pattern for the valid timestamp format.
+    std::regex pattern("^(\\d{4}:\\d{2}:\\d{2}:\\d{2}:\\d{2}:\\d{2}:\\d{3,6})$");
 
-    // Check the characters in the string.
-    for (int i = 0; i < len; i++)
-    {
-        if ((timestamp[i] < '0' || timestamp[i] > '9') && timestamp[i] != ':')
-        {
-            return false;
-        }
-    }
-
-    // The string is valid.
-    return true;
+    // Use std::regex_match to check if the timestamp matches the pattern.
+    return std::regex_match(timestamp, pattern);
 }
 
 // Function to convert a time string to milliseconds

@@ -9,7 +9,7 @@ Mapper::Mapper(): map()
     stopLabel = "__InstanceDeletionEvent";
 }
 
-Mapper::Mapper(std::string sfp) : Mapper()
+Mapper::Mapper(const std::string& sfp) : Mapper()
 {
     load(sfp);
 }
@@ -20,20 +20,15 @@ Mapper::~Mapper()
     // delete map;
 }
 
-void Mapper::print()
-{
-    printRecordsMap(map);
-}
-
-void Mapper::addToKey(std::string key, Record r)
+void Mapper::addToKey(const std::string& key, const Record& r)
 {
     if (!map.contains(key))
-        map.insert({key, {r}});
+        map.insert({std::string(key), {Record(r)}});
     else
         map.at(key).push_back(r);
 }
 
-void Mapper::setEndTime(std::string key, std::string pid, std::string ts)
+void Mapper::setEndTime(const std::string& key, const std::string& pid, const std::string& ts)
 {
     if (map.contains(key))
     {
@@ -49,7 +44,17 @@ void Mapper::setEndTime(std::string key, std::string pid, std::string ts)
     LOG(WARNING) << "No start time for proccess, pid: " << key << " " << pid;
 }
 
-void Mapper::add(std::vector<std::string> row)
+void Mapper::load(const std::string& sfp)
+{
+    loadMapFile(sfp, map);
+}
+
+void Mapper::print()
+{
+    printRecordsMap(map);
+}
+
+void Mapper::add(const std::vector<std::string>& row)
 {
     std::string pName = row.at(2);
     DLOG(INFO) << "Adding event for process " << pName;
@@ -74,7 +79,12 @@ void Mapper::add(std::vector<std::string> row)
     // throw MyException("Undefined event type");
 }
 
-void Mapper::toFile(std::string ofp)
+void Mapper::start(const std::vector<std::vector<std::string>>& cache)
+{
+    for (auto e : cache) add(e);
+}
+
+void Mapper::toFile(const std::string& ofp)
 {
     LOG(INFO) << "Creating process map file " << ofp;
     // Create a JSON object to store the map.
@@ -97,16 +107,6 @@ void Mapper::toFile(std::string ofp)
     ofile << root.toStyledString();
     ofile.flush();
     ofile.close();
-}
-
-void Mapper::load(std::string sfp)
-{
-    loadMapFile(sfp, map);
-}
-
-void Mapper::start(std::vector<std::vector<std::string>>& cache)
-{
-    for (auto e : cache) add(e);
 }
 
 std::map<std::string, std::vector<Record>>& Mapper::getMap()

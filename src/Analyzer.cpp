@@ -1,13 +1,13 @@
 // Analyzer.cpp
 #include "Analyzer.h"
 
-Analyzer::Analyzer(std::string ofp) : outputFilePath(ofp)
+Analyzer::Analyzer(const std::string& ofp) : outputFilePath(ofp)
 {
     LOG(INFO) << "Creating Analyzer object from file";
     load(outputFilePath);
 }
 
-Analyzer::Analyzer(std::string ofp, Config c) : Analyzer(ofp)
+Analyzer::Analyzer(const std::string& ofp, const Config& c) : Analyzer(ofp)
 {
     setConfig(c);
 }
@@ -17,26 +17,16 @@ Analyzer::~Analyzer()
     LOG(INFO) << "Destructing Analyzer object";
 }
 
-void Analyzer::start(std::map<std::string, std::vector<Record>>& map)
+bool Analyzer::checkWhitelist(const std::string& process)
 {
-    LOG(INFO) << "Start Analyzer";
-    for (auto &[process, record_vec] : map)
-        add(process, record_vec);
-    toFile();
-}
-
-bool Analyzer::checkWhitelist(std::string process)
-{
-    if (process.empty())
-        return true;
-    if ((std::find(wl.begin(), wl.end(), process)) != wl.end())
+    if (!process.empty() && (std::find(wl.begin(), wl.end(), process)) != wl.end())
         return true;
     return false;
 }
 
-std::tuple<bool, double> Analyzer::analyze(std::vector<Record> records)
+std::tuple<bool, double> Analyzer::analyze(const std::vector<Record>& records)
 {
-    LOG(INFO) << "Analyze records for process:";
+    LOG(INFO) << "Analyze records for pid:";
     std::vector<long> durations;
     double medApproximation = 0.0;
     long medDuration = 0;
@@ -66,7 +56,7 @@ std::tuple<bool, double> Analyzer::analyze(std::vector<Record> records)
         return {false, medApproximation};
 }
 
-void Analyzer::setConfig(Config c)
+void Analyzer::setConfig(const Config& c)
 {
     LOG(INFO) << "Set config";
     setApproximation(c.approximation);
@@ -78,12 +68,12 @@ void Analyzer::setApproximation(double approximation)
     apx = approximation;
 }
 
-void Analyzer::setWhitelist(std::vector<std::string> white_list)
+void Analyzer::setWhitelist(const std::vector<std::string>& white_list)
 {
-    wl = white_list;
+    wl = std::vector<std::string>(white_list.begin(), white_list.end()); // Deep copy
 }
 
-void Analyzer::load(std::string ofp)
+void Analyzer::load(const std::string& ofp)
 {
     LOG(INFO) << "Loading process map from file " << ofp;
     // Create the JSON object.
@@ -130,7 +120,7 @@ void Analyzer::load(std::string ofp)
     }
 }
 
-void Analyzer::add(std::string process, std::vector<Record> records)
+void Analyzer::add(const std::string& process, const std::vector<Record>& records)
 {
     DLOG(INFO) << "Adding record for process " << process;
     if (checkWhitelist(process)) // TODO: Not working.
@@ -146,6 +136,14 @@ void Analyzer::add(std::string process, std::vector<Record> records)
         description += std::to_string(value) + "%";
         insights[process] = description;
     }
+}
+
+void Analyzer::start(const std::map<std::string, std::vector<Record>>& map)
+{
+    LOG(INFO) << "Start Analyzer";
+    for (auto &[process, record_vec] : map)
+        add(process, record_vec);
+    toFile();
 }
 
 void Analyzer::toFile()

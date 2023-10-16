@@ -11,21 +11,21 @@ private:
     std::string outputFilePath;
     std::map<std::string, std::string> insights;
     std::vector<std::string> wl;
-    bool checkWhitelist(std::string process);
-    std::tuple<bool, double> analyze(std::vector<Record> records);
+    bool checkWhitelist(const std::string& process);
+    std::tuple<bool, double> analyze(const std::vector<Record>& records);
 
 public:
-    Analyzer(std::string ofp);
-    Analyzer(std::string ofp, Config c);
+    Analyzer(const std::string& ofp);
+    Analyzer(const std::string& ofp, const Config& c);
     virtual ~Analyzer();
 
-    void setConfig(Config c);
-    void setApproximation(double approximation);
-    void setWhitelist(std::vector<std::string> white_list);
+    void setConfig(const Config& c);
+    void setApproximation(const double approximation);
+    void setWhitelist(const std::vector<std::string>& white_list);
 
-    virtual void load(std::string ofp);
-    virtual void add(std::string process, std::vector<Record> records);
-    virtual void start(std::map<std::string, std::vector<Record>>& map);
+    virtual void load(const std::string& ofp);
+    virtual void add(const std::string& process, const std::vector<Record>& records);
+    virtual void start(const std::map<std::string, std::vector<Record>>& map);
     virtual void toFile();
 };
 
