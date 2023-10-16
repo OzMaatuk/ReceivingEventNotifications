@@ -22,7 +22,7 @@ public:
     double approximation;
     std::vector<std::string> white_list;
     Config(std::string fpath);
-    ~Config();
+    virtual ~Config();
     std::string get(std::string key);
 };
 

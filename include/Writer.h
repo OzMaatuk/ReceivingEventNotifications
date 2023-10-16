@@ -18,9 +18,8 @@ private:
 
 public:
     Writer(std::string& sfp);
-    ~Writer();
-    void start(std::vector<std::vector<std::string>>& cache);
-    Mapper& getMap();
+    virtual ~Writer();
+    virtual void start(std::vector<std::vector<std::string>>& cache);
 };
 
 #endif // WRITER_H

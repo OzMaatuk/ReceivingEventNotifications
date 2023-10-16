@@ -17,16 +17,16 @@ private:
 public:
     Analyzer(std::string ofp);
     Analyzer(std::string ofp, Config c);
-    ~Analyzer();
+    virtual ~Analyzer();
 
     void setConfig(Config c);
     void setApproximation(double approximation);
     void setWhitelist(std::vector<std::string> white_list);
 
-    void load(std::string ofp);
-    void add(std::string process, std::vector<Record> records);
-    void start(std::map<std::string, std::vector<Record>>& map);
-    void toFile();
+    virtual void load(std::string ofp);
+    virtual void add(std::string process, std::vector<Record> records);
+    virtual void start(std::map<std::string, std::vector<Record>>& map);
+    virtual void toFile();
 };
 
 #endif // ANALYZER_H

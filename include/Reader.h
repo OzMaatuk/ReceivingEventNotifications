@@ -18,9 +18,8 @@ private:
 
 public:
     Reader(std::string sfp);
-    ~Reader();
-    Mapper &getMap();
-    void start(Mapper& m);
+    virtual ~Reader();
+    virtual void start(Mapper& m);
 };
 
 #endif // READER_H

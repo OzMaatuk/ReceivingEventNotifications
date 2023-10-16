@@ -22,11 +22,11 @@ private:
 public:
     Mapper();
     Mapper(std::string sfp);
-    ~Mapper();
-    void print();
-    void toFile(std::string ofp);
-    void start(std::vector<std::vector<std::string>>& cache);
-    void add(std::vector<std::string> row);
+    virtual ~Mapper();
+    virtual void print();
+    virtual void toFile(std::string ofp);
+    virtual void start(std::vector<std::vector<std::string>>& cache);
+    virtual void add(std::vector<std::string> row);
     std::map<std::string, std::vector<Record>>& getMap();
 };
 
