@@ -2,10 +2,10 @@
 #include "Analyzer.h"
 
 Analyzer::Analyzer(const std::string& ofp)
- : outputFilePath(new std::string(ofp)), insights(new std::map<std::string, std::string>)
+ : outputFilePath(ofp), insights()
 {
     LOG(INFO) << "Creating Analyzer object from file";
-    load(*outputFilePath);
+    load(outputFilePath);
 }
 
 Analyzer::Analyzer(const Config& c) : Analyzer(c.insights_file_path)
@@ -16,14 +16,11 @@ Analyzer::Analyzer(const Config& c) : Analyzer(c.insights_file_path)
 Analyzer::~Analyzer()
 {
     LOG(INFO) << "Destructing Analyzer object";
-    delete outputFilePath;
-    delete insights;
-    delete wl;
 }
 
 bool Analyzer::checkWhitelist(const std::string& process)
 {
-    if (!process.empty() && (std::find(wl->begin(), wl->end(), process)) != wl->end())
+    if (!process.empty() && (std::find(wl.begin(), wl.end(), process)) != wl.end())
         return true;
     return false;
 }
@@ -76,8 +73,7 @@ void Analyzer::setApproximation(double approximation)
 
 void Analyzer::setWhitelist(const std::vector<std::string>& white_list)
 {
-    if (wl) delete wl;
-    wl = new std::vector<std::string>(white_list.begin(), white_list.end()); // Deep copy
+    wl = std::vector<std::string>(white_list.begin(), white_list.end()); // Deep copy
 }
 
 void Analyzer::load(const std::string& ofp)
@@ -105,25 +101,19 @@ void Analyzer::load(const std::string& ofp)
         // Get the pid.
         std::string process = it.name();
 
-        /*
-        The following code necessary when there are multiple insights per process.
+        // Create a map to store the records for the pid.
+        std::map<std::string, std::string> pinisights;
 
-        // Create a vector to store the records for the pid.
-        std::vector<std::string> pinisights;
-
-        Json::Value earray = root[process];
+        Json::Value current = root[process];
         // Iterate over the elements in the object.
-        for (auto e = earray.begin(); e != earray.end(); e++)
+        for (auto e : current.getMemberNames())
         {
-            // Get current value from array
-            Json::Value current = earray[e.index()];
             // Add the record to the vector.
-            pinisights.push_back(current.asString());
+            pinisights.insert_or_assign(e, current[e].asCString());
         }
-        */
-
+        
         // Add the vector to the map.
-        (*insights)[process] = root[process].asCString();
+        insights[process] = pinisights;
     }
 }
 
@@ -141,7 +131,7 @@ void Analyzer::add(const std::string& process, const std::vector<Record>& record
         std::string description = "All executions durations are similar with approximation: ";
         value *= 100;
         description += std::to_string(value) + "%";
-        (*insights)[process] = description;
+        insights[process].insert_or_assign("ALERT1", description);
     }
 }
 
@@ -156,25 +146,25 @@ void Analyzer::start(const std::map<std::string, std::vector<Record>>& map)
 void Analyzer::toFile()
 {
     LOG(INFO) << "Creating Insights file";
-    std::ofstream ofile(*outputFilePath);
     // Create a JSON object to store the map.
     Json::Value root = Json::objectValue;
-    for (auto it = insights->begin(); it != insights->end(); ++it)
+    for (auto it = insights.begin(); it != insights.end(); ++it)
     {
-        /*
-        The following code necessary when there are multiple insights per process.
-
-        Json::Value process = Json::arrayValue;
-        for (auto obj = it->second.begin(); obj != it->second.end(); ++obj)
+        Json::Value processAlerts = Json::objectValue;
+        for (auto p = it->second.begin(); p != it->second.end(); ++p)
         {
-            process.append(obj->c_str());
+            processAlerts[p->first].append(Json::Value(p->second));
         }
-        */
-       
-        root[it->first] = it->second;
+        root[it->first] = processAlerts;
     }
     // Write the JSON object to a file.
+    std::ofstream ofile(outputFilePath);
     ofile << root.toStyledString();
     ofile.flush();
     ofile.close();
+}
+
+std::map<std::string, std::map<std::string, std::string>>& Analyzer::getInsights()
+{
+    return insights;
 }

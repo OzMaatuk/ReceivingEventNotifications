@@ -8,9 +8,9 @@ class Analyzer
 {
 private:
     double apx = 1.0;
-    std::string* outputFilePath;
-    std::map<std::string, std::string>* insights;
-    std::vector<std::string>* wl;
+    std::string outputFilePath;
+    std::vector<std::string> wl;
+    std::map<std::string, std::map<std::string, std::string>> insights;
     bool checkWhitelist(const std::string& process);
     std::tuple<bool, double> analyze(const std::vector<Record>& records);
 
@@ -27,6 +27,7 @@ public:
     virtual void add(const std::string& process, const std::vector<Record>& records);
     virtual void start(const std::map<std::string, std::vector<Record>>& map);
     virtual void toFile();
+    std::map<std::string, std::map<std::string, std::string>>& getInsights();
 };
 
 #endif // ANALYZER_H
