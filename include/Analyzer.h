@@ -12,7 +12,8 @@ private:
     std::vector<std::string> wl;
     std::map<std::string, std::map<std::string, std::string>> insights;
     bool checkWhitelist(const std::string& process);
-    std::tuple<bool, double> analyze(const std::vector<Record>& records);
+    std::string isMaliciousTiming(const std::vector<Record>& records);
+    std::map<std::string, std::string> analyze(const std::vector<Record>& records);
 
 public:
     Analyzer(const std::string& ofp);

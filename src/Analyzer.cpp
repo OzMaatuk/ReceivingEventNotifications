@@ -25,11 +25,9 @@ bool Analyzer::checkWhitelist(const std::string& process)
     return false;
 }
 
-std::tuple<bool, double> Analyzer::analyze(const std::vector<Record>& records)
-{
-    LOG(INFO) << "Analyze records for pid:";
+std::string Analyzer::isMaliciousTiming(const std::vector<Record>& records) {
     std::vector<long> durations;
-    double medApproximation = 0.0;
+    double medApproximation = -1.0;
     long medDuration = 0;
 
     // TODO: something wrong, not all process are added.
@@ -42,21 +40,34 @@ std::tuple<bool, double> Analyzer::analyze(const std::vector<Record>& records)
         else
             DLOG(WARNING) << "No valid stop time, cannot calculate range for process: "  + r.pid;
     }
-    if (durations.empty())
-        return {false, 0.0};
 
     for (auto &r : durations)
         medDuration += r;
-    medDuration /= durations.size();
+    if (durations.size() > 0)
+        medDuration /= durations.size();
 
     for (auto &r : durations)
         medApproximation += (r / medDuration);
-    medApproximation /= durations.size();
+    if (durations.size() > 0)
+        medApproximation /= durations.size();
 
-    if (medApproximation < apx)
-        return {true, medApproximation};
-    else
-        return {false, medApproximation};
+    if (medApproximation > 0 && medApproximation <= apx)
+    {
+        std::string description = "All executions durations are similar with approximation: ";
+        double value = medApproximation * 100;
+        description += std::to_string(value) + "%";
+        return description;
+    }
+    return "";
+}
+
+std::map<std::string, std::string> Analyzer::analyze(const std::vector<Record>& records)
+{
+    LOG(INFO) << "Analyze records for pid:";
+    std::map<std::string, std::string> res = std::map<std::string, std::string>();
+    std::string tmp = isMaliciousTiming(records);
+    if (!tmp.empty()) res.insert_or_assign("TIMING_ALERT", tmp);
+    return res;
 }
 
 void Analyzer::setConfig(const Config& c)
@@ -120,19 +131,9 @@ void Analyzer::load(const std::string& ofp)
 void Analyzer::add(const std::string& process, const std::vector<Record>& records)
 {
     DLOG(INFO) << "Adding record for process " << process;
-    if (checkWhitelist(process)) // TODO: Not working.
+    if (checkWhitelist(process))
         return;
-    std::tuple res = analyze(records);
-    bool key = std::get<bool>(res);
-    double value = std::get<double>(res);
-
-    if (key)
-    {
-        std::string description = "All executions durations are similar with approximation: ";
-        value *= 100;
-        description += std::to_string(value) + "%";
-        insights[process].insert_or_assign("ALERT1", description);
-    }
+    insights[process] = analyze(records); // TODO: Make it add new insights and not overwrite all.
 }
 
 void Analyzer::start(const std::map<std::string, std::vector<Record>>& map)
@@ -148,15 +149,15 @@ void Analyzer::toFile()
     LOG(INFO) << "Creating Insights file";
     // Create a JSON object to store the map.
     Json::Value root = Json::objectValue;
-    for (auto it = insights.begin(); it != insights.end(); ++it)
+    for (const auto& [key, inner_map] : insights)
     {
-        Json::Value processAlerts = Json::objectValue;
-        for (auto p = it->second.begin(); p != it->second.end(); ++p)
-        {
-            processAlerts[p->first].append(Json::Value(p->second));
-        }
-        root[it->first] = processAlerts;
-    }
+        Json::Value processInsights = Json::objectValue;
+
+        for (const auto& [inner_key, inner_value] : inner_map)
+            processInsights[inner_key] = inner_value;
+
+        root[key] = processInsights;
+  }
     // Write the JSON object to a file.
     std::ofstream ofile(outputFilePath);
     ofile << root.toStyledString();
