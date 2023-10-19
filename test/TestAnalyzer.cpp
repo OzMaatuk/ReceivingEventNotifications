@@ -53,7 +53,7 @@ TEST(TestAnalyzer, Config_Test)
 {
     LOG(INFO) << "TestAnalyzer Config_Test Started";
     Analyzer a("..\\test_data\\test_map.json", "..\\test_data\\config_test_insights.json");
-    a.setApproximation(0.3);
+    a.setTimingApproximation(0.3);
     a.setWhitelist({"backgroundTaskHost.exe"});
 
     LOG(INFO) << "a.start()";

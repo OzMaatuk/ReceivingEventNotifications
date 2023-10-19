@@ -27,7 +27,7 @@ bool Analyzer::checkWhitelist(const std::string& process)
 
 std::string Analyzer::isMaliciousTiming(const std::vector<Record>& records) {
     std::vector<long> durations;
-    double medApproximation = -1.0;
+    double medApproximation = 0.0;
     long medDuration = 0;
 
     // TODO: something wrong, not all process are added.
@@ -51,7 +51,7 @@ std::string Analyzer::isMaliciousTiming(const std::vector<Record>& records) {
     if (durations.size() > 0)
         medApproximation /= durations.size();
 
-    if (medApproximation > 0 && medApproximation <= apx)
+    if (medApproximation >= timingApx)
     {
         std::string description = "All executions durations are similar with approximation: ";
         double value = medApproximation * 100;
@@ -73,13 +73,13 @@ std::map<std::string, std::string> Analyzer::analyze(const std::vector<Record>& 
 void Analyzer::setConfig(const Config& c)
 {
     LOG(INFO) << "Set config";
-    setApproximation(c.approximation);
+    setTimingApproximation(c.approximation);
     setWhitelist(c.white_list);
 }
 
-void Analyzer::setApproximation(double approximation)
+void Analyzer::setTimingApproximation(double approximation)
 {
-    apx = approximation;
+    timingApx = approximation;
 }
 
 void Analyzer::setWhitelist(const std::vector<std::string>& white_list)
