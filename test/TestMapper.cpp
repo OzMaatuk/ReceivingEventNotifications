@@ -113,7 +113,7 @@ TEST(TestMapper, Simple_Test)
     map.add({"24:35:53:95", "__InstanceDeletionEvent", "backgroundTaskHost2.exe", "24160"});
 
     LOG(INFO) << "executing toFile";
-    map.toFile();
+    map.toFile("..\\test_data\\testMapperSimple.json");
     EXPECT_NO_THROW();
     LOG(INFO) << "TestMapper Simple_Test Done";
 }
@@ -164,7 +164,7 @@ TEST(TestMapper, Edge_Cases_Test)
     map.add({"24:45:53:95", "__InstanceCreationEvent", "process1.exe", "24190"});
 
     LOG(INFO) << "executing toFile";
-    map.toFile();
+    map.toFile("..\\test_data\\testMapperEdgeCases.json");
     EXPECT_NO_THROW();
     LOG(INFO) << "TestMapper Edge_Cases_Test Done";
 }

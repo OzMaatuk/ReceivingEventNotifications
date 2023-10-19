@@ -4,6 +4,7 @@
 #include <glog/logging.h>
 #include <gtest/gtest.h>
 #include "Reader.h"
+#include "Mapper.h"
 
 // Compaile with ReadCSV.cpp and Mapper.cpp
 
@@ -42,11 +43,12 @@ protected:
 TEST(TestReaderCSV, Simple_Test)
 {
     LOG(INFO) << "TestReadCSV Simple_Test Started";
-    Reader reader("..\\data\\M_events.csv", "..\\test_data\\test_map.json");
+    Reader reader = Reader("..\\data\\M_events.csv");
+    Mapper mapper = Mapper();
     LOG(INFO) << "reader.start()";
-    reader.start();
+    reader.start(mapper);
     LOG(INFO) << "reader.getMap().toFile()";
-    reader.getMap().toFile();
+    mapper.toFile("..\\test_data\\TestReader.json");
     EXPECT_NO_THROW();
     LOG(INFO) << "TestReadCSV Simple_Test Done";
 }
