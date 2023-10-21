@@ -24,10 +24,10 @@ std::vector<std::string> Cache::pop()
     return tmp;
 }
 
-std::vector<std::vector<std::string>> Cache::getAndClear()
+std::list<std::vector<std::string>> Cache::getAndClear()
 {
     LOG(INFO) << "getAndClear Cache object";
-    std::vector<std::vector<std::string>> tmp = std::vector<std::vector<std::string>>();
+    std::list<std::vector<std::string>> tmp = std::list<std::vector<std::string>>();
     size_t len = cache.size();
     while (len > 0)
     {

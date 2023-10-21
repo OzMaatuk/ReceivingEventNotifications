@@ -25,8 +25,8 @@ bool Analyzer::checkWhitelist(const std::string& process)
     return false;
 }
 
-std::string Analyzer::isMaliciousTiming(const std::vector<Record>& records) {
-    std::vector<long> durations;
+std::string Analyzer::isMaliciousTiming(const std::list<Record>& records) {
+    std::list<long> durations;
     double medApproximation = 0.0;
     long medDuration = 0;
 
@@ -61,7 +61,7 @@ std::string Analyzer::isMaliciousTiming(const std::vector<Record>& records) {
     return "";
 }
 
-std::map<std::string, std::string> Analyzer::analyze(const std::vector<Record>& records)
+std::map<std::string, std::string> Analyzer::analyze(const std::list<Record>& records)
 {
     LOG(INFO) << "Analyze records for pid:";
     std::map<std::string, std::string> res = std::map<std::string, std::string>();
@@ -82,9 +82,9 @@ void Analyzer::setTimingApproximation(double approximation)
     timingApx = approximation;
 }
 
-void Analyzer::setWhitelist(const std::vector<std::string>& white_list)
+void Analyzer::setWhitelist(const std::list<std::string>& white_list)
 {
-    wl = std::vector<std::string>(white_list.begin(), white_list.end()); // Deep copy
+    wl = std::list<std::string>(white_list.begin(), white_list.end()); // Deep copy
 }
 
 void Analyzer::load(const std::string& ofp)
@@ -119,16 +119,16 @@ void Analyzer::load(const std::string& ofp)
         // Iterate over the elements in the object.
         for (auto e : current.getMemberNames())
         {
-            // Add the record to the vector.
+            // Add the record to the list.
             pinisights.insert_or_assign(e, current[e].asCString());
         }
         
-        // Add the vector to the map.
+        // Add the list to the map.
         insights[process] = pinisights;
     }
 }
 
-void Analyzer::add(const std::string& process, const std::vector<Record>& records)
+void Analyzer::add(const std::string& process, const std::list<Record>& records)
 {
     DLOG(INFO) << "Adding record for process " << process;
     if (checkWhitelist(process))
@@ -136,7 +136,7 @@ void Analyzer::add(const std::string& process, const std::vector<Record>& record
     insights[process] = analyze(records); // TODO: Make it add new insights and not overwrite all.
 }
 
-void Analyzer::start(const std::map<std::string, std::vector<Record>>& map)
+void Analyzer::start(const std::map<std::string, std::list<Record>>& map)
 {
     LOG(INFO) << "Start Analyzer";
     for (auto &[process, record_vec] : map)

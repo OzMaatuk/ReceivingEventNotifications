@@ -21,7 +21,7 @@ bool Reader::isValidRow(const std::vector<std::string>& row)
 }
 
 // Read the Data from the file as string vector and add it to the Mapper
-std::vector<std::vector<std::string>>& Reader::start()
+std::list<std::vector<std::string>>& Reader::start()
 {
     LOG(INFO) << "Start Reader";
     std::vector<std::string> row;

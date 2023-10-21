@@ -44,7 +44,7 @@ void Mapper::setEndTime(const std::string& key, const std::string& pid, const st
     LOG(WARNING) << "No start time for proccess, pid: " << key << " " << pid;
 }
 
-void Mapper::load(std::vector<std::vector<std::string>>& rows)
+void Mapper::load(std::list<std::vector<std::string>>& rows)
 {
     for (auto x : rows)
     {
@@ -60,7 +60,7 @@ void Mapper::load(const std::string& sfp)
 void Mapper::add(const std::vector<std::string>& row)
 {
     std::string pName = row.at(2);
-    DLOG(INFO) << "Adding event for process " << pName;
+    LOG(INFO) << "Adding event for process " << pName;
     std::string ts = row.at(0);
     std::string pid = row.at(3);
     std::string type = row.at(1);
@@ -77,12 +77,11 @@ void Mapper::add(const std::vector<std::string>& row)
             return;
         }
     }
-    DLOG(WARNING) << "Undefined event type";
-    DLOG(WARNING) << vectorToString(row);
+    LOG(WARNING) << "Undefined event type";
     // throw MyException("Undefined event type");
 }
 
-void Mapper::start(const std::vector<std::vector<std::string>>& cache)
+void Mapper::start(const std::list<std::vector<std::string>>& cache)
 {
     for (auto e : cache) add(e);
 }
@@ -118,7 +117,7 @@ void Mapper::print()
 }
 
 
-std::map<std::string, std::vector<Record>>& Mapper::getMap()
+std::map<std::string, std::list<Record>>& Mapper::getMap()
 {
     return map;
 }

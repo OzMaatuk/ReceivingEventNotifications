@@ -209,7 +209,7 @@ int Collect::main(Config c)
         try
         {
             // TODO: handle all sinks pSvc, pLoc, pUnsecApp, pStubUnk, pSink, pStubSink.
-            std::vector<std::vector<std::string>> tmp = pSink->cache.getAndClear();
+            std::list<std::vector<std::string>> tmp = pSink->cache.getAndClear();
             auto asyncThread = std::async(std::launch::async, [&mapper, &tmp]() { return mapper->start(tmp); });
             asyncThread.wait();
             asyncThread = std::async(std::launch::async, [&analyzer, &mapper]() { return analyzer->start(mapper->getMap()); });

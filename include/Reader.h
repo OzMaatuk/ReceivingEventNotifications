@@ -6,21 +6,21 @@
 
 /**
  * @class Reader
- * @brief A class for reading CSV files and storing the data in a vector of Map objects.
+ * @brief A class for reading CSV files and storing the data in a list of Map objects.
  *
- * This class is responsible for reading CSV files containing map data and storing the data in a vector of Map objects.
+ * This class is responsible for reading CSV files containing map data and storing the data in a list of Map objects.
  */
 class Reader
 {
 private:
     std::fstream file;
-    std::vector<std::vector<std::string>> rows;
+    std::list<std::vector<std::string>> rows;
     bool isValidRow(const std::vector<std::string>& row);
 
 public:
     Reader(const std::string& sfp);
     virtual ~Reader();
-    virtual std::vector<std::vector<std::string>>& start();
+    virtual std::list<std::vector<std::string>>& start();
 };
 
 #endif // READER_H

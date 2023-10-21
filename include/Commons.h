@@ -6,7 +6,8 @@
 #include <json/json.h>
 #include <json/writer.h>
 #include <fstream>
-#include <vector>
+#include <vector> // TODO: maybe use only one collection vector VS list
+#include <list>
 #include <map>
 #include <chrono>
 #include <ctime>
@@ -17,7 +18,7 @@
 #include "Record.h"
 #include "MyException.h"
 
-inline static void printRecordsMap(std::map<std::string, std::vector<Record>> &map)
+inline static void printRecordsMap(std::map<std::string, std::list<Record>> &map)
 {
     for (auto it = map.begin(); it != map.end(); ++it)
     {
@@ -31,7 +32,7 @@ inline static void printRecordsMap(std::map<std::string, std::vector<Record>> &m
     }
 }
 
-inline static void loadMapFile(std::string sfp, std::map<std::string, std::vector<Record>> &map)
+inline static void loadMapFile(std::string sfp, std::map<std::string, std::list<Record>> &map)
 {
     // Create the JSON object.
     Json::Value root;
@@ -55,8 +56,8 @@ inline static void loadMapFile(std::string sfp, std::map<std::string, std::vecto
         // Get the pid.
         std::string process = it.name();
 
-        // Create a vector to store the records for the pid.
-        std::vector<Record> records;
+        // Create a list to store the records for the pid.
+        std::list<Record> records;
 
         Json::Value earray = root[process];
         // Iterate over the elements in the object.
@@ -74,11 +75,11 @@ inline static void loadMapFile(std::string sfp, std::map<std::string, std::vecto
             // Set the stop time of the record.
             record.stop = current["stop"].asString();
 
-            // Add the record to the vector.
+            // Add the record to the list.
             records.push_back(record);
         }
 
-        // Add the vector to the map.
+        // Add the list to the map.
         map[process] = records;
     }
     return;
@@ -145,14 +146,6 @@ inline static long long getRange(const std::string &timeFormat1, const std::stri
     long long rangeInMilliseconds = ms2 - ms1;
 
     return rangeInMilliseconds;
-}
-
-inline static std::string vectorToString(const std::vector<std::string> &vector)
-{
-    std::string res;
-    for (const std::string &s : vector)
-        res += ", " + s;
-    return res;
 }
 
 #endif // COMMONS_H
