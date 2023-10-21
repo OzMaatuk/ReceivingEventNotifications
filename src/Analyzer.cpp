@@ -18,15 +18,16 @@ Analyzer::~Analyzer()
     LOG(INFO) << "Destructing Analyzer object";
 }
 
-bool Analyzer::checkWhitelist(const std::string& process)
+const bool Analyzer::checkWhitelist(const std::string& process) const
 {
     if (!process.empty() && (std::find(wl.begin(), wl.end(), process)) != wl.end())
         return true;
     return false;
 }
 
-std::string Analyzer::isMaliciousTiming(const std::list<Record>& records) {
-    std::list<long> durations;
+const std::string Analyzer::isMaliciousTiming(const std::list<Record>& records) const
+{
+    std::vector<long> durations;
     double medApproximation = 0.0;
     long medDuration = 0;
 
@@ -144,7 +145,7 @@ void Analyzer::start(const std::map<std::string, std::list<Record>>& map)
     toFile();
 }
 
-void Analyzer::toFile()
+void Analyzer::toFile() const
 {
     LOG(INFO) << "Creating Insights file";
     // Create a JSON object to store the map.

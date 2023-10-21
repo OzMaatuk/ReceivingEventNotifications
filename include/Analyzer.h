@@ -8,11 +8,11 @@ class Analyzer
 {
 private:
     double timingApx = 1.0;
-    std::string outputFilePath;
+    const std::string outputFilePath;
     std::list<std::string> wl;
     std::map<std::string, std::map<std::string, std::string>> insights;
-    bool checkWhitelist(const std::string& process);
-    std::string isMaliciousTiming(const std::list<Record>& records);
+    const bool checkWhitelist(const std::string& process) const;
+    const std::string isMaliciousTiming(const std::list<Record>& records) const;
     std::map<std::string, std::string> analyze(const std::list<Record>& records);
 
 public:
@@ -27,7 +27,7 @@ public:
     virtual void load(const std::string& ofp);
     virtual void add(const std::string& process, const std::list<Record>& records);
     virtual void start(const std::map<std::string, std::list<Record>>& map);
-    virtual void toFile();
+    virtual void toFile() const;
     virtual std::map<std::string, std::map<std::string, std::string>>& getInsights();
 };
 

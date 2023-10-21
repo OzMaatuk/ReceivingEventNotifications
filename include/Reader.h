@@ -15,7 +15,11 @@ class Reader
 private:
     std::fstream file;
     std::list<std::vector<std::string>> rows;
-    bool isValidRow(const std::vector<std::string>& row);
+    const bool isValidEventLabel(const std::string& event_label) const;
+    const bool isValidProcessName(const std::string& process_name) const;
+    const bool isValidPid(const std::string& pid) const;
+    const bool isValidRow(const std::vector<std::string>& row) const;
+
 
 public:
     Reader(const std::string& sfp);

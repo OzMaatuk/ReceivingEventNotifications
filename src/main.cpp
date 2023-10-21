@@ -2,6 +2,8 @@
 #include <cxxabi.h>
 #include "Collect.h"
 
+#define NDEBUG
+
 const char* currentExceptionTypeName()
 {
     int status;
@@ -22,6 +24,4 @@ int main(int iArgCnt, char **argv)
         std::cout << e.what() << std::endl;
         throw e;
     }
-    
-    // throw MyException("Cannot determine OS type.");
 }

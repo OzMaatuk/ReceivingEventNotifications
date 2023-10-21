@@ -4,9 +4,24 @@
 Mapper::Mapper(): map()
 {
     LOG(INFO) << "Creating Mapper object";
-     // TODO: make labels OS dependent
-    startLabel = "__InstanceCreationEvent";
-    stopLabel = "__InstanceDeletionEvent";
+     #ifdef _WIN32
+        startLabel = WIN_PROCESS_START;
+        stopLabel = WIN_PROCESS_END;
+    #elif _WIN64
+        startLabel = WIN_PROCESS_START;
+        stopLabel = WIN_PROCESS_END;
+    #elif __APPLE__ || __MACH__
+        startLabel = UNIX_PROCESS_START;
+        stopLabel = UNIX_PROCESS_START;
+    #elif __linux__
+        startLabel = UNIX_PROCESS_START;
+        stopLabel = UNIX_PROCESS_START;
+    #elif __unix || __unix__
+        startLabel = UNIX_PROCESS_START;
+        stopLabel = UNIX_PROCESS_START;
+    #else
+        throw MyException("Cannot determine OS type.")
+    #endif
 }
 
 Mapper::Mapper(const std::string& sfp) : Mapper()
@@ -44,7 +59,7 @@ void Mapper::setEndTime(const std::string& key, const std::string& pid, const st
     LOG(WARNING) << "No start time for proccess, pid: " << key << " " << pid;
 }
 
-void Mapper::load(std::list<std::vector<std::string>>& rows)
+void Mapper::load(const std::list<std::vector<std::string>>& rows)
 {
     for (auto x : rows)
     {
@@ -86,7 +101,7 @@ void Mapper::start(const std::list<std::vector<std::string>>& cache)
     for (auto e : cache) add(e);
 }
 
-void Mapper::toFile(const std::string& ofp)
+void Mapper::toFile(const std::string& ofp) const
 {
     LOG(INFO) << "Creating process map file " << ofp;
     // Create a JSON object to store the map.
@@ -111,7 +126,7 @@ void Mapper::toFile(const std::string& ofp)
     ofile.close();
 }
 
-void Mapper::print()
+void Mapper::print() const
 {
     printRecordsMap(map);
 }

@@ -14,9 +14,34 @@ Reader::~Reader()
     if (file.is_open()) file.close();
 }
 
-bool Reader::isValidRow(const std::vector<std::string>& row)
+const bool Reader::isValidEventLabel(const std::string& event_label) const
+{
+if (event_label.compare(WIN_PROCESS_START) != 0
+        || event_label.compare(WIN_PROCESS_END) != 0
+        || event_label.compare(UNIX_PROCESS_START) != 0
+        || event_label.compare(UNIX_PROCESS_END) != 0) return false;
+    return true;
+}
+
+const bool Reader::isValidProcessName(const std::string& process_name) const
+{
+  std::regex regex(R"([a-zA-Z0-9]+\.exe$)");
+  return std::regex_match(process_name, regex);
+}
+
+const bool Reader::isValidPid(const std::string& pid) const
+{
+    std::regex regex(R"(\\d{4,})");
+    return std::regex_match(pid, regex);
+}
+
+const bool Reader::isValidRow(const std::vector<std::string>& row) const
 { 
     if (row.empty()) return false;
+    if (!isValidTimestamp(row[0])) return false;
+    if (!isValidEventLabel(row[1])) return false;
+    if (!isValidProcessName(row[2])) return false;
+    if (!isValidPid(row[3])) return false;
     return true;
 }
 
@@ -38,6 +63,7 @@ std::list<std::vector<std::string>>& Reader::start()
         // add it to the row vector.
         while (std::getline(s, word, ',')) row.push_back(word);
         if (isValidRow(row)) rows.push_back(row);
+        else DLOG(WARNING) << "invalid row: " << line;
     }
     return rows;
 }

@@ -12,13 +12,17 @@
 #include <chrono>
 #include <ctime>
 #include <iomanip>
-#include <sstream>
 #include <regex>
 #include "Config.h"
 #include "Record.h"
 #include "MyException.h"
 
-inline static void printRecordsMap(std::map<std::string, std::list<Record>> &map)
+static const char* WIN_PROCESS_START = "__InstanceCreationEvent";
+static const char* WIN_PROCESS_END = "__InstanceDeletionEvent";
+static const char* UNIX_PROCESS_START = "";
+static const char* UNIX_PROCESS_END = "";
+
+inline static void printRecordsMap(const std::map<std::string, std::list<Record>> &map)
 {
     for (auto it = map.begin(); it != map.end(); ++it)
     {
@@ -32,7 +36,7 @@ inline static void printRecordsMap(std::map<std::string, std::list<Record>> &map
     }
 }
 
-inline static void loadMapFile(std::string sfp, std::map<std::string, std::list<Record>> &map)
+inline static void loadMapFile(const std::string sfp, std::map<std::string, std::list<Record>> &map)
 {
     // Create the JSON object.
     Json::Value root;
@@ -90,7 +94,7 @@ inline bool is_digits(const std::string &str)
     return std::all_of(str.begin(), str.end(), ::isdigit); // C++11
 }
 
-inline static bool isValidTimestamp(std::string timestamp) {
+inline static bool isValidTimestamp(const std::string timestamp) {
     // Define a regular expression pattern for the valid timestamp format.
     std::regex pattern("^(\\d{4}:(\\d{1,2}:){5}\\d{3,6})$");
 

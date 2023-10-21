@@ -50,7 +50,6 @@
         "ctime": "cpp",
         "ratio": "cpp",
         "semaphore": "cpp",
-        "sstream": "cpp",
         "stop_token": "cpp",
         "thread": "cpp",
         "condition_variable": "cpp",
@@ -78,7 +77,8 @@
         "source_location": "cpp",
         "stacktrace": "cpp",
         "bitset": "cpp",
-        "regex": "cpp"
+        "regex": "cpp",
+        "sstream": "cpp"
     }
     // ,"C_Cpp.default.cppStandard": "c++20"
     ,"editor.tabSize": 4

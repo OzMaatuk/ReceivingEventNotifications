@@ -16,7 +16,7 @@ void Cache::add(const EventDetails& e)
     cache.push(EventDetails(e));
 }
 
-std::vector<std::string> Cache::pop()
+const std::vector<std::string> Cache::pop()
 {
     if (cache.empty()) return std::vector<std::string>(); // TODO: Not good.
     std::vector<std::string> tmp = cache.front().eventDetailsToStringVector();
@@ -24,7 +24,7 @@ std::vector<std::string> Cache::pop()
     return tmp;
 }
 
-std::list<std::vector<std::string>> Cache::getAndClear()
+const std::list<std::vector<std::string>> Cache::getAndClear()
 {
     LOG(INFO) << "getAndClear Cache object";
     std::list<std::vector<std::string>> tmp = std::list<std::vector<std::string>>();

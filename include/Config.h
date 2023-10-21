@@ -13,7 +13,7 @@ class Config
 {
 private:
     Json::Value settings;
-    std::string stf;
+    const std::string stf;
     void to_list(const Json::Value& json_array, std::list<std::string>& list);
 
 public:

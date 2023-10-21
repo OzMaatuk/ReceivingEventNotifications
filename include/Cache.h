@@ -13,13 +13,13 @@ class Cache
 {
 private:
     std::queue<EventDetails> cache;
-    std::vector<std::string> pop();
+    const std::vector<std::string> pop();
 
 public:
     Cache();
     virtual ~Cache();
     virtual void add(const EventDetails& e);
-    virtual std::list<std::vector<std::string>> getAndClear();
+    virtual const std::list<std::vector<std::string>> getAndClear();
 };
 
 #endif // CACHE_H
