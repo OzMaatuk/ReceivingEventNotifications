@@ -44,14 +44,17 @@ void Mapper::setEndTime(const std::string& key, const std::string& pid, const st
     LOG(WARNING) << "No start time for proccess, pid: " << key << " " << pid;
 }
 
+void Mapper::load(std::vector<std::vector<std::string>>& rows)
+{
+    for (auto x : rows)
+    {
+        add(x);
+    }
+}
+
 void Mapper::load(const std::string& sfp)
 {
     loadMapFile(sfp, map);
-}
-
-void Mapper::print()
-{
-    printRecordsMap(map);
 }
 
 void Mapper::add(const std::vector<std::string>& row)
@@ -108,6 +111,12 @@ void Mapper::toFile(const std::string& ofp)
     ofile.flush();
     ofile.close();
 }
+
+void Mapper::print()
+{
+    printRecordsMap(map);
+}
+
 
 std::map<std::string, std::vector<Record>>& Mapper::getMap()
 {

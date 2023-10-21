@@ -17,17 +17,18 @@ private:
     std::string stopLabel;
     void addToKey(const std::string& key, const Record& r);
     void setEndTime(const std::string& key, const std::string& pid, const std::string& ts);
-    void load(const std::string& sfp);
 
 public:
     Mapper();
     Mapper(const std::string& sfp);
     virtual ~Mapper();
-    virtual void print();
+    virtual void load(std::vector<std::vector<std::string>>& rows);
+    virtual void load(const std::string& sfp);
     virtual void add(const std::vector<std::string>& row);
     virtual void start(const std::vector<std::vector<std::string>>& cache);
     virtual void toFile(const std::string& ofp);
-    std::map<std::string, std::vector<Record>>& getMap();
+    virtual void print();
+    virtual std::map<std::string, std::vector<Record>>& getMap();
 };
 
 #endif // MAPPER_H

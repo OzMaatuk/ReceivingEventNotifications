@@ -202,12 +202,13 @@ int Collect::main(Config c)
     Mapper* mapper = new Mapper();
     Analyzer* analyzer = new Analyzer(c);
 
-    reader->start(*mapper);
+    mapper->load(reader->start());
     // While asyc listening to events in background.
     while (!_kbhit())
     {
         try
         {
+            // TODO: handle all sinks pSvc, pLoc, pUnsecApp, pStubUnk, pSink, pStubSink.
             std::vector<std::vector<std::string>> tmp = pSink->cache.getAndClear();
             auto asyncThread = std::async(std::launch::async, [&mapper, &tmp]() { return mapper->start(tmp); });
             asyncThread.wait();
