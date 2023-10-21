@@ -46,9 +46,12 @@ TEST(TestReaderCSV, Simple_Test)
     Reader reader = Reader("..\\data\\M_events.csv");
     Mapper mapper = Mapper();
     LOG(INFO) << "reader.start()";
-    reader.start(mapper);
-    LOG(INFO) << "reader.getMap().toFile()";
-    mapper.toFile("..\\test_data\\TestReader.json");
+    std::stringstream ss;
+    std::vector<std::vector<std::string>>& tmp = reader.start();
+    for (auto x : tmp)
+        for (auto y : x)
+            ss << y + ", ";
+    LOG(INFO) << ss.str();
     EXPECT_NO_THROW();
     LOG(INFO) << "TestReadCSV Simple_Test Done";
 }

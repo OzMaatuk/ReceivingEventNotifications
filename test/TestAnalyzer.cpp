@@ -41,10 +41,10 @@ TEST(TestAnalyzer, Simple_Test)
 {
     LOG(INFO) << "TestAnalyzer Simple_Test Started";
     Analyzer a = Analyzer("..\\test_data\\test_insights.json");
-    LOG(INFO) << "a.load()";
-    a.load("..\\test_data\\test_map.json");
+    LOG(INFO) << "analyzer.load()";
+    a.load("..\\test_data\\simple_test_map.json");
 
-    LOG(INFO) << "a.toFile()";
+    LOG(INFO) << "analyzer.toFile()";
     a.toFile();
 
     EXPECT_NO_THROW();
@@ -56,13 +56,13 @@ TEST(TestAnalyzer, Config_Test)
     LOG(INFO) << "TestAnalyzer Config_Test Started";
     Analyzer a = Analyzer("..\\test_data\\config_test_insights.json");
 
-    LOG(INFO) << "a.load()";
-    a.load("..\\test_data\\test_map.json");
+    LOG(INFO) << "analyzer.load()";
+    a.load("..\\test_data\\simple_test_map.json");
 
     a.setTimingApproximation(0.3);
     a.setWhitelist({"backgroundTaskHost.exe"});
 
-    LOG(INFO) << "a.start()";
+    LOG(INFO) << "analyzer.start()";
     a.toFile();
 
     EXPECT_NO_THROW();

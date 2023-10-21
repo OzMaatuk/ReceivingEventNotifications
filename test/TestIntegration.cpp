@@ -46,12 +46,12 @@ TEST(TestIntegration, Simple_Test)
     Reader reader = Reader("..\\data\\S_events.csv");
     Mapper mapper = Mapper();
     LOG(INFO) << "reader.start()";
-    reader.start(mapper);
+    mapper.load(reader.start());
 
     LOG(INFO) << "Settingup Analyzer";
     Analyzer analyzer = Analyzer("..\\test_data\\intergration_test_insights.json");
     
-    LOG(INFO) << "analyzer.toFile();";
+    LOG(INFO) << "analyzer.start();";
     analyzer.start(mapper.getMap());
 
     EXPECT_NO_THROW();
