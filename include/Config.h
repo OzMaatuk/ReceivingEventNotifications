@@ -21,9 +21,10 @@ public:
     int sleep_interval;
     double approximation;
     std::vector<std::string> white_list;
+    
     Config(const std::string& fpath);
     virtual ~Config();
-    std::string get(const std::string& key);
+    virtual std::string get(const std::string& key);
 };
 
 #endif // CONFIG_H

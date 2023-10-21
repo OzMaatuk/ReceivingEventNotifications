@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <unistd.h>
-#include <sys/inotify.h>
+// #include <sys/inotify.h>
 #include <string>
 #include <thread>
 #include <queue>

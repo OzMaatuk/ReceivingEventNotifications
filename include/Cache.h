@@ -12,14 +12,13 @@ class Cache
 {
 private:
     std::queue<EventDetails> cache;
-    std::vector<std::string> eventDetailsToStringVector(const EventDetails& e);
     std::vector<std::string> pop();
 
 public:
     Cache();
     virtual ~Cache();
-    void add(const EventDetails& e);
-    std::vector<std::vector<std::string>> getAndClear();
+    virtual void add(const EventDetails& e);
+    virtual std::vector<std::vector<std::string>> getAndClear();
 };
 
 #endif // CACHE_H
