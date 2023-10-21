@@ -14,12 +14,13 @@ class Reader
 {
 private:
     std::fstream file;
+    std::vector<std::vector<std::string>> rows;
     bool isValidRow(const std::vector<std::string>& row);
 
 public:
     Reader(const std::string& sfp);
     virtual ~Reader();
-    virtual void start(Mapper& m);
+    virtual std::vector<std::vector<std::string>>& start();
 };
 
 #endif // READER_H

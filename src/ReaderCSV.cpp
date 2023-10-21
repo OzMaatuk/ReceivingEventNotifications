@@ -1,7 +1,7 @@
 // ReaderCSV.cpp
 #include "Reader.h"
 
-Reader::Reader(const std::string& sfp)
+Reader::Reader(const std::string& sfp) : rows()
 {
     LOG(INFO) << "Creating Reader object";
     file.open(sfp, std::ios::in);
@@ -21,7 +21,7 @@ bool Reader::isValidRow(const std::vector<std::string>& row)
 }
 
 // Read the Data from the file as string vector and add it to the Mapper
-void Reader::start(Mapper& m)
+std::vector<std::vector<std::string>>& Reader::start()
 {
     if (!file.is_open()) return;
     LOG(INFO) << "Start Reader";
@@ -38,6 +38,7 @@ void Reader::start(Mapper& m)
         // store it in a string variable, 'word'
         // add it to the row vector.
         while (std::getline(s, word, ',')) row.push_back(word);
-        if (isValidRow(row)) m.add(row);
+        if (isValidRow(row)) rows.push_back(row);
     }
+    return rows;
 }
