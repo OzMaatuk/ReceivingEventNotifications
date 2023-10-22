@@ -4,6 +4,7 @@
 
 #include <string>
 
+// This struct will represent an element of the array for each key in the Mapper map. 
 struct Record
 {
     std::string pid;

@@ -10,6 +10,13 @@
 #include "Config.h"
 #include "Analyzer.h"
 
+/**
+ * @class Collect
+ * @brief A class for collecting process events from OS.
+ *
+ * This class is responsible for async listen and collect start/stop time (OS events) of process,
+ * The class will analyze the details collected to produce insight such as malicious activity.
+ */
 class Collect
 {
 private:

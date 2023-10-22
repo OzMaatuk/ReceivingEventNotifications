@@ -9,6 +9,12 @@
 #include <json/json.h>
 #include <json/writer.h>
 
+/**
+ * @class Config
+ * @brief A class provides configuration object for the application
+ *
+ * This class is responsible for parsing, storing and suppling configuration parameters for the application.
+ */
 class Config
 {
 private:

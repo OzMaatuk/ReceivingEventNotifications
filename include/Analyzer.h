@@ -4,6 +4,14 @@
 
 #include "Commons.h"
 
+/**
+ * @class Analyzer
+ * @brief A class for analyzing process events map.
+ *
+ * This class is responsible for analyzing the details of process, supplied as map object.
+ * The class will create insights files with description for each process.
+ * Currentnly isMaliciousTiming insight is implemented, dependent on process start/end time.
+ */
 class Analyzer
 {
 private:

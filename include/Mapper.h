@@ -4,11 +4,13 @@
 
 #include "Commons.h"
 
-/*
-Map can be cached object, instead of using file.
-Here, application can also load data from previous execution.
-*/
-
+/**
+ * @class Mapper
+ * @brief A class for managing map object of process details (pid, start, stop)
+ *
+ * This class is responsible for collecting process events and storing them in map object.
+ * The map structure is array of "Record" objects per process.
+ */
 class Mapper
 {
 private:

@@ -9,6 +9,12 @@
 #include <vector>
 #include "EventDetails.h"
 
+/**
+ * @class Collect
+ * @brief A class for cache object for OS events,
+ *
+ * This class is responsible to contain OS events that accoured recently.
+ */
 class Cache
 {
 private:

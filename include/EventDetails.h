@@ -6,6 +6,7 @@
 // #include <windows.h>
 #include <comdef.h>
 
+// This struct will represent the details collected for each process event.
 struct EventDetails
 {
     SYSTEMTIME time;
