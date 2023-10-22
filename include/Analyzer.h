@@ -11,7 +11,7 @@ private:
     const std::string outputFilePath;
     std::list<std::string> wl;
     std::map<std::string, std::map<std::string, std::string>> insights;
-    const bool checkWhitelist(const std::string& process) const;
+    bool checkWhitelist(const std::string& process) const;
     const std::string isMaliciousTiming(const std::list<Record>& records) const;
     std::map<std::string, std::string> analyze(const std::list<Record>& records);
 

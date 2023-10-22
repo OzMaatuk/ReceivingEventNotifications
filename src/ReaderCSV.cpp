@@ -14,28 +14,28 @@ Reader::~Reader()
     if (file.is_open()) file.close();
 }
 
-const bool Reader::isValidEventLabel(const std::string& event_label) const
+bool Reader::isValidEventLabel(const std::string& event_label) const
 {
 if (event_label.compare(WIN_PROCESS_START) != 0
-        || event_label.compare(WIN_PROCESS_END) != 0
-        || event_label.compare(UNIX_PROCESS_START) != 0
-        || event_label.compare(UNIX_PROCESS_END) != 0) return false;
+        && event_label.compare(WIN_PROCESS_END) != 0
+        && event_label.compare(UNIX_PROCESS_START) != 0
+        && event_label.compare(UNIX_PROCESS_END) != 0) return false;
     return true;
 }
 
-const bool Reader::isValidProcessName(const std::string& process_name) const
+bool Reader::isValidProcessName(const std::string& process_name) const
 {
   std::regex regex(R"([a-zA-Z0-9]+\.exe$)");
   return std::regex_match(process_name, regex);
 }
 
-const bool Reader::isValidPid(const std::string& pid) const
+bool Reader::isValidPid(const std::string& pid) const
 {
-    std::regex regex(R"(\\d{4,})");
+    std::regex regex("(\\d{4,})");
     return std::regex_match(pid, regex);
 }
 
-const bool Reader::isValidRow(const std::vector<std::string>& row) const
+bool Reader::isValidRow(const std::vector<std::string>& row) const
 { 
     if (row.empty()) return false;
     if (!isValidTimestamp(row[0])) return false;

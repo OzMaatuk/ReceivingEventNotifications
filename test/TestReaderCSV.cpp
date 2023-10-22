@@ -47,7 +47,7 @@ TEST(TestReaderCSV, Simple_Test)
     Mapper mapper = Mapper();
     LOG(INFO) << "reader.start()";
     std::stringstream ss;
-    std::vector<std::vector<std::string>>& tmp = reader.start();
+    std::list<std::vector<std::string>>& tmp = reader.start();
     for (auto x : tmp)
         for (auto y : x)
             ss << y + ", ";

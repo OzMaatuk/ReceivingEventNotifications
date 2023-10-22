@@ -18,7 +18,7 @@ Analyzer::~Analyzer()
     LOG(INFO) << "Destructing Analyzer object";
 }
 
-const bool Analyzer::checkWhitelist(const std::string& process) const
+bool Analyzer::checkWhitelist(const std::string& process) const
 {
     if (!process.empty() && (std::find(wl.begin(), wl.end(), process)) != wl.end())
         return true;

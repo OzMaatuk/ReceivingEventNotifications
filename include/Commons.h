@@ -17,10 +17,10 @@
 #include "Record.h"
 #include "MyException.h"
 
-static const char* WIN_PROCESS_START = "__InstanceCreationEvent";
-static const char* WIN_PROCESS_END = "__InstanceDeletionEvent";
-static const char* UNIX_PROCESS_START = "";
-static const char* UNIX_PROCESS_END = "";
+__attribute__((unused)) static const char* WIN_PROCESS_START = "__InstanceCreationEvent";
+__attribute__((unused)) static const char* WIN_PROCESS_END = "__InstanceDeletionEvent";
+__attribute__((unused)) static const char* UNIX_PROCESS_START = "";
+__attribute__((unused)) static const char* UNIX_PROCESS_END = "";
 
 inline static void printRecordsMap(const std::map<std::string, std::list<Record>> &map)
 {
@@ -96,7 +96,7 @@ inline bool is_digits(const std::string &str)
 
 inline static bool isValidTimestamp(const std::string timestamp) {
     // Define a regular expression pattern for the valid timestamp format.
-    std::regex pattern("^(\\d{4}:(\\d{1,2}:){5}\\d{3,6})$");
+    std::regex pattern("^(\\d{4}:(\\d{1,2}:){5}\\d{1,6})$");
 
     // Use std::regex_match to check if the timestamp matches the pattern.
     return std::regex_match(timestamp, pattern);
