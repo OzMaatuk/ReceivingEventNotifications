@@ -22,7 +22,7 @@ void Writer::start(const std::list<std::vector<std::string>>& cache)
         return;
     }
     LOG(INFO) << "Start Writer";
-    // Export the events list to a CSV file.
+    // Write the events list to a CSV file.
     for (auto event : cache)
     {
         std::stringstream ss;

@@ -3,6 +3,7 @@
 
 Mapper::Mapper(): map()
 {
+    // Constructor for creating a Mapper object and determining the labels according to the operating system.
     LOG(INFO) << "Creating Mapper object";
      #ifdef _WIN32
         startLabel = WIN_PROCESS_START;

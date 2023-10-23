@@ -9,7 +9,7 @@
  * @class Writer
  * @brief A class for writing event data to a CSV file.
  *
- * This class is responsible for writing event data stored in the EventSink class to a CSV file.
+ * This class is responsible for writing events data to a CSV file.
  */
 class Writer
 {

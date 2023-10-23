@@ -17,6 +17,7 @@ int main(int iArgCnt, char **argv)
         Config c(argv[1]);
         Collect().main(c);
     } catch (std::exception &e) {
+        // If an error occurs, print the stack trace
         std::cout << boost::stacktrace::stacktrace() << std::endl;
         std::cout << "Type of caught exception is " << currentExceptionTypeName() << std::endl;
         std::cout << e.what() << std::endl;

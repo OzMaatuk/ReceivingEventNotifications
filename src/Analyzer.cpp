@@ -25,15 +25,20 @@ bool Analyzer::checkWhitelist(const std::string& process) const
     return false;
 }
 
+// Analyzes if process records can be identified as malicious based on timing
 const std::string Analyzer::isMaliciousTiming(const std::list<Record>& records) const
 {
-    VLOG(1) << "Start isMaliciousTiming";
+    // Start and stop timestamps for the process are analyzed
+    // If many processes with similar durations are found,
+    // the function returns a string indicating a timing alert
+    VLOG(1) << "Start isMaliciousTiming()";
     std::vector<long> durations;
     double medApproximation = 0.0;
     long medDuration = 0;
 
     // TODO: something wrong, not all process are added.
 
+    // collect run durations for each process of same type
     for (auto &r : records)
     {
         VLOG(1) << r.pid;
@@ -43,18 +48,21 @@ const std::string Analyzer::isMaliciousTiming(const std::list<Record>& records) 
             VLOG(1) << "No valid stop time, cannot calculate range for process: "  + r.pid;
     }
 
+    // calculating the medium value of all durations for this process
     for (auto &r : durations)
         medDuration += r;
     if (durations.size() > 0)
         medDuration /= durations.size();
 
+    // calculating the approximation  between each duration to the medium duration
     for (auto &r : durations)
         medApproximation += (r / medDuration);
     if (durations.size() > 0)
         medApproximation /= durations.size();
 
-    VLOG(1) << "Done isMaliciousTiming";
+    VLOG(1) << "Done with isMaliciousTiming()";
 
+    // if approximation calculated is beyon the threshold
     if (medApproximation >= timingApx)
     {
         std::string description = "All executions durations are similar with approximation: ";
@@ -65,6 +73,7 @@ const std::string Analyzer::isMaliciousTiming(const std::list<Record>& records) 
     return "";
 }
 
+// Analyzes records of same process and return map of insights
 std::map<std::string, std::string> Analyzer::analyze(const std::list<Record>& records)
 {
     VLOG(1) << "Analyze records for pids:";
@@ -91,8 +100,12 @@ void Analyzer::setWhitelist(const std::list<std::string>& white_list)
     wl = std::list<std::string>(white_list.begin(), white_list.end()); // Deep copy
 }
 
+// Loads insights from the output file in case of restart
 void Analyzer::load(const std::string& ofp)
 {
+    // JSON object is created and file is read into the object.
+    // Then insights map is populated from the file
+    // If some error occurred while opening a file, log is printed
     LOG(INFO) << "Loading process map from file " << ofp;
     // Create the JSON object.
     Json::Value root;
