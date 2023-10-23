@@ -14,9 +14,9 @@
 class Mapper
 {
 private:
-    std::map<std::string, std::list<Record>> map;
-    std::string startLabel;
-    std::string stopLabel;
+    std::map<std::string, std::list<Record>> map; // Map of process names to records of their start and stop times
+    std::string startLabel; // String to contain the label value of event start
+    std::string stopLabel; // String to contain the label value of event stop
     void addToKey(const std::string& key, const Record& r);
     void setEndTime(const std::string& key, const std::string& pid, const std::string& ts);
 

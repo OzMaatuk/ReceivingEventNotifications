@@ -14,7 +14,7 @@
 class Writer
 {
 private:
-    std::fstream file;
+    std::fstream file; // output file
 
 public:
     Writer(const std::string& sfp);

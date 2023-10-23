@@ -16,7 +16,11 @@ Writer::~Writer()
 
 void Writer::start(const std::list<std::vector<std::string>>& cache)
 {
-    if (!file.is_open()) return;
+    if (!file.is_open())
+    {
+        LOG(WARNING) << "Could not open CSV file.";
+        return;
+    }
     LOG(INFO) << "Start Writer";
     // Export the events list to a CSV file.
     for (auto event : cache)

@@ -15,10 +15,10 @@
 class Analyzer
 {
 private:
-    double timingApx = 1.0;
-    const std::string outputFilePath;
-    std::list<std::string> wl;
-    std::map<std::string, std::map<std::string, std::string>> insights;
+    double timingApx = 1.0; // Approximation factor for analysis
+    const std::string outputFilePath; // Output file path
+    std::list<std::string> wl; // Whitelist of process names
+    std::map<std::string, std::map<std::string, std::string>> insights; // Map of process names to insights generated from their records
     bool checkWhitelist(const std::string& process) const;
     const std::string isMaliciousTiming(const std::list<Record>& records) const;
     std::map<std::string, std::string> analyze(const std::list<Record>& records);

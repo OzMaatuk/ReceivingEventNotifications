@@ -18,8 +18,8 @@
 class Config
 {
 private:
-    Json::Value settings;
-    const std::string stf;
+    Json::Value settings; // Json variable to contain the configuration
+    const std::string sfp; // configuration source file path
     void to_list(const Json::Value& json_array, std::list<std::string>& list);
 
 public:

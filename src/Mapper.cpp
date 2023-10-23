@@ -83,12 +83,12 @@ void Mapper::add(const std::vector<std::string>& row)
     std::string type = row.at(1);
     if (!type.empty())
     {
-        if (type.compare(startLabel) == 0)
+        if (type.compare(startLabel) == 0) // If it's a start event
         {
             addToKey(pName, {pid, ts, ""});
             return;
         }
-        else if (type.compare(stopLabel) == 0)
+        else if (type.compare(stopLabel) == 0) // If it's a stop event
         {
             setEndTime(pName, pid, ts);
             return;

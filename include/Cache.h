@@ -18,7 +18,7 @@
 class Cache
 {
 private:
-    std::queue<EventDetails> cache;
+    std::queue<EventDetails> cache; // queue to implememnt cache variable
     const std::vector<std::string> pop();
 
 public:
