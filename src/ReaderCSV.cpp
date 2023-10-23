@@ -54,7 +54,7 @@ std::list<std::vector<std::string>>& Reader::start()
 
     while (std::getline(file, line))
     {
-        DLOG(INFO) << "READ_LINE: " << line;
+        VLOG(1) << "READ_LINE: " << line;
         row.clear();
 
         std::stringstream s(line);
@@ -63,7 +63,7 @@ std::list<std::vector<std::string>>& Reader::start()
         // add it to the row vector.
         while (std::getline(s, word, ',')) row.push_back(word);
         if (isValidRow(row)) rows.push_back(row);
-        else DLOG(WARNING) << "invalid row: " << line;
+        else VLOG(1) << "invalid row: " << line;
     }
     return rows;
 }

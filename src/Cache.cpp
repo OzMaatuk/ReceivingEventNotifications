@@ -12,7 +12,7 @@ Cache::~Cache()
 
 void Cache::add(const EventDetails& e)
 {
-    LOG(INFO) << "Event added to Cache object";
+    VLOG(1) << "Event added to Cache object";
     cache.push(EventDetails(e));
 }
 

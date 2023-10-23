@@ -50,7 +50,7 @@ inline static void loadMapFile(const std::string sfp, std::map<std::string, std:
     }
     else
     {
-        LOG(WARNING) << "Could not load application data file " << sfp;
+        VLOG(WARNING) << "Could not load application data file " << sfp;
         return;
     }
 

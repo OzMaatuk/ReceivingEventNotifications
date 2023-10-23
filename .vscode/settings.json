@@ -84,11 +84,7 @@
     ,"editor.tabSize": 4
     ,"makefile.configurations": [
         {
-            "name": "Build & Run",
-            "makeArgs": []
-        },
-        {
-            "name": "Build & Test",
+            "name": "Make Build & Run",
             "makeArgs": []
         }
     ],
@@ -97,17 +93,13 @@
             "cwd": "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\bin",
             "binaryPath": "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\bin\\main.exe",
             "binaryArgs": [
-                "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\config\\main.json"
+                "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\config\\main.json",
+                "--v=0"
             ]
         },
         {
             "cwd": "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\bin",
             "binaryPath": "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\bin\\test.exe",
-            "binaryArgs": []
-        },
-        {
-            "cwd": "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\bin",
-            "binaryPath": "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\bin\\main.exe",
             "binaryArgs": []
         }
     ],

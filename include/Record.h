@@ -10,6 +10,11 @@ struct Record
     std::string pid;
     std::string start;
     std::string stop;
+
+    std::string to_string()
+    {
+        return "PID: " + pid + ", start: " + start + ", stop: " + stop;
+    }
 };
 
 #endif // RECORD_H

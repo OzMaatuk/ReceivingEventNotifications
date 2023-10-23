@@ -37,6 +37,7 @@ Mapper::~Mapper()
 
 void Mapper::addToKey(const std::string& key, const Record& r)
 {
+    VLOG(1) << "addToKey()";
     if (!map.contains(key))
         map.insert({std::string(key), {Record(r)}});
     else
@@ -45,6 +46,7 @@ void Mapper::addToKey(const std::string& key, const Record& r)
 
 void Mapper::setEndTime(const std::string& key, const std::string& pid, const std::string& ts)
 {
+    VLOG(1) << "setEndTime()";
     if (map.contains(key))
     {
         for (auto it = map.at(key).begin(); it != map.at(key).end(); ++it)

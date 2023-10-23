@@ -2,8 +2,6 @@
 #include <cxxabi.h>
 #include "Collect.h"
 
-#define NDEBUG
-
 const char* currentExceptionTypeName()
 {
     int status;

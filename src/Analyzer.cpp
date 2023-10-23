@@ -27,6 +27,7 @@ bool Analyzer::checkWhitelist(const std::string& process) const
 
 const std::string Analyzer::isMaliciousTiming(const std::list<Record>& records) const
 {
+    VLOG(1) << "Start isMaliciousTiming";
     std::vector<long> durations;
     double medApproximation = 0.0;
     long medDuration = 0;
@@ -35,11 +36,11 @@ const std::string Analyzer::isMaliciousTiming(const std::list<Record>& records) 
 
     for (auto &r : records)
     {
-        DLOG(INFO) << r.pid;
+        VLOG(1) << r.pid;
         if (isValidTimestamp(r.stop))
             durations.push_back(getRange(r.start, r.stop));
         else
-            DLOG(WARNING) << "No valid stop time, cannot calculate range for process: "  + r.pid;
+            VLOG(1) << "No valid stop time, cannot calculate range for process: "  + r.pid;
     }
 
     for (auto &r : durations)
@@ -51,6 +52,8 @@ const std::string Analyzer::isMaliciousTiming(const std::list<Record>& records) 
         medApproximation += (r / medDuration);
     if (durations.size() > 0)
         medApproximation /= durations.size();
+
+    VLOG(1) << "Done isMaliciousTiming";
 
     if (medApproximation >= timingApx)
     {
@@ -64,7 +67,7 @@ const std::string Analyzer::isMaliciousTiming(const std::list<Record>& records) 
 
 std::map<std::string, std::string> Analyzer::analyze(const std::list<Record>& records)
 {
-    LOG(INFO) << "Analyze records for pid:";
+    VLOG(1) << "Analyze records for pids:";
     std::map<std::string, std::string> res = std::map<std::string, std::string>();
     std::string tmp = isMaliciousTiming(records);
     if (!tmp.empty()) res.insert_or_assign("TIMING_ALERT", tmp);
@@ -131,7 +134,7 @@ void Analyzer::load(const std::string& ofp)
 
 void Analyzer::add(const std::string& process, const std::list<Record>& records)
 {
-    DLOG(INFO) << "Adding record for process " << process;
+    VLOG(1) << "Adding record for process " << process;
     if (checkWhitelist(process))
         return;
     insights[process] = analyze(records); // TODO: Make it add new insights and not overwrite all.
