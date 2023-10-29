@@ -210,10 +210,13 @@ int Collect::main(Config c)
         {
             // TODO: handle all sinks pSvc, pLoc, pUnsecApp, pStubUnk, pSink, pStubSink.
             std::list<std::vector<std::string>> tmp = pSink->cache.getAndClear();
-            auto asyncThread = std::async(std::launch::async, [&mapper, &tmp]() { return mapper->start(tmp); });
-            asyncThread.wait();
-            asyncThread = std::async(std::launch::async, [&analyzer, &mapper]() { return analyzer->start(mapper->getMap()); });
-            asyncThread = std::async(std::launch::async, [&writer, &tmp]() { return writer->start(tmp); });
+            if (!tmp.empty())
+            {
+                auto asyncThread = std::async(std::launch::async, [&mapper, &tmp]() { return mapper->start(tmp); });
+                asyncThread.wait();
+                asyncThread = std::async(std::launch::async, [&analyzer, &mapper]() { return analyzer->start(mapper->getMap()); });
+                asyncThread = std::async(std::launch::async, [&writer, &tmp]() { return writer->start(tmp); });
+            }
             Sleep(c.sleep_interval);
         }
         catch (MyException &ex)
