@@ -35,8 +35,8 @@ struct EventDetails
         row.push_back(strClass);
         row.push_back(strName);
         row.push_back(std::to_string(pid));
-        delete(strClass);
-        delete(strName);
+        delete[] strClass;
+        delete[] strName;
         return row;
     }
 };
