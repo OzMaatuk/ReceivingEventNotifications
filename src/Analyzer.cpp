@@ -36,8 +36,6 @@ const std::string Analyzer::isMaliciousTiming(const std::list<Record>& records) 
     double medApproximation = 0.0;
     long medDuration = 0;
 
-    // TODO: something wrong, not all process are added.
-
     // collect run durations for each process of same type
     for (auto &r : records)
     {
