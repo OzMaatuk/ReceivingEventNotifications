@@ -112,7 +112,11 @@ void Analyzer::load(const std::string& ofp)
     if (fin.is_open())
     {
         Json::Reader reader;
-        reader.parse(fin, root);
+        if (!reader.parse(fin, root)) 
+        {
+            LOG(ERROR) << "Failed to parse json from file: " << ofp;
+            throw std::runtime_error("INVALID_JSON");
+        }
         fin.close();
     }
     else
@@ -175,9 +179,17 @@ void Analyzer::toFile() const
   }
     // Write the JSON object to a file.
     std::ofstream ofile(outputFilePath);
-    ofile << root.toStyledString();
-    ofile.flush();
-    ofile.close();
+    if (ofile.is_open())
+    {
+        ofile << root.toStyledString();
+        ofile.flush();
+        ofile.close();
+    }
+    else
+    {
+        LOG(ERROR) << "Failed to open output file: " << outputFilePath;
+        throw std::runtime_error("CREATE_FILE_FAILED");
+    }
 }
 
 std::map<std::string, std::map<std::string, std::string>>& Analyzer::getInsights()

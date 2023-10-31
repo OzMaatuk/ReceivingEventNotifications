@@ -39,6 +39,11 @@ struct EventDetails
         delete[] strName;
         return row;
     }
+
+    bool isValid() const
+    {
+        return true; // TODO
+    }
 };
 
 #endif // EVENTDETAILS_H

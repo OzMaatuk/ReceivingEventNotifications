@@ -8,6 +8,7 @@
 #include <list>
 #include <json/json.h>
 #include <json/writer.h>
+#include <stdexcept>
 
 /**
  * @class Config

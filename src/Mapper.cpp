@@ -1,31 +1,31 @@
 // Mapper.cpp
 #include "Mapper.h"
 
-Mapper::Mapper(): map()
+Mapper::Mapper() : map()
 {
     // Constructor for creating a Mapper object and determining the labels according to the operating system.
     LOG(INFO) << "Creating Mapper object";
-     #ifdef _WIN32
-        startLabel = WIN_PROCESS_START;
-        stopLabel = WIN_PROCESS_END;
-    #elif _WIN64
-        startLabel = WIN_PROCESS_START;
-        stopLabel = WIN_PROCESS_END;
-    #elif __APPLE__ || __MACH__
-        startLabel = UNIX_PROCESS_START;
-        stopLabel = UNIX_PROCESS_START;
-    #elif __linux__
-        startLabel = UNIX_PROCESS_START;
-        stopLabel = UNIX_PROCESS_START;
-    #elif __unix || __unix__
-        startLabel = UNIX_PROCESS_START;
-        stopLabel = UNIX_PROCESS_START;
-    #else
-        throw MyException("Cannot determine OS type.")
-    #endif
+#ifdef _WIN32
+    startLabel = WIN_PROCESS_START;
+    stopLabel = WIN_PROCESS_END;
+#elif _WIN64
+    startLabel = WIN_PROCESS_START;
+    stopLabel = WIN_PROCESS_END;
+#elif __APPLE__ || __MACH__
+    startLabel = UNIX_PROCESS_START;
+    stopLabel = UNIX_PROCESS_START;
+#elif __linux__
+    startLabel = UNIX_PROCESS_START;
+    stopLabel = UNIX_PROCESS_START;
+#elif __unix || __unix__
+    startLabel = UNIX_PROCESS_START;
+    stopLabel = UNIX_PROCESS_START;
+#else
+    throw MyException("Cannot determine OS type.")
+#endif
 }
 
-Mapper::Mapper(const std::string& sfp) : Mapper()
+Mapper::Mapper(const std::string &sfp) : Mapper()
 {
     load(sfp);
 }
@@ -36,16 +36,24 @@ Mapper::~Mapper()
     // delete map;
 }
 
-void Mapper::addToKey(const std::string& key, const Record& r)
+void Mapper::addToKey(const std::string &key, const Record &r)
 {
     VLOG(1) << "addToKey()";
     if (!map.contains(key))
-        map.insert({std::string(key), {Record(r)}});
+    {
+        auto [iter, success] = map.insert({std::string(key), {Record(r)}});
+        if (!success)
+        {
+            throw MyException("Failed to insert key " + key + " into map");
+        }
+    }
     else
+    {
         map.at(key).push_back(r);
+    }
 }
 
-void Mapper::setEndTime(const std::string& key, const std::string& pid, const std::string& ts)
+void Mapper::setEndTime(const std::string &key, const std::string &pid, const std::string &ts)
 {
     VLOG(1) << "setEndTime()";
     if (map.contains(key))
@@ -62,7 +70,7 @@ void Mapper::setEndTime(const std::string& key, const std::string& pid, const st
     LOG(WARNING) << "No start time for proccess, pid: " << key << " " << pid;
 }
 
-void Mapper::load(const std::list<std::vector<std::string>>& rows)
+void Mapper::load(const std::list<std::vector<std::string>> &rows)
 {
     for (auto x : rows)
     {
@@ -70,13 +78,17 @@ void Mapper::load(const std::list<std::vector<std::string>>& rows)
     }
 }
 
-void Mapper::load(const std::string& sfp)
+void Mapper::load(const std::string &sfp)
 {
     loadMapFile(sfp, map);
 }
 
-void Mapper::add(const std::vector<std::string>& row)
+void Mapper::add(const std::vector<std::string> &row)
 {
+    if (row.size() < 4)
+    {
+        throw MyException("The row vector does not contain sufficient elements");
+    }
     std::string pName = row.at(2);
     LOG(INFO) << "Adding event for process " << pName;
     std::string ts = row.at(0);
@@ -99,34 +111,52 @@ void Mapper::add(const std::vector<std::string>& row)
     // throw MyException("Undefined event type");
 }
 
-void Mapper::start(const std::list<std::vector<std::string>>& cache)
+void Mapper::start(const std::list<std::vector<std::string>> &cache)
 {
-    for (auto e : cache) add(e);
+    for (auto e : cache)
+        add(e);
 }
 
-void Mapper::toFile(const std::string& ofp) const
+void Mapper::toFile(const std::string &ofp) const
 {
     LOG(INFO) << "Creating process map file " << ofp;
-    // Create a JSON object to store the map.
-    Json::Value root = Json::objectValue;
-    for (auto it = map.begin(); it != map.end(); ++it)
+
+    try
     {
-        Json::Value process = Json::arrayValue;
-        for (auto obj = it->second.begin(); obj != it->second.end(); ++obj)
+        std::ofstream ofile(ofp);
+        if (!ofile.is_open())
         {
-            Json::Value Record = Json::objectValue;
-            Record["pid"] = Json::Value(obj->pid);
-            Record["start"] = Json::Value(obj->start);
-            Record["stop"] = Json::Value(obj->stop);
-            process.append(Record);
+            throw MyException("Could not open file " + ofp);
         }
-        root[it->first] = process;
+
+        // Create a JSON object to store the map.
+        Json::Value root = Json::objectValue;
+        for (auto it = map.begin(); it != map.end(); ++it)
+        {
+            Json::Value process = Json::arrayValue;
+            for (auto obj = it->second.begin(); obj != it->second.end(); ++obj)
+            {
+                Json::Value Record = Json::objectValue;
+                Record["pid"] = Json::Value(obj->pid);
+                Record["start"] = Json::Value(obj->start);
+                Record["stop"] = Json::Value(obj->stop);
+                process.append(Record);
+            }
+            root[it->first] = process;
+        }
+        // Write the JSON object to a file.
+        ofile << root.toStyledString();
+        ofile.flush();
+        ofile.close();
+        if (ofile.fail())
+        {
+            throw MyException("An error occurred while writing to file " + ofp);
+        }
     }
-    // Write the JSON object to a file.
-    std::ofstream ofile(ofp);
-    ofile << root.toStyledString();
-    ofile.flush();
-    ofile.close();
+    catch (const std::exception &e)
+    {
+        throw MyException("An error occurred while writing to file " + ofp + ": " + e.what());
+    }
 }
 
 void Mapper::print() const
@@ -134,8 +164,7 @@ void Mapper::print() const
     printRecordsMap(map);
 }
 
-
-std::map<std::string, std::list<Record>>& Mapper::getMap()
+std::map<std::string, std::list<Record>> &Mapper::getMap()
 {
     return map;
 }

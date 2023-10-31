@@ -13,6 +13,7 @@
 #include <ctime>
 #include <iomanip>
 #include <regex>
+#include <stdexcept>
 #include "Config.h"
 #include "Record.h"
 #include "MyException.h"

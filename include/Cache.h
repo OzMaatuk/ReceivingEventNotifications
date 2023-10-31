@@ -7,6 +7,7 @@
 #include <string>
 #include <list>
 #include <vector>
+#include <stdexcept>
 #include "EventDetails.h"
 
 /**

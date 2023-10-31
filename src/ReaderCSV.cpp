@@ -1,11 +1,15 @@
 // ReaderCSV.cpp
 #include "Reader.h"
+#include <stdexcept>
 
 Reader::Reader(const std::string& sfp) : rows()
 {
     LOG(INFO) << "Creating Reader object";
     file.open(sfp, std::ios::in);
-    if (!file.is_open()) LOG(WARNING) << "Could not open events file for read " << sfp;
+    if (!file.is_open()) {
+        LOG(WARNING) << "Could not open events file for read " << sfp;
+        throw std::runtime_error("Could not open events file for read");
+    }
 }
 
 Reader::~Reader()
@@ -59,6 +63,11 @@ std::list<std::vector<std::string>>& Reader::start()
 
     while (std::getline(file, line))
     {
+        if (file.fail() && !file.eof()) { // check for read error
+            LOG(WARNING) << "Error while reading the file.";
+            throw std::runtime_error("Error while reading the file.");
+        }
+
         VLOG(1) << "READ_LINE: " << line;
         row.clear();
 

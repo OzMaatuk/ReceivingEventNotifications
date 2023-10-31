@@ -13,12 +13,19 @@ Cache::~Cache()
 void Cache::add(const EventDetails& e)
 {
     VLOG(1) << "Event added to Cache object";
+    if (!e.isValid()) // checking if the event details are valid
+    {
+        throw std::runtime_error("Invalid event details");
+    }
     cache.push(EventDetails(e));
 }
 
 const std::vector<std::string> Cache::pop()
 {
-    if (cache.empty()) return std::vector<std::string>(); // TODO: Not good.
+    if (cache.empty()) 
+    {
+        throw std::runtime_error("Pop called on empty cache"); // throw an exception instead of silently returning
+    }
     std::vector<std::string> tmp = cache.front().eventDetailsToStringVector();
     cache.pop();
     return tmp;
