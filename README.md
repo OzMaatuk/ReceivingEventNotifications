@@ -15,10 +15,10 @@ The project is organized into the following main directories:
 ## Dependencies
 The project uses a variety of external libraries, which need to be installed for successful compilation:
 
-- ole32
-- oleaut32
-- ws2_32
-- wbemuuid
+- ole32 (only for Windows systems)
+- oleaut32 (only for Windows systems)
+- ws2_32 (only for Windows systems)
+- wbemuuid (only for Windows systems)
 - jsoncpp
 - glog
 - gtest
@@ -42,6 +42,14 @@ The program will output:
 2. JSON file for Mapped histogram for each process (optional).
 3. Insight for each process after analyzing the histogram.
 Files paths are specified in the application config.
+
+## Notes:
+
+Dedicated Git configuration been used to make no diffrence between windows - linux files format:
+
+git config core.filemode false
+
+git config --global core.autocrlf true
 
 ## Sources:
 
