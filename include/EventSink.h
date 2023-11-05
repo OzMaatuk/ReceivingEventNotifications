@@ -2,6 +2,8 @@
 #ifndef EVENTSINK_H // instead of pragma once
 #define EVENTSINK_H
 
+#ifdef _WIN32
+
 #define _WIN32_DCOM
 
 #include "Cache.h"
@@ -23,8 +25,8 @@ class EventSink : public IWbemObjectSink
     bool bDone; // A flag indicating whether eventsink is finished
 
 public:
-    Cache cache; // Cache object to store the received events
-    EventSink() : cache() { m_lRef = 0; }
+    Cache<EventDetails> cache; // Cache object to store the received events
+    EventSink() : cache<EventDetails>() { m_lRef = 0; }
     virtual ~EventSink() { bDone = true; }
 
     // Overridden from IWbemObjectSink. Handles reference count.
@@ -51,4 +53,5 @@ public:
         /* [in] */ IWbemClassObject __RPC_FAR *pObjParam);
 };
 
+#endif // _WIN32
 #endif // end of EventSink.h

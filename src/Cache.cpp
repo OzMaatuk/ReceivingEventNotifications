@@ -1,37 +1,37 @@
 #include "Cache.h"
 
-Cache::Cache() : cache()
+template <class T> Cache<T>::Cache() : cache()
 {
     LOG(INFO) << "Creating Cache object";
 }
 
-Cache::~Cache()
+template <class T> Cache<T>::~Cache()
 {
     LOG(INFO) << "Destructing Cache object";
 }
 
-void Cache::add(const EventDetails& e)
+template <class T> void Cache<T>::add(const T& e)
 {
     VLOG(1) << "Event added to Cache object";
     if (!e.isValid()) // checking if the event details are valid
     {
         throw std::runtime_error("Invalid event details");
     }
-    cache.push(EventDetails(e));
+    cache.push(T(e));
 }
 
-const std::vector<std::string> Cache::pop()
+template <class T> const std::vector<std::string> Cache<T>::pop()
 {
     if (cache.empty()) 
     {
         throw std::runtime_error("Pop called on empty cache"); // throw an exception instead of silently returning
     }
-    std::vector<std::string> tmp = cache.front().eventDetailsToStringVector();
+    std::vector<std::string> tmp = std::to_string(cache.front());
     cache.pop();
     return tmp;
 }
 
-const std::list<std::vector<std::string>> Cache::getAndClear()
+template <class T> const std::list<std::vector<std::string>> Cache<T>::getAndClear()
 {
     LOG(INFO) << "getAndClear Cache object";
     std::list<std::vector<std::string>> tmp = std::list<std::vector<std::string>>();
