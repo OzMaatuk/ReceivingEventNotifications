@@ -90,16 +90,21 @@
     ],
     "makefile.launchConfigurations": [
         {
-            "cwd": "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\bin",
-            "binaryPath": "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\bin\\main.exe",
+            "cwd": "${workspaceFolder}\\bin",
+            "binaryPath": "${workspaceFolder}\\bin\\main.exe",
             "binaryArgs": [
-                "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\config\\main.json",
+                "${workspaceFolder}\\config\\main.json",
                 "--v=0"
             ]
         },
         {
+            "cwd": "${workspaceFolder}\\bin",
+            "binaryPath": "${workspaceFolder}\\bin\\test.exe",
+            "binaryArgs": []
+        },
+        {
             "cwd": "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\bin",
-            "binaryPath": "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\bin\\test.exe",
+            "binaryPath": "d:\\Workspace\\WindowsProcessMonitoring\\ReceivingEventNotifications\\bin\\main.exe",
             "binaryArgs": []
         }
     ],
