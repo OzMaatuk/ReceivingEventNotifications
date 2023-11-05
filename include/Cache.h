@@ -16,18 +16,19 @@
  *
  * This class is responsible to contain OS events that accoured recently.
  */
-template <class T>
+template <typename T>
 class Cache
 {
 private:
     std::queue<T> cache; // queue to implememnt cache variable
-    const std::vector<std::string> pop();
+    const T pop();
 
 public:
     Cache();
     virtual ~Cache();
     virtual void add(const T& e);
-    virtual const std::list<std::vector<std::string>> getAndClear();
+    virtual const std::queue<T> getAndClear();
+    const static std::list<std::vector<std::string>> cacheToStringList(const std::queue<T>& c);
 };
 
 #endif // CACHE_H

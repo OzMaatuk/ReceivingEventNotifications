@@ -1,16 +1,19 @@
 #include "Cache.h"
 
-template <class T> Cache<T>::Cache() : cache()
+template <typename T>
+Cache<T>::Cache() : cache()
 {
     LOG(INFO) << "Creating Cache object";
 }
 
-template <class T> Cache<T>::~Cache()
+template <typename T>
+Cache<T>::~Cache()
 {
     LOG(INFO) << "Destructing Cache object";
 }
 
-template <class T> void Cache<T>::add(const T& e)
+template <typename T>
+void Cache<T>::add(const T& e)
 {
     VLOG(1) << "Event added to Cache object";
     if (!e.isValid()) // checking if the event details are valid
@@ -20,26 +23,38 @@ template <class T> void Cache<T>::add(const T& e)
     cache.push(T(e));
 }
 
-template <class T> const std::vector<std::string> Cache<T>::pop()
+template <typename T>
+const T Cache<T>::pop()
 {
     if (cache.empty()) 
     {
         throw std::runtime_error("Pop called on empty cache"); // throw an exception instead of silently returning
     }
-    std::vector<std::string> tmp = std::to_string(cache.front());
+    T tmp = cache.front();
     cache.pop();
     return tmp;
 }
 
-template <class T> const std::list<std::vector<std::string>> Cache<T>::getAndClear()
+template <typename T>
+const std::queue<T> Cache<T>::getAndClear()
 {
     LOG(INFO) << "getAndClear Cache object";
+    std::queue<T> tmp = std::queue<T>();
+    tmp.swap(cache);
+    return tmp;
+}
+
+template <>
+const std::list<std::vector<std::string>> Cache<EventDetails>::cacheToStringList(const std::queue<EventDetails>& c)
+{
+    std::queue<EventDetails> tmpCache = std::queue<EventDetails>(c);
     std::list<std::vector<std::string>> tmp = std::list<std::vector<std::string>>();
-    size_t len = cache.size();
-    while (len > 0)
+    while (!tmpCache.empty())
     {
-        tmp.push_back(pop());
-        len--;
+        tmp.push_back(tmpCache.front().eventDetailsToStringVector());
+        tmpCache.pop();
     }
     return tmp;
 }
+
+template class Cache<EventDetails>;
