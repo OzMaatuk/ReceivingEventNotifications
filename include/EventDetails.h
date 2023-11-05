@@ -2,6 +2,7 @@
 #ifndef EVENTDETAILS_H
 #define EVENTDETAILS_H
 
+#ifdef _WIN32
 // #define WIN32_LEAN_AND_MEAN
 // #include <windows.h>
 #include <comdef.h>
@@ -14,7 +15,7 @@ struct EventDetails
     BSTR type;
     BSTR name;
 
-    std::vector<std::string> eventDetailsToStringVector()
+    std::vector<std::string> eventDetailsToStringVector() const
     {
         char *strClass = new char[512];
         wcstombs(strClass, type, 512);
@@ -40,10 +41,18 @@ struct EventDetails
         return row;
     }
 
+    // Overloads the `operator<<()` operator.
+    friend std::ostream& operator<<(std::ostream& os, const EventDetails& obj) {
+      for (auto x : obj.eventDetailsToStringVector())
+        os << x + ", ";
+      return os;
+    }
+
     bool isValid() const
     {
         return true; // TODO
     }
 };
 
+#endif // _WIN32
 #endif // EVENTDETAILS_H
