@@ -10,6 +10,10 @@ RUN if [ "${REINSTALL_CMAKE_VERSION_FROM_SOURCE}" != "none" ]; then \
     fi \
     && rm -f /tmp/reinstall-cmake.sh
 
+RUN git config core.filemode false
+
+RUN git config --global core.autocrlf true
+
 # Install booststacktrace
 RUN chmod +x /tmp/reinstall-booststacktrace.sh && /tmp/reinstall-booststacktrace.sh
 
