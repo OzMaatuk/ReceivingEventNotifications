@@ -11,24 +11,18 @@ STD = c++23
 CFLAGS = -std=$(STD) -Wall -Wextra -Wno-unknown-pragmas -Iinclude -g -no-pie -fno-pie -DBOOST_STACKTRACE_USE_BACKTRACE
 
 # The external libraries used.
-W_LDLIBS = -lole32 -loleaut32 -lws2_32 -lwbemuuid
-U_LDLIBS = -llibc -linotify
-GLOBAL_LDLIBS = -ljsoncpp -lglog -lgtest -lbacktrace
-
 # Determine OS type and set libraries properly.
 ifeq ($(OS),Windows_NT)
-	LDLIBS = $(W_LDLIBS) $(GLOBAL_LDLIBS)
+	LDLIBS = -lole32 -loleaut32 -lws2_32 -lwbemuuid -ljsoncpp -lglog -lgtest -lbacktrace
 else
 	LDLIBS = $(U_LDLIBS) $(GLOBAL_LDLIBS)
 endif
 
 # The directories to search for source files.
+# Determine OS type and set libraries properly.
 SRC_DIR = src/
-W_SRCS = EventSink.cpp WCollect.cpp main.cpp
-U_SRCS = UCollect.cpp main.cpp
-GLOBAL_SRCS = Config.cpp WriterCSV.cpp Cache.cpp Mapper.cpp ReaderCSV.cpp Analyzer.cpp
 ifeq ($(OS),Windows_NT)
-	SRCS = $(GLOBAL_SRCS) $(WSRCS)
+	SRCS = Config.cpp WriterCSV.cpp Cache.cpp EventSink.cpp Mapper.cpp ReaderCSV.cpp Analyzer.cpp WCollect.cpp main.cpp
 else
 	SRCS = $(GLOBAL_SRCS) $(USRCS)
 endif
@@ -66,7 +60,7 @@ test: clean $(TEST)
 all: clean $(TARGET)
 
 # Clean up the object files and the executable file.
-# rm -rf $(OOBJ) $(TARGET) $(TEST) logs\* # For linux
+# Determine OS type and set libraries properly.
 ifeq ($(OS),Windows_NT)
 clean:
 	if exist obj\*.o del obj\*.o
