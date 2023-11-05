@@ -1,15 +1,11 @@
-// Skelton provided, not woking code.
-
 #include <iostream>
 #include <unistd.h>
-// #include <sys/inotify.h>
+#include <sys/inotify.h>
 #include <string>
 #include <thread>
 #include <queue>
 #include "Config.h"
 #include "Collect.h"
-
-/*
 
 using namespace std;
 
@@ -29,7 +25,7 @@ void read_events(int inotify_fd, queue<struct inotify_event> *event_queue) {
       struct inotify_event *event = (struct inotify_event *)(buffer + i * sizeof(struct inotify_event));
 
       // Add the event to the queue.
-      event_queue->push(event);
+      event_queue->push(*event);
     }
   }
 }
@@ -40,7 +36,7 @@ void process_events(queue<struct inotify_event> *event_queue, int sinterval) {
         // Process events from the queue.
         while (!event_queue->empty()) {
             // Get the event from the queue.
-            struct inotify_event event = event_queue->front();
+            struct inotify_event* event = &(event_queue->front());
             event_queue->pop();
 
             // Check if the event is for a process start or stop.
@@ -52,15 +48,12 @@ void process_events(queue<struct inotify_event> *event_queue, int sinterval) {
             cout << "Process " << process_name << " " << (event->mask & IN_CREATE ? "started" : "stopped") << endl;
             }
         }
-        Sleep(sinterval);
+        usleep(sinterval);
     }
 }
 
-*/
-
 int Collect::main(Config c)
 {
-  /*
   // Create an inotify instance.
   int inotify_fd = inotify_init1(IN_CLOEXEC);
 
@@ -74,7 +67,7 @@ int Collect::main(Config c)
   thread read_thread(read_events, inotify_fd, &event_queue);
 
   // Create a thread to process events.
-  thread process_thread(process_events, &event_queue, c.sleep_inetrval);
+  thread process_thread(process_events, &event_queue, c.sleep_interval);
 
   // Join the threads.
   read_thread.join();
@@ -82,40 +75,4 @@ int Collect::main(Config c)
 
   // Close the inotify instance.
   close(inotify_fd);
-
-  */
 }
-
-// You are right. There is no `/usr/include` directory on Windows. The inotify library is not available for Windows. You can use the inotify-tools package on Windows, but you will need to compile it from source.
-
-// To compile the inotify-tools package from source on Windows, you can use the following steps:
-
-// 1. Download the inotify-tools source code from the following link:
-
-// ```
-// https://github.com/rvoicilas/inotify-tools
-// ```
-
-// 2. Extract the inotify-tools source code:
-
-// ```
-// tar -xf inotify-tools-3.14.tar.gz
-// ```
-
-// 3. Navigate to the inotify-tools-3.14 directory.
-// 4. Open a command prompt window in the inotify-tools-3.14 directory.
-// 5. Run the following command to compile the inotify-tools package:
-
-// ```
-// mingw32-gcc -o inotify-tools inotify-tools.c
-// ```
-
-// Once you have compiled the inotify-tools package, you can run it by typing the following command in the command prompt window:
-
-// ```
-// inotify-tools
-// ```
-
-// The inotify-tools package will not be able to detect file changes on Windows, but you can use it to test your code.
-
-// I hope this helps! Let me know if you have any other questions.
