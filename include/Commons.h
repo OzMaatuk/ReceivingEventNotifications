@@ -3,10 +3,10 @@
 #define COMMONS_H
 
 #include <glog/logging.h>
-#include <json/json.h>
-#include <json/writer.h>
+// #include <json/json.h> // included in Config.h
+// #include <json/writer.h> // included in Config.h
 #include <fstream>
-#include <vector> // TODO: maybe use only one collection vector VS list
+#include <vector>
 #include <list>
 #include <map>
 #include <chrono>
@@ -14,7 +14,7 @@
 #include <iomanip>
 #include <regex>
 #include <stdexcept>
-#include "Config.h"
+#include "Config.h" // TODO: Should not be here?
 #include "Record.h"
 #include "MyException.h"
 

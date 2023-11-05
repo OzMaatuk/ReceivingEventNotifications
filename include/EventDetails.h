@@ -2,6 +2,7 @@
 #ifndef EVENTDETAILS_H
 #define EVENTDETAILS_H
 
+#ifdef _WIN32
 // #define WIN32_LEAN_AND_MEAN
 // #include <windows.h>
 #include <comdef.h>
@@ -14,7 +15,7 @@ struct EventDetails
     BSTR type;
     BSTR name;
 
-    std::vector<std::string> eventDetailsToStringVector()
+    std::vector<std::string> eventDetailsToStringVector() const
     {
         char *strClass = new char[512];
         wcstombs(strClass, type, 512);
@@ -46,4 +47,5 @@ struct EventDetails
     }
 };
 
+#endif // _WIN32
 #endif // EVENTDETAILS_H

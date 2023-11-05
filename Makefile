@@ -15,16 +15,17 @@ CFLAGS = -std=$(STD) -Wall -Wextra -Wno-unknown-pragmas -Iinclude -g -no-pie -fn
 ifeq ($(OS),Windows_NT)
 	LDLIBS = -lole32 -loleaut32 -lws2_32 -lwbemuuid -ljsoncpp -lglog -lgtest -lbacktrace
 else
-	LDLIBS = $(U_LDLIBS) $(GLOBAL_LDLIBS)
+	LDLIBS = -ljsoncpp -lglog -lgtest -lbacktrace
 endif
 
 # The directories to search for source files.
 # Determine OS type and set libraries properly.
 SRC_DIR = src/
+
 ifeq ($(OS),Windows_NT)
 	SRCS = Config.cpp WriterCSV.cpp Cache.cpp EventSink.cpp Mapper.cpp ReaderCSV.cpp Analyzer.cpp WCollect.cpp main.cpp
 else
-	SRCS = $(GLOBAL_SRCS) $(USRCS)
+	SRCS = UCollect.cpp main.cpp
 endif
 
 # The tests files

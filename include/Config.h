@@ -6,8 +6,13 @@
 #include <fstream>
 #include <string>
 #include <list>
-#include <json/json.h>
+#ifdef _WIN32
+#include "json/json.h"
 #include <json/writer.h>
+#else
+#include <jsoncpp/json/json.h>
+#include <jsoncpp/json/writer.h>
+#endif
 #include <stdexcept>
 
 /**

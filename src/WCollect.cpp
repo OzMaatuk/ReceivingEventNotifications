@@ -1,4 +1,5 @@
 #include "Collect.h"
+#include <conio.h>
 
 Collect::Collect()
 {
