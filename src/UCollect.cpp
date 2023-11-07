@@ -1,78 +1,117 @@
-#include <iostream>
 #include <unistd.h>
 #include <sys/inotify.h>
 #include <string>
-#include <thread>
 #include <queue>
-#include "Config.h"
+#include <ncurses.h>
+#include <fcntl.h>
+#include <termios.h>
+#include <atomic>
 #include "Collect.h"
 
 using namespace std;
 
+atomic_bool stop = false;
+
+bool waitForKeyPress()
+{
+  // Open the keyboard file descriptor.
+  int fd = open("/dev/stdin", O_RDWR | O_NONBLOCK);
+
+  // Set the keyboard file descriptor to non-blocking.
+  fcntl(fd, F_SETFL, O_NONBLOCK);
+
+  // Check for a key press.
+  char buf[1];
+  int bytesRead = read(fd, buf, sizeof(buf));
+
+  if (bytesRead > 0)
+  {
+    // A key has been pressed.
+    close(fd);
+    return true;
+  }
+
+  // No key press.
+  close(fd);
+  return false;
+}
+
 // Function to read events from the inotify instance.
-void read_events(int inotify_fd, queue<struct inotify_event> *event_queue) {
+void read_events(queue<struct inotify_event> *event_queue)
+{
+  DLOG(INFO) << "Starts read_events";
+
+  // Initialize inotify instance
+  int inotify_fd = inotify_init1(IN_CLOEXEC);
+
+  // Add watch for /proc directory to monitor process events
+  int watch_fd = inotify_add_watch(inotify_fd, "/proc", IN_CREATE | IN_DELETE);
+
   // Create a buffer to store events.
   char buffer[1024];
 
-  // Infinite loop to read events.
-  while (true) {
-    // Read events from the inotify instance.
+  // sets the inotify_fd to non-blocking mode using fcntl()
+  int flags = fcntl(inotify_fd, F_GETFL);
+  fcntl(inotify_fd, F_SETFL, flags | O_NONBLOCK);
+
+  while (!waitForKeyPress())
+  {
+    // Read events from inotify instance
     int event_size = read(inotify_fd, buffer, sizeof(buffer));
 
-    // Loop through the events.
-    for (int i = 0; i < event_size / sizeof(struct inotify_event); i++) {
-      // Get the event.
-      struct inotify_event *event = (struct inotify_event *)(buffer + i * sizeof(struct inotify_event));
+    if (!(event_size < 0 && (errno == EAGAIN || errno == EWOULDBLOCK)))
+    {
+      // Loop through events
+      for (int i = 0; (unsigned)i < event_size / sizeof(struct inotify_event); i++)
+      {
+        // Get the event
+        struct inotify_event *event = (struct inotify_event *)(buffer + i * sizeof(struct inotify_event));
 
-      // Add the event to the queue.
-      event_queue->push(*event);
+        // Check event type (IN_CREATE for process start, IN_DELETE for process stop)
+        if (event->mask & IN_CREATE)
+        {
+          LOG(INFO) << "Process " << event->name << " started";
+        }
+        else if (event->mask & IN_DELETE)
+        {
+          LOG(INFO) << "Process " << event->name << " stopped";
+        }
+      }
     }
   }
+
+  // Close the inotify instance.
+  close(inotify_fd);
+  DLOG(INFO) << "Done read_events";
 }
 
-// Function to process events from the queue.
-void process_events(queue<struct inotify_event> *event_queue, int sinterval) {
-    while (true) {
-        // Process events from the queue.
-        while (!event_queue->empty()) {
-            // Get the event from the queue.
-            struct inotify_event* event = &(event_queue->front());
-            event_queue->pop();
+Collect::Collect() {}
 
-            // Check if the event is for a process start or stop.
-            if (event->mask & (IN_CREATE | IN_DELETE)) {
-            // Get the process name.
-            string process_name = event->name;
-
-            // Print the event.
-            cout << "Process " << process_name << " " << (event->mask & IN_CREATE ? "started" : "stopped") << endl;
-            }
-        }
-        usleep(sinterval);
-    }
-}
+Collect::~Collect() {}
 
 int Collect::main(Config c)
 {
-  // Create an inotify instance.
-  int inotify_fd = inotify_init1(IN_CLOEXEC);
-
-  // Create a watch for the /proc/ directory.
-  int watch_fd = inotify_add_watch(inotify_fd, "/proc", IN_CREATE | IN_DELETE);
+  // Initialize ncurses
+  initscr();
+  noecho();
+  cbreak();
 
   // Create a queue to store events.
   queue<struct inotify_event> event_queue;
 
   // Create a thread to read events.
-  thread read_thread(read_events, inotify_fd, &event_queue);
+  DLOG(INFO) << "asyncReadThread";
+  auto asyncReadThread = async(std::launch::async, [&event_queue]()
+                               { return read_events(&event_queue); });
 
-  // Create a thread to process events.
-  thread process_thread(process_events, &event_queue, c.sleep_interval);
+  while (!waitForKeyPress())
+  {
 
-  // Join the threads.
-  read_thread.join();
-  process_thread.join();
+    usleep(c.sleep_interval);
+  }
+  DLOG(INFO) << "Main loop done.";
 
-  // Close the inotify instance.
-  close(inotify_fd);
+  // Clean up ncurses
+  endwin();
+  return 0;
 }
