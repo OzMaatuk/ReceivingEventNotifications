@@ -5,13 +5,9 @@
 #include <ncurses.h>
 #include <fcntl.h>
 #include <termios.h>
-#include <atomic>
 #include "Collect.h"
 
-using namespace std;
-
-atomic_bool stop = false;
-
+// Function listen for ENTER key press, returns true if been made.
 bool waitForKeyPress()
 {
   // Open the keyboard file descriptor.
@@ -37,7 +33,7 @@ bool waitForKeyPress()
 }
 
 // Function to read events from the inotify instance.
-void read_events(queue<struct inotify_event> *event_queue)
+void read_events(std::queue<struct inotify_event> *event_queue)
 {
   DLOG(INFO) << "Starts read_events";
 
@@ -92,12 +88,12 @@ Collect::~Collect() {}
 int Collect::main(Config c)
 {
   // Initialize ncurses
-  initscr();
+  // initscr(); // messingup the logs. when not used, makes WaitForKeyPress() listen only for ENTER press.
   noecho();
   cbreak();
 
   // Create a queue to store events.
-  queue<struct inotify_event> event_queue;
+  std::queue<struct inotify_event> event_queue;
 
   // Create a thread to read events.
   DLOG(INFO) << "asyncReadThread";
