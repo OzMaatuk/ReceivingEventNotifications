@@ -16,23 +16,23 @@ template <typename T>
 void Cache<T>::add(const T& e)
 {
     VLOG(1) << "Event added to Cache object";
-    if (!e.isValid()) // checking if the event details are valid
-    {
-        throw std::runtime_error("Invalid event details");
-    }
     cache.push(T(e));
 }
 
 template <typename T>
 const T Cache<T>::pop()
 {
-    if (cache.empty()) 
+    try
     {
-        throw std::runtime_error("Pop called on empty cache"); // throw an exception instead of silently returning
+        T tmp = cache.front();
+        cache.pop();
+        return tmp;
     }
-    T tmp = cache.front();
-    cache.pop();
-    return tmp;
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        throw MyException("Cache pop had failed with message: " + e.what()); 
+    }
 }
 
 template <typename T>
@@ -44,6 +44,7 @@ const std::queue<T> Cache<T>::getAndClear()
     return tmp;
 }
 
+#ifdef _WIN32 // implementation for Windows OS.
 template <>
 const std::list<std::vector<std::string>> Cache<EventDetails>::cacheToStringList(const std::queue<EventDetails>& c)
 {
@@ -51,6 +52,8 @@ const std::list<std::vector<std::string>> Cache<EventDetails>::cacheToStringList
     std::list<std::vector<std::string>> tmp = std::list<std::vector<std::string>>();
     while (!tmpCache.empty())
     {
+        EventDetails tmp = tmpCache.front();
+        if (!tmp.isValid()) continue;
         tmp.push_back(tmpCache.front().eventDetailsToStringVector());
         tmpCache.pop();
     }
@@ -58,3 +61,4 @@ const std::list<std::vector<std::string>> Cache<EventDetails>::cacheToStringList
 }
 
 template class Cache<EventDetails>;
+#endif
