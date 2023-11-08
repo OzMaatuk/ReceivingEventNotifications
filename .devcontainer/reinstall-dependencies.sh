@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-# git config
-# git config core.filemode false
-# git config --global core.autocrlf true
-
 apt-get update && apt-get upgrade -y && apt-get autoremove && apt-get autoclean
 
 # install booststacktrace
@@ -27,8 +23,7 @@ sudo make
 sudo cp lib/*.a /usr/lib
 cd ..
 
-# install inotify
-sudo apt-get -y install inotify-tools
+# install linux monitoring tool
 
 # install jsoncpp
 sudo apt-get -y install libjsoncpp-dev
