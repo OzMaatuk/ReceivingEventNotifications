@@ -184,7 +184,7 @@ int Collect::main(Config c)
         }
         catch (MyException &ex)
         {
-            LOG(INFO) << "My Exception thrown: " << ex.what() << std::endl;
+            LOG(ERROR) << "My Exception thrown: " << ex.what() << std::endl;
         }
     }
 

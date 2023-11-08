@@ -7,7 +7,7 @@ Writer::Writer(const std::string& ofp)
     file.open(ofp, std::ios::out | std::ios::app);
     if (!file.is_open())
     {
-        LOG(WARNING) << "Could not open events file for writing " << ofp;
+        LOG(ERROR) << "Could not open events file for writing " << ofp;
         throw std::runtime_error("Could not open events file for writing: " + ofp);
     }
 }
@@ -22,11 +22,12 @@ void Writer::start(const std::list<std::vector<std::string>>& cache)
 {
     if (!file.is_open())
     {
-        LOG(WARNING) << "Could not open CSV file.";
+        LOG(ERROR) << "Could not open CSV file.";
         throw std::runtime_error("Could not open CSV file.");
     }
     LOG(INFO) << "Start Writer";
     // Write the events list to a CSV file.
+    // Think try/catch isn't neccesarry.
     for (auto event : cache)
     {
         std::stringstream ss;
@@ -41,7 +42,7 @@ void Writer::start(const std::list<std::vector<std::string>>& cache)
 
     if (file.fail())
     {
-        LOG(WARNING) << "Error occurred while writing to the file.";
-        throw std::runtime_error("Error occurred while writing to the file.");
+        LOG(ERROR) << "Error occurred while writing to the file.";
+        throw MyException("Error occurred while writing to the file.");
     }
 }

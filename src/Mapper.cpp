@@ -12,7 +12,7 @@ Mapper::Mapper() : map()
     startLabel = UNIX_PROCESS_START;
     stopLabel = UNIX_PROCESS_START;
 #else
-    throw MyException("Cannot determine OS type.")
+    throw std::runtime_error("Cannot determine OS type.")
 #endif
 }
 
@@ -30,35 +30,51 @@ Mapper::~Mapper()
 void Mapper::addToKey(const std::string &key, const Record &r)
 {
     VLOG(1) << "addToKey()";
-    if (!map.contains(key))
+    try
     {
-        auto [iter, success] = map.insert({std::string(key), {Record(r)}});
-        if (!success)
+        if (!map.contains(key))
         {
-            throw MyException("Failed to insert key " + key + " into map");
+            auto [iter, success] = map.insert({std::string(key), {Record(r)}});
+            if (!success)
+            {
+                LOG(WARNING) << "Failed to insert new key " + key + " into map";
+                return;
+                // throw MyException("Failed to insert key " + key + " into map");
+            }
+        }
+        else
+        {
+            map.at(key).push_back(r);
         }
     }
-    else
+    catch (const std::exception &e)
     {
-        map.at(key).push_back(r);
+        LOG(WARNING) << "Failed to insert key " + key + " into the map";
     }
 }
 
 void Mapper::setEndTime(const std::string &key, const std::string &pid, const std::string &ts)
 {
     VLOG(1) << "setEndTime()";
-    if (map.contains(key))
+    try
     {
-        for (auto it = map.at(key).begin(); it != map.at(key).end(); ++it)
+        if (map.contains(key))
         {
-            if ((it->pid.compare(pid) == 0) && (it->stop.compare("") == 0))
+            for (auto it = map.at(key).begin(); it != map.at(key).end(); ++it)
             {
-                it->stop.assign(ts);
-                return;
+                if ((it->pid.compare(pid) == 0) && (it->stop.compare("") == 0))
+                {
+                    it->stop.assign(ts);
+                    return;
+                }
             }
         }
+        LOG(WARNING) << "No start time for proccess, pid: " << key << ", " << pid;
     }
-    LOG(WARNING) << "No start time for proccess, pid: " << key << " " << pid;
+    catch (const std::exception &e)
+    {
+        LOG(WARNING) << "Failed to set EndTime for process, pid: " << key << ", " << pid;
+    }
 }
 
 void Mapper::load(const std::list<std::vector<std::string>> &rows)
@@ -78,7 +94,9 @@ void Mapper::add(const std::vector<std::string> &row)
 {
     if (row.size() < 4)
     {
-        throw MyException("The row vector does not contain sufficient elements");
+        LOG(WARNING) << "The row vector does not contain sufficient elements";
+        return;
+        // throw MyException("The row vector does not contain sufficient elements");
     }
     std::string pName = row.at(2);
     LOG(INFO) << "Adding event for process " << pName;
@@ -111,7 +129,6 @@ void Mapper::start(const std::list<std::vector<std::string>> &cache)
 void Mapper::toFile(const std::string &ofp) const
 {
     LOG(INFO) << "Creating process map file " << ofp;
-
     try
     {
         std::ofstream ofile(ofp);
