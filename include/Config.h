@@ -6,14 +6,14 @@
 #include <fstream>
 #include <string>
 #include <list>
-#ifdef _WIN32
+#include <stdexcept>
+#if defined(_WIN32) || defined(_WIN64)
 #include "json/json.h"
 #include <json/writer.h>
-#else
+#elif defined(__APPLE__) || defined(__MACH__) || defined(__linux__) || defined(__unix) || defined(__unix__)
 #include <jsoncpp/json/json.h>
 #include <jsoncpp/json/writer.h>
 #endif
-#include <stdexcept>
 
 /**
  * @class Config

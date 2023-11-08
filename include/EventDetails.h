@@ -2,7 +2,7 @@
 #ifndef EVENTDETAILS_H
 #define EVENTDETAILS_H
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(_WIN64)
 // #define WIN32_LEAN_AND_MEAN
 // #include <windows.h>
 #include <comdef.h>
@@ -47,5 +47,5 @@ struct EventDetails
     }
 };
 
-#endif // _WIN32
+#endif // _WIN32 || _WIN64
 #endif // EVENTDETAILS_H

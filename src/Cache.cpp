@@ -30,8 +30,9 @@ const T Cache<T>::pop()
     }
     catch(const std::exception& e)
     {
-        std::cerr << e.what() << '\n';
-        throw MyException("Cache pop had failed with message: " + e.what()); 
+        LOG(ERROR) << "Cache pop had failed with message: ";
+        LOG(ERROR) << e.what();
+        throw MyException(e.what()); 
     }
 }
 
@@ -44,21 +45,21 @@ const std::queue<T> Cache<T>::getAndClear()
     return tmp;
 }
 
-#ifdef _WIN32 // implementation for Windows OS.
-template <>
-const std::list<std::vector<std::string>> Cache<EventDetails>::cacheToStringList(const std::queue<EventDetails>& c)
+#if defined(_WIN32) || defined(_WIN64)
+template <typename T>
+const std::list<std::vector<std::string>> Cache<T>::cacheToStringList(const std::queue<T>& c, std::vector<std::string> (*toStringFunc)(T*))
 {
-    std::queue<EventDetails> tmpCache = std::queue<EventDetails>(c);
+    std::queue<T> tmpCache = std::queue<T>(c);
     std::list<std::vector<std::string>> tmp = std::list<std::vector<std::string>>();
     while (!tmpCache.empty())
     {
-        EventDetails tmp = tmpCache.front();
-        if (!tmp.isValid()) continue;
-        tmp.push_back(tmpCache.front().eventDetailsToStringVector());
+        // if (!tmp.isValid()) continue; TODO
+        tmp.push_back(toStringFunc(&tmpCache.front()));
         tmpCache.pop();
     }
     return tmp;
 }
-
 template class Cache<EventDetails>;
+#elif defined(__APPLE__) || defined(__MACH__) || defined(__linux__) || defined(__unix) || defined(__unix__)
+template class Cache<std::vector<std::string>>;
 #endif

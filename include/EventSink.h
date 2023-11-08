@@ -2,7 +2,7 @@
 #ifndef EVENTSINK_H // instead of pragma once
 #define EVENTSINK_H
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(_WIN64)
 
 #define _WIN32_DCOM
 
@@ -53,5 +53,5 @@ public:
         /* [in] */ IWbemClassObject __RPC_FAR *pObjParam);
 };
 
-#endif // _WIN32
+#endif // _WIN32 || _WIN64
 #endif // end of EventSink.h

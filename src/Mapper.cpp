@@ -5,19 +5,10 @@ Mapper::Mapper() : map()
 {
     // Constructor for creating a Mapper object and determining the labels according to the operating system.
     LOG(INFO) << "Creating Mapper object";
-#ifdef _WIN32
+#if defined(_WIN32) || defined(_WIN64)
     startLabel = WIN_PROCESS_START;
     stopLabel = WIN_PROCESS_END;
-#elif _WIN64
-    startLabel = WIN_PROCESS_START;
-    stopLabel = WIN_PROCESS_END;
-#elif __APPLE__ || __MACH__
-    startLabel = UNIX_PROCESS_START;
-    stopLabel = UNIX_PROCESS_START;
-#elif __linux__
-    startLabel = UNIX_PROCESS_START;
-    stopLabel = UNIX_PROCESS_START;
-#elif __unix || __unix__
+#elif defined(__APPLE__) || defined(__MACH__) || defined(__linux__) || defined(__unix) || defined(__unix__)
     startLabel = UNIX_PROCESS_START;
     stopLabel = UNIX_PROCESS_START;
 #else
