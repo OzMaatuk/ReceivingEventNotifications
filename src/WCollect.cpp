@@ -1,5 +1,6 @@
-#include "Collect.h"
 #include <conio.h>
+#include "Collect.h"
+#include "EventSink.h"
 
 Collect::Collect()
 {
@@ -198,10 +199,10 @@ int Collect::main(Config c)
         return 1;
     }
 
-    Writer* writer = new Writer(c.events_file_path);
-    Reader* reader = new Reader(c.events_file_path);
-    Mapper* mapper = new Mapper();
-    Analyzer* analyzer = new Analyzer(c);
+    Writer *writer = new Writer(c.events_file_path);
+    Reader *reader = new Reader(c.events_file_path);
+    Mapper *mapper = new Mapper();
+    Analyzer *analyzer = new Analyzer(c);
 
     mapper->load(reader->start());
     // While asyc listening to events in background.
@@ -209,14 +210,18 @@ int Collect::main(Config c)
     {
         try
         {
-            const std::queue<EventDetails>& tmpQueue = pSink->cache.getAndClear();
-            const std::list<std::vector<std::string>>& tmp = Cache<EventDetails>::cacheToStringList(tmpQueue);
+            const std::queue<EventDetails> &tmpQueue = pSink->cache.getAndClear();
+            const std::list<std::vector<std::string>> &tmp = Cache<EventDetails>::cacheToStringList(tmpQueue, [](EventDetails* e)
+                                                                                                    { return e->eventDetailsToStringVector(); });
             if (!tmp.empty())
             {
-                auto asyncThread = std::async(std::launch::async, [&mapper, &tmp]() { return mapper->start(tmp); });
+                auto asyncThread = std::async(std::launch::async, [&mapper, &tmp]()
+                                              { return mapper->start(tmp); });
                 asyncThread.wait();
-                asyncThread = std::async(std::launch::async, [&analyzer, &mapper]() { return analyzer->start(mapper->getMap()); });
-                asyncThread = std::async(std::launch::async, [&writer, &tmp]() { return writer->start(tmp); });
+                asyncThread = std::async(std::launch::async, [&analyzer, &mapper]()
+                                         { return analyzer->start(mapper->getMap()); });
+                asyncThread = std::async(std::launch::async, [&writer, &tmp]()
+                                         { return writer->start(tmp); });
             }
             Sleep(c.sleep_interval);
         }
