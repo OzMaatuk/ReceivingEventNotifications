@@ -1,0 +1,10 @@
+{
+    "events_file_path": "..\\data\\events.csv",
+    "insights_file_path": "..\\data\\insights.json",
+    "sleep_interval": 30000,
+    "approximation": 0.0,
+    "white_list": [
+        "chrome.exe",
+        "process0"
+    ]
+}

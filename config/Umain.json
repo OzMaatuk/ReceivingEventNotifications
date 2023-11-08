@@ -1,0 +1,10 @@
+{
+    "events_file_path": "./data/Uevents.csv",
+    "insights_file_path": "./data/Uinsights.json",
+    "sleep_interval": 30000,
+    "approximation": 0.0,
+    "white_list": [
+        "sleep",
+        ""
+    ]
+}
