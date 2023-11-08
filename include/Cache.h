@@ -8,7 +8,10 @@
 #include <list>
 #include <vector>
 #include <stdexcept>
+#include "MyException.h"
+#if defined(_WIN32) || defined(_WIN64)
 #include "EventDetails.h"
+#endif
 
 /**
  * @class Collect
@@ -28,7 +31,7 @@ public:
     virtual ~Cache();
     virtual void add(const T& e);
     virtual const std::queue<T> getAndClear();
-    const static std::list<std::vector<std::string>> cacheToStringList(const std::queue<T>& c);
+    const static std::list<std::vector<std::string>> cacheToStringList(const std::queue<T>& c, std::vector<std::string> (*toStringFunc)(T*));
 };
 
 #endif // CACHE_H
