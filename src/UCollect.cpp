@@ -1,84 +1,149 @@
-#include <unistd.h>
-#include <sys/inotify.h>
-#include <string>
+#include <fstream>
+#include <vector>
 #include <queue>
-#include <ncurses.h>
+#include <chrono>
+#include <ctime>
+#include <filesystem>
+#include <regex>
 #include <fcntl.h>
 #include <termios.h>
+#include <ncurses.h>
 #include "Collect.h"
+
+__attribute__((unused)) static const char *UNIX_PROCESS_START = "START";
+__attribute__((unused)) static const char *UNIX_PROCESS_END = "STOP";
+
+std::string getCurrentTimestamp()
+{
+    auto now = std::chrono::system_clock::now();
+    auto time_t_now = std::chrono::system_clock::to_time_t(now);
+    struct tm *timeinfo = std::localtime(&time_t_now);
+
+    std::ostringstream oss;
+    oss << std::put_time(timeinfo, "%Y-%m-%dT%H:%M:%S");
+    return oss.str();
+}
+
+// Extract the process name from /proc/<PID>/cmdline
+std::string getProcessName(const std::string &pid)
+{
+    std::string cmdlinePath = "/proc/" + pid + "/cmdline";
+    std::ifstream cmdlineFile(cmdlinePath);
+    if (cmdlineFile)
+    {
+        std::string cmdline;
+        std::getline(cmdlineFile, cmdline);
+        size_t pos = cmdline.find('\0'); // Null-terminated strings in cmdline.
+        if (pos != std::string::npos)
+        {
+            cmdline = cmdline.substr(0, pos);
+        }
+        return cmdline;
+    }
+    return "";
+}
 
 // Function listen for ENTER key press, returns true if been made.
 bool waitForKeyPress()
 {
-  // Open the keyboard file descriptor.
-  int fd = open("/dev/stdin", O_RDWR | O_NONBLOCK);
+    // Open the keyboard file descriptor.
+    int fd = open("/dev/stdin", O_RDWR | O_NONBLOCK);
 
-  // Set the keyboard file descriptor to non-blocking.
-  fcntl(fd, F_SETFL, O_NONBLOCK);
+    // Set the keyboard file descriptor to non-blocking.
+    fcntl(fd, F_SETFL, O_NONBLOCK);
 
-  // Check for a key press.
-  char buf[1];
-  int bytesRead = read(fd, buf, sizeof(buf));
+    // Check for a key press.
+    char buf[1];
+    int bytesRead = read(fd, buf, sizeof(buf));
 
-  if (bytesRead > 0)
-  {
-    // A key has been pressed.
+    if (bytesRead > 0)
+    {
+        // A key has been pressed.
+        close(fd);
+        return true;
+    }
+
+    // No key press.
     close(fd);
-    return true;
-  }
-
-  // No key press.
-  close(fd);
-  return false;
+    return false;
 }
 
-// Function to read events from the inotify instance.
-void read_events(std::queue<struct inotify_event> *event_queue)
+// Function to read events from filesystem.
+void read_events(Cache<std::vector<std::string>> *event_queue)
 {
-  DLOG(INFO) << "Starts read_events";
+    DLOG(INFO) << "Starts read_events";
 
-  // Initialize inotify instance
-  int inotify_fd = inotify_init1(IN_CLOEXEC);
+    // Specify the path to the directory containing process information in /proc.
+    std::string procPath = "/proc";
 
-  // Add watch for /proc directory to monitor process events
-  int watch_fd = inotify_add_watch(inotify_fd, "/proc", IN_CREATE | IN_DELETE);
+    // Keep track of existing processes.
+    std::filesystem::directory_iterator it(procPath);
+    std::vector<std::string> existingProcesses;
 
-  // Create a buffer to store events.
-  char buffer[1024];
-
-  // sets the inotify_fd to non-blocking mode using fcntl()
-  int flags = fcntl(inotify_fd, F_GETFL);
-  fcntl(inotify_fd, F_SETFL, flags | O_NONBLOCK);
-
-  while (!waitForKeyPress())
-  {
-    // Read events from inotify instance
-    int event_size = read(inotify_fd, buffer, sizeof(buffer));
-
-    if (!(event_size < 0 && (errno == EAGAIN || errno == EWOULDBLOCK)))
+    while (!waitForKeyPress())
     {
-      // Loop through events
-      for (int i = 0; (unsigned)i < event_size / sizeof(struct inotify_event); i++)
-      {
-        // Get the event
-        struct inotify_event *event = (struct inotify_event *)(buffer + i * sizeof(struct inotify_event));
+        std::vector<std::string> currentProcesses;
 
-        // Check event type (IN_CREATE for process start, IN_DELETE for process stop)
-        if (event->mask & IN_CREATE)
+        // Iterate through the /proc directory to list running processes.
+        for (const auto &entry : std::filesystem::directory_iterator(procPath))
         {
-          LOG(INFO) << "Process " << event->name << " started";
+            currentProcesses.push_back(entry.path().filename());
         }
-        else if (event->mask & IN_DELETE)
+
+        // Check for new process start events.
+        for (const std::string &process : currentProcesses)
         {
-          LOG(INFO) << "Process " << event->name << " stopped";
+            bool isNew = true;
+            for (const std::string &existing : existingProcesses)
+            {
+                if (process == existing)
+                {
+                    isNew = false;
+                    break;
+                }
+            }
+
+            if (isNew)
+            {
+                // Process start event.
+                std::string pid = process;
+                std::string processName = getProcessName(pid);
+                std::string timestamp = getCurrentTimestamp();
+                event_queue->add(std::vector<std::string>{timestamp, UNIX_PROCESS_START, processName, pid});
+                VLOG(1) << timestamp << " - Process " << processName << " (PID: " << pid << ") started." << std::endl;
+                // Log the event to a file, if desired.
+            }
         }
-      }
+
+        // Check for process stop events.
+        for (const std::string &existing : existingProcesses)
+        {
+            bool isGone = true;
+            for (const std::string &process : currentProcesses)
+            {
+                if (existing == process)
+                {
+                    isGone = false;
+                    break;
+                }
+            }
+
+            if (isGone)
+            {
+                // Process stop event.
+                std::string pid = existing;
+                std::string processName = getProcessName(pid);
+                std::string timestamp = getCurrentTimestamp();
+                event_queue->add(std::vector<std::string>{timestamp, UNIX_PROCESS_END, processName, pid});
+                VLOG(1) << timestamp << " - Process " << processName << " (PID: " << pid << ") stopped." << std::endl;
+                // Log the event to a file, if desired.
+            }
+        }
+
+        // Update the list of existing processes.
+        existingProcesses = currentProcesses;
     }
-  }
-
-  // Close the inotify instance.
-  close(inotify_fd);
-  DLOG(INFO) << "Done read_events";
+    DLOG(INFO) << "Done read_events";
 }
 
 Collect::Collect() {}
@@ -87,27 +152,43 @@ Collect::~Collect() {}
 
 int Collect::main(Config c)
 {
-  // Initialize ncurses
-  // initscr(); // messingup the logs. when not used, makes WaitForKeyPress() listen only for ENTER press.
-  noecho();
-  cbreak();
+    // Initialize ncurses
+    // initscr(); // messingup the logs. when not used, makes WaitForKeyPress() listen only for ENTER press.
+    noecho();
+    cbreak();
 
-  // Create a queue to store events.
-  std::queue<struct inotify_event> event_queue;
+    // Create a queue to store events.
+    Cache<std::vector<std::string>> cache;
 
-  // Create a thread to read events.
-  DLOG(INFO) << "asyncReadThread";
-  auto asyncReadThread = async(std::launch::async, [&event_queue]()
-                               { return read_events(&event_queue); });
+    // Create a thread to read events.
+    DLOG(INFO) << "asyncReadThread";
+    auto asyncReadThread = async(std::launch::async, [&cache]()
+                                 { return read_events(&cache); });
 
-  while (!waitForKeyPress())
-  {
+    // While asyc listening to events in background.
+    while (!waitForKeyPress())
+    {
+        try
+        {
+            const std::queue<std::vector<std::string>> &constQueue = cache.getAndClear();
+            std::queue<std::vector<std::string>> &tmpQueue = const_cast<std::queue<std::vector<std::string>> &>(constQueue);
 
-    usleep(c.sleep_interval);
-  }
-  DLOG(INFO) << "Main loop done.";
+            while (!tmpQueue.empty())
+            {
+                std::vector<std::string> tmp = tmpQueue.front();
+                for (auto x : tmp)
+                    LOG(INFO) << x;
+                tmpQueue.pop();
+            }
+            usleep(c.sleep_interval * 1000);
+        }
+        catch (MyException &ex)
+        {
+            LOG(INFO) << "My Exception thrown: " << ex.what() << std::endl;
+        }
+    }
 
-  // Clean up ncurses
-  endwin();
-  return 0;
+    // Clean up ncurses
+    endwin();
+    return 0;
 }
