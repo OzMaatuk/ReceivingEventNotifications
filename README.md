@@ -23,8 +23,6 @@ The project uses a variety of external libraries, which need to be installed for
 - glog
 - gtest
 - backtrace
-- inotify (only for Unix-based systems)
-- libc (only for Unix-based systems)
 
 ## Execution Instructions
 To compile and run the project, follow these steps:
