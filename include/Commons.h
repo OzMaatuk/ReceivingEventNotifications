@@ -18,10 +18,10 @@
 #include "Record.h"
 #include "MyException.h"
 
-__attribute__((unused)) static const char* WIN_PROCESS_START = "__InstanceCreationEvent";
-__attribute__((unused)) static const char* WIN_PROCESS_END = "__InstanceDeletionEvent";
-__attribute__((unused)) static const char* UNIX_PROCESS_START = "START";
-__attribute__((unused)) static const char* UNIX_PROCESS_END = "STOP";
+__attribute__((unused)) static const char *WIN_PROCESS_START = "__InstanceCreationEvent";
+__attribute__((unused)) static const char *WIN_PROCESS_END = "__InstanceDeletionEvent";
+__attribute__((unused)) static const char *UNIX_PROCESS_START = "START";
+__attribute__((unused)) static const char *UNIX_PROCESS_END = "STOP";
 
 inline static void printRecordsMap(const std::map<std::string, std::list<Record>> &map)
 {
@@ -45,8 +45,14 @@ inline static void loadMapFile(const std::string sfp, std::map<std::string, std:
     std::ifstream fin(sfp);
     if (fin.is_open())
     {
-        Json::Reader reader;
-        reader.parse(fin, root);
+        Json::CharReaderBuilder reader;
+        std::string errs;
+        bool ok = Json::parseFromStream(reader, fin, &root, &errs);
+        if (!ok)
+        {
+            LOG(WARNING) << "Could not parse data file with error: " << errs;
+            return;
+        }
         fin.close();
     }
     else
@@ -95,7 +101,8 @@ inline bool is_digits(const std::string &str)
     return std::all_of(str.begin(), str.end(), ::isdigit); // C++11
 }
 
-inline static bool isValidTimestamp(const std::string timestamp) {
+inline static bool isValidTimestamp(const std::string timestamp)
+{
     // Define a regular expression pattern for the valid timestamp format.
     std::regex pattern("^(\\d{4}:(\\d{1,2}:){5}\\d{1,6})$");
 

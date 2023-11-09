@@ -129,17 +129,19 @@ void Analyzer::load(const std::string &ofp)
     std::ifstream fin(ofp);
     if (fin.is_open())
     {
-        Json::Reader reader;
-        if (!reader.parse(fin, root))
+        Json::CharReaderBuilder reader;
+        std::string errs;
+        bool ok = Json::parseFromStream(reader, fin, &root, &errs);
+        if (!ok)
         {
-            LOG(ERROR) << "Failed to parse json from file: " << ofp << ". Could not load data.";
+            LOG(ERROR) << "Failed to parse json from file: " << ofp << ". Could not parse data with error: " << errs;
             throw MyException("Analyzer Failed to parse json from file");
         }
         fin.close();
     }
     else
     {
-        LOG(ERROR) << "Could not load application data file " << ofp;
+        LOG(ERROR) << "Could not open file for load application data " << ofp;
         return;
     }
 
