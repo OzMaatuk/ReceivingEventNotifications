@@ -1,6 +1,3 @@
-#include <fstream>
-#include <vector>
-#include <queue>
 #include <chrono>
 #include <ctime>
 #include <filesystem>
@@ -9,9 +6,7 @@
 #include <termios.h>
 #include <ncurses.h>
 #include "Collect.h"
-
-__attribute__((unused)) static const char *UNIX_PROCESS_START = "START";
-__attribute__((unused)) static const char *UNIX_PROCESS_END = "STOP";
+#include "Cache.h"
 
 std::string getCurrentTimestamp()
 {
@@ -165,20 +160,27 @@ int Collect::main(Config c)
     auto asyncReadThread = async(std::launch::async, [&cache]()
                                  { return read_events(&cache); });
 
+    Writer *writer = new Writer(c.events_file_path);
+    Reader *reader = new Reader(c.events_file_path);
+    Mapper *mapper = new Mapper();
+    Analyzer *analyzer = new Analyzer(c);
+
+    mapper->load(reader->start());
     // While asyc listening to events in background.
     while (!waitForKeyPress())
     {
         try
         {
-            const std::queue<std::vector<std::string>> &constQueue = cache.getAndClear();
-            std::queue<std::vector<std::string>> &tmpQueue = const_cast<std::queue<std::vector<std::string>> &>(constQueue);
-
-            while (!tmpQueue.empty())
+            const std::deque<std::vector<std::string>> &tmp = cache.getAndClear();
+            if (!tmp.empty())
             {
-                std::vector<std::string> tmp = tmpQueue.front();
-                for (auto x : tmp)
-                    LOG(INFO) << x;
-                tmpQueue.pop();
+                auto asyncThread = std::async(std::launch::async, [&mapper, &tmp]()
+                                              { return mapper->start(tmp); });
+                asyncThread.wait();
+                asyncThread = std::async(std::launch::async, [&analyzer, &mapper]()
+                                         { return analyzer->start(mapper->getMap()); });
+                asyncThread = std::async(std::launch::async, [&writer, &tmp]()
+                                         { return writer->start(tmp); });
             }
             usleep(c.sleep_interval * 1000);
         }

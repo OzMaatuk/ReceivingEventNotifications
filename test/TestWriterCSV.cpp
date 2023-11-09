@@ -41,7 +41,7 @@ TEST(TestWriterCSV, Simple_Test)
 {
     LOG(INFO) << "TestWriterCSV Simple_Test Started";
     Writer writer = Writer("..\\test_data\\TestWriterCSV_events.csv");
-    std::list<std::vector<std::string>> tmp;
+    std::deque<std::vector<std::string>> tmp;
 
     // Should get approximation > 0.3
     tmp.push_back({"23:35:23:95", "__InstanceCreationEvent", "backgroundTaskHost.exe", "24160"});

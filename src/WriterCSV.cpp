@@ -18,7 +18,7 @@ Writer::~Writer()
     if (file.is_open()) file.close();
 }
 
-void Writer::start(const std::list<std::vector<std::string>>& cache)
+void Writer::start(const std::deque<std::vector<std::string>>& cache)
 {
     if (!file.is_open())
     {

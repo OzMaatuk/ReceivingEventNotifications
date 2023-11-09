@@ -3,7 +3,7 @@
 #define CACHE_H
 
 #include <glog/logging.h>
-#include <queue>
+#include <deque>
 #include <string>
 #include <list>
 #include <vector>
@@ -23,15 +23,15 @@ template <typename T>
 class Cache
 {
 private:
-    std::queue<T> cache; // queue to implememnt cache variable
+    std::deque<T> cache; // deque to implememnt cache variable
     const T pop();
 
 public:
     Cache();
     virtual ~Cache();
     virtual void add(const T& e);
-    virtual const std::queue<T> getAndClear();
-    const static std::list<std::vector<std::string>> cacheToStringList(const std::queue<T>& c, std::vector<std::string> (*toStringFunc)(T*));
+    virtual const std::deque<T> getAndClear();
+    const static std::deque<std::vector<std::string>> cacheToStringList(const std::deque<T>& c, std::vector<std::string> (*toStringFunc)(T*));
 };
 
 #endif // CACHE_H

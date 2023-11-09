@@ -77,7 +77,7 @@ void Mapper::setEndTime(const std::string &key, const std::string &pid, const st
     }
 }
 
-void Mapper::load(const std::list<std::vector<std::string>> &rows)
+void Mapper::load(const std::deque<std::vector<std::string>> &rows)
 {
     for (auto x : rows)
     {
@@ -120,7 +120,7 @@ void Mapper::add(const std::vector<std::string> &row)
     // throw MyException("Undefined event type");
 }
 
-void Mapper::start(const std::list<std::vector<std::string>> &cache)
+void Mapper::start(const std::deque<std::vector<std::string>> &cache)
 {
     for (auto e : cache)
         add(e);

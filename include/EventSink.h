@@ -6,10 +6,10 @@
 
 #define _WIN32_DCOM
 
-#include "Cache.h"
+#include <glog/logging.h>
 #include <Wbemidl.h>
-#include <iostream>
-
+#include "EventDetails.h"
+#include "Cache.h"
 
 #pragma comment(lib, "wbemuuid.lib")
 

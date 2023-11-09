@@ -14,7 +14,7 @@ class Reader
 {
 private:
     std::fstream file; // source file
-    std::list<std::vector<std::string>> rows; // list for file lines
+    std::deque<std::vector<std::string>> rows; // list for file lines
     bool isValidEventLabel(const std::string& event_label) const;
     bool isValidProcessName(const std::string& process_name) const;
     bool isValidPid(const std::string& pid) const;
@@ -24,7 +24,7 @@ private:
 public:
     Reader(const std::string& sfp);
     virtual ~Reader();
-    virtual std::list<std::vector<std::string>>& start();
+    virtual std::deque<std::vector<std::string>>& start();
 };
 
 #endif // READER_H

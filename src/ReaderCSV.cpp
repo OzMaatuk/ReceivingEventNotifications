@@ -55,7 +55,7 @@ bool Reader::isValidRow(const std::vector<std::string> &row) const
 }
 
 // Read Data from file as string vector
-std::list<std::vector<std::string>> &Reader::start()
+std::deque<std::vector<std::string>> &Reader::start()
 {
     if (!file.is_open())
     {

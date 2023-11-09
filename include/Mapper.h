@@ -24,10 +24,10 @@ public:
     Mapper();
     Mapper(const std::string& sfp);
     virtual ~Mapper();
-    virtual void load(const std::list<std::vector<std::string>>& rows);
+    virtual void load(const std::deque<std::vector<std::string>>& rows);
     virtual void load(const std::string& sfp);
     virtual void add(const std::vector<std::string>& row);
-    virtual void start(const std::list<std::vector<std::string>>& cache);
+    virtual void start(const std::deque<std::vector<std::string>>& cache);
     virtual void toFile(const std::string& ofp) const;
     virtual void print() const;
     virtual std::map<std::string, std::list<Record>>& getMap();

@@ -210,8 +210,8 @@ int Collect::main(Config c)
     {
         try
         {
-            const std::queue<EventDetails> &tmpQueue = pSink->cache.getAndClear();
-            const std::list<std::vector<std::string>> &tmp = Cache<EventDetails>::cacheToStringList(tmpQueue, [](EventDetails* e)
+            const std::deque<EventDetails> &tmpQueue = pSink->cache.getAndClear();
+            const std::deque<std::vector<std::string>> &tmp = Cache<EventDetails>::cacheToStringList(tmpQueue, [](EventDetails* e)
                                                                                                     { return e->eventDetailsToStringVector(); });
             if (!tmp.empty())
             {

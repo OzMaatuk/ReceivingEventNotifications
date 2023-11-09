@@ -20,8 +20,8 @@
 
 __attribute__((unused)) static const char* WIN_PROCESS_START = "__InstanceCreationEvent";
 __attribute__((unused)) static const char* WIN_PROCESS_END = "__InstanceDeletionEvent";
-__attribute__((unused)) static const char* UNIX_PROCESS_START = "";
-__attribute__((unused)) static const char* UNIX_PROCESS_END = "";
+__attribute__((unused)) static const char* UNIX_PROCESS_START = "START";
+__attribute__((unused)) static const char* UNIX_PROCESS_END = "STOP";
 
 inline static void printRecordsMap(const std::map<std::string, std::list<Record>> &map)
 {

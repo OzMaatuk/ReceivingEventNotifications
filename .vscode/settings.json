@@ -72,7 +72,7 @@
         "climits": "cpp",
         "ios": "cpp",
         "locale": "cpp",
-        "queue": "cpp",
+        "deque": "cpp",
         "stack": "cpp",
         "source_location": "cpp",
         "stacktrace": "cpp",

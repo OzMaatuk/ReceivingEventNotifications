@@ -17,7 +17,7 @@ void Cache<T>::add(const T &e)
 {
     try
     {
-        cache.push(T(e));
+        cache.push_back(T(e));
     }
     catch (const std::exception &e)
     {
@@ -34,7 +34,7 @@ const T Cache<T>::pop()
     try
     {
         T tmp = cache.front();
-        cache.pop();
+        cache.pop_front();
         return tmp;
     }
     catch (const std::exception &e)
@@ -46,10 +46,10 @@ const T Cache<T>::pop()
 }
 
 template <typename T>
-const std::queue<T> Cache<T>::getAndClear()
+const std::deque<T> Cache<T>::getAndClear()
 {
     LOG(INFO) << "getAndClear Cache object";
-    std::queue<T> tmp = std::queue<T>();
+    std::deque<T> tmp = std::deque<T>();
     try
     {
         tmp.swap(cache);
@@ -65,17 +65,17 @@ const std::queue<T> Cache<T>::getAndClear()
 
 #if defined(_WIN32) || defined(_WIN64)
 template <typename T>
-const std::list<std::vector<std::string>> Cache<T>::cacheToStringList(const std::queue<T> &c, std::vector<std::string> (*toStringFunc)(T *))
+const std::deque<std::vector<std::string>> Cache<T>::cacheToStringList(const std::deque<T> &c, std::vector<std::string> (*toStringFunc)(T *))
 {
     try
     {
-        std::queue<T> tmpCache = std::queue<T>(c);
-        std::list<std::vector<std::string>> tmp = std::list<std::vector<std::string>>();
+        std::deque<T> tmpCache = std::deque<T>(c);
+        std::deque<std::vector<std::string>> tmp = std::deque<std::vector<std::string>>();
         while (!tmpCache.empty())
         {
             // if (!tmp.isValid()) continue; TODO
             tmp.push_back(toStringFunc(&tmpCache.front()));
-            tmpCache.pop();
+            tmpCache.pop_front();
         }
         return tmp;
     }

@@ -19,7 +19,7 @@ private:
 public:
     Writer(const std::string& sfp);
     virtual ~Writer();
-    virtual void start(const std::list<std::vector<std::string>>& cache);
+    virtual void start(const std::deque<std::vector<std::string>>& cache);
 };
 
 #endif // WRITER_H
