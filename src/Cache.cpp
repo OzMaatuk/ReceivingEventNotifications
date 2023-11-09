@@ -41,7 +41,7 @@ const T Cache<T>::pop()
     {
         LOG(WARNING) << "Pop had failed with message: ";
         LOG(WARNING) << e.what();
-        // throw MyException(e.what());
+        throw MyException(e.what());
     }
 }
 
