@@ -4,7 +4,7 @@
 CC = g++
 
 # The standard to use.
-STD = c++23
+STD = c++20
 
 # The flags to pass to the compiler.
 # -Werror
@@ -15,7 +15,7 @@ CFLAGS = -std=$(STD) -Wall -Wextra -Wno-unknown-pragmas -Iinclude -g -no-pie -fn
 ifeq ($(OS),Windows_NT)
 	LDLIBS = -lole32 -loleaut32 -lws2_32 -lwbemuuid -ljsoncpp -lglog -lgtest -lbacktrace
 else
-	LDLIBS = -ljsoncpp -lglog -lgtest -lbacktrace
+	LDLIBS = -pthread -ljsoncpp -lglog -lgtest -lboost_stacktrace_backtrace -ldl -lbacktrace -lncurses
 endif
 
 # The directories to search for source files.
@@ -25,7 +25,7 @@ SRC_DIR = src/
 ifeq ($(OS),Windows_NT)
 	SRCS = Config.cpp WriterCSV.cpp Cache.cpp EventSink.cpp Mapper.cpp ReaderCSV.cpp Analyzer.cpp WCollect.cpp main.cpp
 else
-	SRCS = UCollect.cpp main.cpp
+	SRCS = Config.cpp WriterCSV.cpp Cache.cpp Mapper.cpp ReaderCSV.cpp Analyzer.cpp UCollect.cpp main.cpp
 endif
 
 # The tests files
@@ -37,10 +37,18 @@ OBJS = $(SRCS:.cpp=.o)
 OOBJ=$(join $(addsuffix $(OBJ_DIR), $(dir $(SRCS))), $(notdir $(SRCS:.cpp=.o)))
 
 # The executable file to create.
-TARGET = bin/main.exe
+ifeq ($(OS),Windows_NT)
+	TARGET = bin/main.exe
+else
+	TARGET = bin/main.bin
+endif
 
 # The test file to create.
-TEST = bin/test.exe
+ifeq ($(OS),Windows_NT)
+	TEST = bin/test.exe
+else
+	TEST = bin/test.bin
+endif
 
 # The rule for compiling a source file to an object file.
 $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp
