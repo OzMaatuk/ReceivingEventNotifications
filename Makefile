@@ -4,7 +4,11 @@
 CC = g++
 
 # The standard to use.
-STD = c++20
+ifeq ($(OS),Windows_NT)
+	STD = c++23
+else
+	STD = c++20
+endif
 
 # The flags to pass to the compiler.
 # -Werror
